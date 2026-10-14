@@ -29,6 +29,7 @@ import { ThreadMenuHeading, ThreadMenuItem, ThreadMenuSeparator, ThreadPopover }
 import { checkDisk, discardFile, languageName, reopenWithEncoding, revertFile, saveAll, saveFile, setLineEnding } from "./editorModels";
 import { ENCODINGS, encodingLabel, encodingOptionLabel } from "./encodings";
 import { QuickOpen } from "./QuickOpen";
+import { TypeScriptProjectCheck } from "./TypeScriptProjectCheck";
 import { restoreWorkspace } from "./editorPersistence";
 import { SEARCH_FOCUS_EVENT } from "@/components/agentic/sidePanel/search/SearchPanel";
 import { useIdeSidePanelStore } from "@/store/ideSidePanel";
@@ -554,6 +555,8 @@ export function CodeEditorStage({
             iconOnly
           />
         </div>
+
+        {shownTab.mode === "edit" && <TypeScriptProjectCheck workspaceId={workspaceId} path={shownTab.path} />}
 
         {shownFile?.conflict && (
           <Banner tone="warning" testId="code-editor-conflict" text={t("code_editor.conflict")}>

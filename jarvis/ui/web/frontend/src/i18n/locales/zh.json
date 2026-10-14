@@ -7354,6 +7354,21 @@
     "verifying": "执行已完成；正在验证结果。"
   },
   "code_editor": {
+    "ts_title": "TypeScript project diagnostics",
+    "ts_check": "Check TypeScript project",
+    "ts_running": "Checking project…",
+    "ts_save_first": "Save all workspace edits before checking.",
+    "ts_saved": "Checks saved files using the project configuration.",
+    "ts_clean": "No TypeScript diagnostics.",
+    "ts_count": "Diagnostics: {count}.",
+    "ts_config": "Configuration: {config}.",
+    "ts_snapshot": "Results reflect the last check; run again after changes.",
+    "ts_truncated": "Showing the first 500 diagnostics.",
+    "ts_outside": "{count} diagnostics outside this workspace are not listed.",
+    "ts_problems": "Project problems",
+    "ts_project": "Project configuration",
+    "ts_failed": "Project check failed ({status}).",
+
     "loading": "正在打开…",
     "starting": "正在启动编辑器…",
     "binary": "此文件不是文本，无法在这里编辑。",
