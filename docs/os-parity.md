@@ -1,5 +1,15 @@
 # OS Feature Parity — macOS / Linux Gap Register
 
+## TypeScript project diagnostics
+
+The explicit project check uses the same locally installed Node.js and
+TypeScript compiler on Windows, macOS, and Linux. It has no native inference,
+audio, or desktop requirement. Node subprocesses use the platform process flags
+and UTF-8 output; configuration paths are normalized for TypeScript on Windows.
+Missing Node.js or project tooling produces an unavailable result. Cross-file
+diagnostics and configuration errors were verified on Windows; macOS and Linux
+execution remain unverified locally and are covered by the applicable CI lanes.
+
 ## PATH length budget (issue #574, T2)
 
 On Windows the app keeps its own `PATH` within 31,000 characters: past the

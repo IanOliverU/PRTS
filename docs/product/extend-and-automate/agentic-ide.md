@@ -254,6 +254,14 @@ terminal backend.
 | Resume says a pane starts fresh | The folder or CLI is unavailable, or the selected CLI/account no longer has that conversation | Restore the folder or login, or continue in the fresh pane with the needed context |
 | **Finished** appears but work is incomplete | The pane stopped drawing its busy state; correctness was not evaluated | Read the recap and terminal output, inspect changed files, and run the appropriate checks |
 
+## TypeScript project diagnostics
+
+Open a source file and select **Check TypeScript project**. Save workspace edits
+first. The project needs Node.js, a `tsconfig.json`, and an installed TypeScript
+dependency. Select a reported location to open its file; recheck after edits.
+Missing tooling and failed checks are reported separately. Checks run only when
+requested and do not emit build output or invoke package scripts.
+
 ## Next Steps
 
 - Read [Dodaios-Agents](jarvis-agents) when a task needs isolation, background

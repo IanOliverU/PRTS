@@ -100,6 +100,7 @@ from jarvis.agentic_ide import (
     recents,
     resume_store,
     screen_feed,
+    typescript_diagnostics,
     workspace_catalog,
 )
 from jarvis.agentic_ide import python_intel as python_intel_module
@@ -542,8 +543,7 @@ class SwitchSeatRequest(BaseModel):
 
     agent: str = Field(
         description=(
-            "Coding CLI to switch. GET /api/agent-accounts for the CLIs this "
-            "build can switch."
+            "Coding CLI to switch. GET /api/agent-accounts for the CLIs this build can switch."
         )
     )
     account_id: str = Field(description="Id of a stored subscription of that agent.")
@@ -1118,6 +1118,12 @@ class CopyWorkspaceEntryRequest(BaseModel):
     unique: bool = Field(
         default=False, description="Pick a free 'copy' name when the destination is taken."
     )
+
+
+class TypeScriptCheckRequest(BaseModel):
+    """Select the saved file whose nearest project configuration is checked."""
+
+    path: str = Field(min_length=1, max_length=4096)
 
 
 class PythonIntelRequest(BaseModel):
@@ -2324,9 +2330,7 @@ async def save_workspace_text_file(
     "/workspaces/{workspace_id}/head-text",
     summary="A workspace file's text at the last commit",
 )
-async def get_workspace_head_text(
-    workspace_id: str, path: str, ref: str = ""
-) -> dict[str, object]:
+async def get_workspace_head_text(workspace_id: str, path: str, ref: str = "") -> dict[str, object]:
     """The committed text the editor's diff view compares against.
 
     ``ref`` names another commit than HEAD — the base of a pane's review.
@@ -2474,6 +2478,23 @@ async def python_intel(
     except file_editing.EditError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {"workspace_id": workspace_id, "result": result}
+
+
+@router.post(
+    "/workspaces/{workspace_id}/typescript/check",
+    summary="Check saved TypeScript project files without emitting output",
+    response_model=typescript_diagnostics.TypeScriptCheck,
+)
+async def check_typescript_project(
+    workspace_id: str,
+    req: TypeScriptCheckRequest,
+) -> typescript_diagnostics.TypeScriptCheck:
+    """Run only when requested, using the workspace's installed compiler."""
+    folder = _workspace_folder(workspace_id)
+    try:
+        return await asyncio.to_thread(typescript_diagnostics.check_project, folder, req.path)
+    except file_editing.EditError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.get(
@@ -5108,9 +5129,7 @@ async def terminal_prompt(
             from jarvis.brain.assistant_name import resolve_assistant_name
 
             # The stdout line leads with the name the user gave the assistant.
-            _speaker_name = resolve_assistant_name(
-                getattr(request.app.state, "config", None)
-            )
+            _speaker_name = resolve_assistant_name(getattr(request.app.state, "config", None))
             if beat_bus is not None and not req.dry_run:
                 from jarvis.core.events import AgenticIdeComposeProgress
 

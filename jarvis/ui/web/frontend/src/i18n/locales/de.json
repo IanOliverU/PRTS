@@ -7354,6 +7354,21 @@
     "verifying": "Ausführung abgeschlossen; Ergebnis wird geprüft."
   },
   "code_editor": {
+    "ts_title": "TypeScript project diagnostics",
+    "ts_check": "Check TypeScript project",
+    "ts_running": "Checking project…",
+    "ts_save_first": "Save all workspace edits before checking.",
+    "ts_saved": "Checks saved files using the project configuration.",
+    "ts_clean": "No TypeScript diagnostics.",
+    "ts_count": "Diagnostics: {count}.",
+    "ts_config": "Configuration: {config}.",
+    "ts_snapshot": "Results reflect the last check; run again after changes.",
+    "ts_truncated": "Showing the first 500 diagnostics.",
+    "ts_outside": "{count} diagnostics outside this workspace are not listed.",
+    "ts_problems": "Project problems",
+    "ts_project": "Project configuration",
+    "ts_failed": "Project check failed ({status}).",
+
     "loading": "Wird geöffnet…",
     "starting": "Editor startet…",
     "binary": "Diese Datei ist kein Text und lässt sich hier nicht bearbeiten.",
