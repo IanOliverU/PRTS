@@ -142,6 +142,12 @@ class CapacityDecisionBody(BaseModel):
     model: str | None = None
 
 
+class AmendBody(BaseModel):
+    """A correction for a mission that is still running."""
+
+    instruction: str
+
+
 class DenyToolApprovalBody(BaseModel):
     """Optional audit reason for denying one paused supervisor tool call."""
 
@@ -161,17 +167,21 @@ async def list_missions(
     request: Request,
     state: str | None = None,
     limit: int = 100,
+    active: bool = False,
 ) -> dict[str, Any]:
     """List of all missions, optionally filtered by state.
 
     Query parameters:
     - ``state``: comma-separated list of MissionState values (e.g. ``RUNNING,PENDING``).
     - ``limit``: max number of entries (server cap 1000).
+    - ``active``: only missions that have not ended yet; ``state`` wins when both are given.
     """
     mgr = _require_manager(request)
 
     limit = max(1, min(int(limit), 1000))
     state_filter: list[str] | None = None
+    if active and not state:
+        state_filter = sorted(s.value for s in MissionState if not is_terminal(s))
     if state:
         candidates = [s.strip() for s in state.split(",") if s.strip()]
         unknown = [s for s in candidates if s not in _VALID_STATES]
@@ -323,6 +333,56 @@ async def get_mission_result(
         "artifacts": artifacts,
         "artifact_count": len(artifacts),
         "truncated": truncated,
+        **await _corrections_of(request, mission_id),
+    }
+
+
+async def _corrections_of(request: Request, mission_id: str) -> dict[str, Any]:
+    """What the user changed while the mission ran, and what came too late."""
+    reader = getattr(_optional_kontrollierer(request), "mission_corrections", None)
+    if reader is None:
+        return {}
+    return await asyncio.to_thread(reader, mission_id)
+
+
+@router.post("/{mission_id}/amend")
+async def amend_mission(mission_id: str, body: AmendBody, request: Request) -> dict[str, Any]:
+    """Give a running mission a correction without restarting it.
+
+    The worker that is running cannot be told anything. The correction is kept
+    with the mission: every later attempt of every step gets it, and an attempt
+    it arrived during is followed by one more. ``409`` once the mission ended.
+    """
+    mgr = _require_manager(request)
+    view = await mgr.store.get_mission_view(mission_id)
+    if view is None:
+        raise HTTPException(status_code=404, detail="Mission not found")
+    state = str(view[1])
+    if state in _VALID_STATES and is_terminal(MissionState(state)):
+        raise HTTPException(
+            status_code=409,
+            detail=f"The mission has ended ({state}); send the change as a new request.",
+        )
+    amender = getattr(_optional_kontrollierer(request), "amend_mission", None)
+    if amender is None:
+        raise HTTPException(status_code=503, detail="Missions cannot take corrections yet")
+    try:
+        correction = await asyncio.to_thread(amender, mission_id, body.instruction)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from None
+    return {
+        "ok": True,
+        "mission_id": mission_id,
+        "state": state,
+        "correction": correction,
+        "applies": (
+            "The running worker cannot be interrupted. The next attempt gets this "
+            "correction, and the attempt running now is followed by one more, in the "
+            "same workspace: if that attempt fails, the mission ends as failed even "
+            "though the earlier result had been accepted. If the mission was in its "
+            "last attempt it finishes without the correction; mission-result then lists "
+            "it under unapplied_corrections."
+        ),
     }
 
 

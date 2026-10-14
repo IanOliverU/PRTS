@@ -2196,7 +2196,7 @@ class UIConfig(BaseModel):
     # relative spot (so different-sized monitors line up). Off pins it to one
     # monitor. Default on. Works on Windows/Linux (Tk bar) and macOS (Qt bar);
     # a headless / Wayland host with no reliable per-monitor geometry keeps the
-    # single-monitor behaviour. See jarvis/ui/jarvisbar/interaction.py.
+    # single-monitor behaviour. See jarvis/ui/dodaiosbar/interaction.py.
     bar_follow_cursor_monitor: bool = True
     # Desktop pet (orb_style = "pet", docs/pets.md). ``pet_id`` is a built-in
     # id, a user-created ``u…`` id, or "none" (the control strip without a
@@ -2762,12 +2762,12 @@ class AppshotConfig(BaseModel):
 class JarvisXConfig(BaseModel):
     """Top-level ``[jarvisx]`` config — the built-in screenshot and screen recorder.
 
-    Jarvis X is a plain capture tool (``jarvis/jarvisx/``): region, window and
+    Jarvis X is a plain capture tool (``jarvis/dodaiosx/``): region, window and
     full-screen screenshots plus region / full-screen recordings, each on its
     own global shortcut, saved to a folder and kept in a local library. It
     never involves the assistant: no Screen Context privacy pipeline, no
     delivery into a conversation. Every key below is read by
-    ``jarvis.jarvisx`` (AP-31).
+    ``jarvis.dodaiosx`` (AP-31).
     """
 
     model_config = {"extra": "allow"}
@@ -2810,7 +2810,7 @@ class JarvisXConfig(BaseModel):
 
     #: Delete old captures automatically: only the newest N screenshots and
     #: the newest N recordings stay, files included (read by
-    #: ``jarvis.jarvisx.service``). ``0`` keeps everything. Clamped to
+    #: ``jarvis.dodaiosx.service``). ``0`` keeps everything. Clamped to
     #: 0..1000 where it is read.
     keep_newest: int = 0
 
@@ -3230,6 +3230,13 @@ class WikiContextConfig(BaseModel):
     # reach. Relative by design — the vault's scores are only comparable
     # within one call, so an absolute cutoff would be noise.
     min_relative_score: float = 0.35
+
+    # Semantic search (jarvis/memory/wiki/semantic_search.py): find pages by
+    # what they mean, across languages, next to the word search. Off unless
+    # the user switches it on in the app, because switching it on downloads a
+    # 135 MB model once and keeps it in memory. Written only by the app's own
+    # switch (config_writer.set_wiki_semantic_search).
+    semantic_search: bool = False
 
     # Ambient personal knowledge — the standing identity card
     # (jarvis/brain/identity_card.py). Unlike the per-turn snippets above this
@@ -4709,7 +4716,7 @@ class JarvisConfig(BaseModel):
     # request (jarvis/appshot/). Captures through Screen Context above.
     appshot: AppshotConfig = Field(default_factory=AppshotConfig)
     # Jarvis X: the built-in screenshot / screen-recording tool
-    # (jarvis/jarvisx/). Independent of Screen Context and the assistant.
+    # (jarvis/dodaiosx/). Independent of Screen Context and the assistant.
     jarvisx: JarvisXConfig = Field(default_factory=JarvisXConfig)
     # Phase 5/6 — Computer-Use-POAV-Harness (ADR-0008).
     computer_use: ComputerUseConfig = Field(default_factory=ComputerUseConfig)

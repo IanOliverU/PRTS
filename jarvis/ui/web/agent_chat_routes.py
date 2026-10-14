@@ -83,17 +83,19 @@ log = logging.getLogger(__name__)
 
 #: The Pydantic twin of ``jarvis.agent_chat.store.SURFACES`` (AP-4; the parity
 #: test in tests/unit/agent_chat/test_agent_chat_surface_parity.py pins it).
-SurfaceName = Literal["jarvis", "agent", "local-models", "society"]
+SurfaceName = Literal["jarvis", "agent", "local-models", "society", "side"]
 
 #: The same names, as data — a multipart form field cannot be typed by a
 #: ``Literal`` without turning an unknown surface into a 422 on a file the
 #: person just dropped.
-SURFACE_NAMES: frozenset[str] = frozenset({"jarvis", "agent", "local-models", "society"})
+SURFACE_NAMES: frozenset[str] = frozenset(
+    {"jarvis", "agent", "local-models", "society", "side"}
+)
 
 #: Surfaces that never appear in an unfiltered session list: an agent's
-#: canonical chat belongs to its model card, not to the IDE's or the front
-#: page's history.
-HIDDEN_SURFACES: frozenset[str] = frozenset({"society"})
+#: canonical chat belongs to its model card, and the IDE's side chat to its
+#: side panel, not to the IDE's threads or the front page's history.
+HIDDEN_SURFACES: frozenset[str] = frozenset({"society", "side"})
 
 router = APIRouter(prefix="/api/agent-chat", tags=["agent-chat"])
 
@@ -492,6 +494,7 @@ def _catalog_rows(
     # own: other surfaces keep every seat.
     prefs = agent_provider_prefs.load()
     agents = surface == agent_provider_prefs.AGENT_SURFACE
+    plain = kit_for(surface).plain
     rows: list[dict[str, Any]] = []
     for row in rows_for(surface):
         d = row.to_dict()
@@ -521,7 +524,8 @@ def _catalog_rows(
         # Which characters open the composer's typeahead on this seat —
         # decided here, from the runner, so the box never offers a "/" list
         # to a seat that would read it as plain text.
-        d["typeahead"] = list(typeahead.triggers_for(runner, surface))
+        # A plain chat has nothing to complete against: no commands, no files.
+        d["typeahead"] = [] if plain else list(typeahead.triggers_for(runner, surface))
         if agents:
             d["enabled"] = prefs.enabled(row.id)
         d["hidden_models"] = list(prefs.hidden(row.id))
@@ -542,7 +546,7 @@ async def get_composer_tools(
     cwd: str | None = None,
     stance: str = "ask",
 ) -> dict[str, Any]:
-    """Discover tools for the Jarvis chat without executing any capability."""
+    """Discover tools for the Dodaios chat without executing any capability."""
     from jarvis.agent_chat.tool_catalog import discover
 
     svc = (await _async_service(request))
@@ -865,6 +869,7 @@ def list_sessions(
 ) -> dict[str, Any]:
     svc = _service(request)
     out = []
+    teams = _team_sessions(request) if surface in (None, "agent") else {}
     for s in svc.store.list_sessions(limit=limit, surface=surface):
         if surface is None and s.surface in HIDDEN_SURFACES:
             continue
@@ -873,9 +878,22 @@ def list_sessions(
         if s.surface == "agent":
             d["pending_approvals"] = svc.pending_approvals(s.session_id)
             d["cli_title"] = _cli_title(svc, s)
+            # A member of a team thread is listed under its team, not as a thread.
+            d["team_id"] = teams.get(s.session_id, "")
         out.append(d)
     _title_chats(request, svc, out)
     return {"sessions": out}
+
+
+def _team_sessions(request: Request) -> dict[str, str]:
+    """Which sessions belong to a team thread (``session_id -> team_id``)."""
+    from .team_thread_routes import team_sessions
+
+    try:
+        return team_sessions(request.app.state)
+    except Exception:  # noqa: BLE001 - the thread list must not fail with the team store
+        log.warning("team threads unavailable; listing their members as threads", exc_info=True)
+        return {}
 
 
 def _cli_title(svc: Any, session: Any) -> str:

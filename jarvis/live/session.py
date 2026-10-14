@@ -1130,6 +1130,9 @@ class LiveVoiceSession:
         cause = {NO_CREDITS: "no_credits", RATE_LIMITED: "rate_limited"}.get(
             status, "unavailable"
         )
+        if getattr(exc, "code", "") == "voice_not_offered":
+            # Waiting does not help here: the account has to change.
+            cause = "not_offered"
         log.warning("Live session could not start (cause=%s): %s", cause, exc)
         try:
             await self._send_json(
@@ -1856,6 +1859,32 @@ class LiveVoiceSession:
                 "session_id": self.session_id,
             }
         )
+
+    async def show_content(self, *, title: str, markdown: str) -> None:
+        """Put content on the user's screen and keep it in this call's record.
+
+        It is stored as one assistant passage right after the newest words, so
+        the reasoning backend sees it as part of the conversation and the
+        archived call still shows it. Nothing here is spoken.
+        """
+        from jarvis.core.events import VoiceContentShown
+
+        if self._ledger is not None:
+            # Every live engine keeps its own clock; the record is the common one.
+            said = await asyncio.to_thread(self._ledger.transcript, self.session_id)
+            at = max((int(row["end_ms"]) for row in said), default=-1) + 1
+            body = f"**{title}**\n\n{markdown}" if title else markdown
+            fragment = TranscriptFragment(
+                self.session_id, f"shown-{uuid4().hex}", "assistant", f"\n\n{body}\n\n", at, at
+            )
+            await asyncio.to_thread(self._ledger.transcript_snapshot, fragment)
+        if self._bus is not None:
+            await self._bus.publish(
+                VoiceContentShown(
+                    source_layer="live.session", session_id=self.session_id,
+                    title=title, markdown=markdown,
+                )
+            )
 
     async def deliver_announcement(
         self, text: str, *, report: str | None = None, **kwargs: Any

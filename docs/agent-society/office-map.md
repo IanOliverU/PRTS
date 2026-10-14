@@ -39,7 +39,7 @@ never moves an agent, starts work or invents activity (world-behaviour-manual
 | Furniture | A contemporary workplace built from rounded primitives: light-oak bench desks on black steel T-legs with a white pedestal and a felt privacy screen, slim monitors on arms, ergonomic chairs with a mesh back on a five-star base, open oak-and-steel shelving, low modular sofas on slim legs, tall charcoal planters with full crowns. Department back walls are fluted acoustic felt with a charcoal name plate in white type and oak ledges with small plants. |
 | Materials | Mostly matte; black steel and chrome arms carry a little metalness. Light microcement floor, a rounded felt rug per department whose colour also dyes that department's felt screens and seat fabric (`DEPARTMENT_ZONES`). Rooms: slate felt (team), terrazzo (wardrobe), pale stone (reception), light oak (break room). Glass walls and the outer balustrade have slim black frames. |
 | Light | Cool sky / neutral ground hemisphere light plus one soft, slightly warm directional sun with PCF shadows. Always bright enough to read, never moody. |
-| Setting | The agents floor and the Level Hall are floors of a tower in a city at night: a window wall on the far sides, the tower's body below, lit towers outside (§5h). The coding floor still floats in its own violet night behind glass railings. |
+| Setting | The agents floor and the Level Hall are floors of a tower in the city in the singularity: a window wall on the far sides, the tower's glass body falling away below, a megacity and the singularity outside (§5h). The coding floor is the Foundry deck: a steel deck floating in a nebula above a ringed planet (§5j). |
 | Camera | Perspective, 35° FOV, three-quarter view from the south-east about 40° below the horizon. Orbit, pan and zoom within limits (20°–72° polar, from 2.5 m out to wherever the overview needs: 140 m at least, more on a large campus). The overview frames the whole floor (§5i). |
 | Labels | From across the floor an agent is one small state dot. The dark translucent plate (hexagon badge with the initial or the lead's star, name, rank chip, state dot and activity) fades in over the dot when the camera or the person is near, when the pointer or keyboard focus rests on the agent, or when it is selected (§5g). Scale is clamped by distance. |
 | State language | Green = working (pulsing floor ring, code on the monitor), amber = waiting for the person, grey = idle (smiley monitor) or paused (dark monitor). |
@@ -70,9 +70,9 @@ The plans are pure and tested. `officeLayout.ts` holds the shared vocabulary
   to shoulder in rows of four, two either side of the boulevard. South strip:
   café, lobby with the elevator, break room.
 - **Coding floor:** north strip Mission Control, team room, server room;
-  departments = IDE workspaces, two columns, at least four (spare ones are
-  "Open space"), at most six (the rest fold into "Other"); south strip lobby
-  and break room.
+  departments = IDE workspaces ("bays"), two columns either side of a 6.4 m
+  concourse, at least four (spare ones are free bays), at most six (the rest
+  fold into "Other"); south strip lobby and break room.
 - **Spawn point (both working floors):** a round pad with a terminal. On the
   agents floor it stands in the atrium, where the two boulevards cross; on the
   coding floor on the crossing of the centre aisle and the cross aisle nearest
@@ -189,7 +189,7 @@ the floor plan differ.
   `companion/petCompanions.ts` maps a pet to its companion:
   Gigi keeps its hover model; the seven other built-ins have authored Blender
   models (`scripts/art/build_pet_companions.py`, study
-  `art/studies/jarvis-pet-companions`, one GLB per pet under
+  `art/studies/dodaios-pet-companions`, one GLB per pet under
   `assets/society/companions/pets/`) and a gait of their own: Ember the
   dragon flies with beating wings, Miso the cat trots, Cocoa the puppy trots
   with flopping ears and a wagging tail, Bolt the battery
@@ -235,14 +235,9 @@ the floor plan differ.
   narrow panel to 520 px once; the user can drag it back. There a monitor click
   focuses the pane in the grid right next to it, and the office's "open the
   ledger" action brings the Agents tab forward.
-- **Its own look** (`CodingFloorLook.tsx`, `CODING_SCENE` / `CODING_STUDIOS`
-  in `officePalette.ts`): same plan as the agents office, none of its
-  surfaces. A violet night instead of navy, a fine terrazzo floor instead of
-  warm planks, and a glowing cyan rim under the slab edge. Every workspace
-  department is furnished as a studio of its own — carpet pattern (grid,
-  stripes, checker, dots, diagonal, zigzag) with a border, a painted sign wall,
-  and desk and chair colours — cycled by the department's index. All of it is
-  flat or outside the railing, so navigation is unchanged.
+- **Its own look:** since 2026-10-14 the Foundry deck (§5j), which replaced
+  the earlier studio look (oak herringbone, a carpet and walnut sign wall per
+  department).
 
 ## 5c. Lead office as an executive suite (2026-09-29)
 
@@ -599,15 +594,33 @@ street of team rooms round an atrium, with commons people use in between.
   window wall with steel mullions and a ceiling edge. The floor is shown like
   a cut-open model: a side's window wall stands only while the camera is on
   the opposite side of the floor; the other sides keep the glass balustrade.
-  Outside lies a city at night that stays a backdrop: a few dozen unlit
-  towers a shade lighter than the deep navy sky, the first 62 m from the
-  building, every roof at least 24 m below the floor and the nearest ones
-  lowest. About one window in twenty is dimly lit, from one small tiling
-  texture; a tower sinks into the sky's colour towards its foot and with its
-  distance, the scene's sun never reaches it, and the faintest glow lies
-  over the streets where detail would be. Apart from the sparse windows
-  nothing outside is brighter than a dark navy (#1a2233). The office is
-  always the brightest and most detailed thing on screen.
+  Outside lies the city in the singularity (`SingularityCity.tsx`, plan in
+  `cityPlan.ts`, shaders in `cityShaders.ts`): a megacity 330 m below the
+  floor, seen from high above. Several hundred glass towers of four kinds
+  (block, setback, tapering prism, spire) stand on a 36 m street grid; their
+  windows are drawn in world metres, lit in office runs that switch now and
+  then, and fade to their average glow once a window is smaller than a
+  pixel or two. Some towers carry gold, cyan or white light seams with
+  pulses climbing them, a lit crown, a lit parapet or a landing ring; tall
+  roofs carry aviation lights. The streets glow with kerb lamps, avenues
+  carry a cyan centre line and traffic both ways, and flying traffic circles
+  the tower in seven lanes high over the rooftops. Beams of light rise from
+  the tallest far roofs; mist drifts between the roofs. Off to the north
+  hovers the singularity: a black core with its photon ring, a turning
+  accretion disc, polar jets and three gold orbital rings, inside a crater
+  ringed by eighteen gold-crowned spires. The building's own tower is the
+  same glass with gold seams.
+  The floor stays the subject: an empty plaza of 70 m round the slab, every
+  roof within 330 m at least 70 m below the floor (about 170 m below beside
+  the plaza), and every tower under a traffic lane kept below it; at the
+  camera's flattest angle the far towers form a skyline at the horizon.
+  Everything outside is self-lit (the scene's sun never reaches it) and
+  sinks with distance into the sky's own colour; the scene's background and
+  fog take the haze's colour, and the coding floor alone keeps the starry
+  night. The whole city is about twenty draw calls, nothing casts or
+  receives a shadow, traffic is computed on the GPU, and with reduced motion
+  its clock stands still. Measured 2026-10-14 on an RTX 5070 Ti at
+  2560 × 1217 px: the city adds about 0.4 ms per frame in the overview.
 - **One material language** from the studios to the last room: light plank
   oak, limestone and felt on the floor; light oak for timber; dark steel for
   metal, with bronze as the one accent; steel-framed clear glass with a
@@ -874,6 +887,70 @@ by a rebuilt floor plan is put on the nearest free ground.
 - `__officeCamera.cut()` — the walls lowered right now; `.walls()` how many
   wall objects are tagged; `.limits()` this floor's zoom limits.
 
+## 5j. Coding floor as the Foundry deck (2026-10-14)
+
+The maintainer found the coding floor dull: an office like any other, every
+department alike and nothing on it that reacted to the agents. It was rebuilt
+with an art direction of its own (`art/studies/coding-floor-foundry/brief.md`):
+an orbital code foundry. Charcoal steel and gold carry the architecture, cool
+cyan marks anything that is code, and every workspace owns one signal colour.
+The rule that governs every effect: nothing glows or moves without a real
+reason on the floor.
+
+- **Deck** (`FoundryDeck.tsx`, `FoundrySky.tsx`): steel plates with rivets
+  and vents on a thick hull with portholes and a gold lip, a glass parapet
+  with a gold rail and a cyan base light, a nebula dome with stars and a
+  ringed planet below the deck's north end. The concourse between the bay
+  columns is widened to 6.4 m (`CONCOURSE` in `officeLayout.ts`).
+- **The Core** (`FoundryCore.tsx`): the landmark at the spawn terminal. A
+  plasma heart inside three gyroscope rings between two crowns of fins, motes
+  orbiting it and a light column with rising bands into the sky. Its pace and
+  brightness follow the number of working panes; it flares when a packet
+  arrives; it hides its hanging parts when the camera comes close underneath.
+- **Bays**: a dark grid plate framed by a light strip in the bay's signal
+  colour (`BAY_SIGNALS`, never amber or red), gold corner brackets, and a
+  truss gantry on the north edge whose holographic sign shows "DOCK 0n" and
+  the workspace's name; a free bay says so. The gantry stays inside the sign
+  wall footprint the layout already walks round.
+- **Consoles** (`FoundryConsoles.tsx`): dark steel desks with a light edge,
+  a signal bar between back-to-back desks, the monitor the live terminal is
+  drawn on (same screen position as before), pilot chairs with the seat in
+  the bay's colour, node towers with running lights in the bench-end
+  footprints. The signal bar reads the pane: working = bay colour breathing,
+  asking = amber blinking, failed = red, idle = dim, free desk = dark.
+- **Beams**: a pane that asks or failed raises a beam of its colour from its
+  desk into the sky, with a ripple on the floor, so the person sees from
+  anywhere on the deck who needs them.
+- **Data rails and packets** (`foundryLayout.ts`, `FoundryPulses.tsx`): every
+  bay has a rail laid like a circuit trace (45° turns, one lane each, no two
+  crossing) along the concourse to the Core's floor ring. When a pane's
+  `last_output_at` moves on in the shared pane poll, a packet of light runs
+  along its bay's rail to the Core. The first reading only records, so coming
+  up to the floor fires nothing.
+- **Life** (`FoundryLife.tsx`): rings of light under the person's steps and
+  four maintenance drones with scanner cones circling above head height.
+- **Dressing** (`FoundryAmbience.tsx`): in the footprints `codingAmbience`
+  already gives the layout, bio domes (a tree under glass with a violet grow
+  light), archive racks with drive lights and coolant lines with glowing bands.
+- **Rooms and lobby**: room floors in dark stone, smoked walnut and slate
+  (`FOUNDRY_ROOM_FLOORS`), glass walls with steel frames and a cyan light band
+  (`RoomWalls foundry`), the reception counter and the elevator in steel and
+  gold through the `FoundryLook` context in `OfficeProps.tsx`. The minimap and
+  the full map draw the deck too: dark plates, bays outlined in their colours,
+  the concourse, the rails and the Core.
+- **Frame** (`FoundryComposer.tsx`): bloom at half resolution with its
+  threshold above any lit surface, and a studio environment for the metals;
+  only on this floor, and not in the compact side-panel stage. Bloom selects
+  by luminance, so every light colour is scaled to a set luminance
+  (`glowColour`): a magenta strip glows as much as a lime one.
+- **Cost**: measured with a draw-call counter on the same machine and window
+  size, the old floor drew about 1,530 calls per frame close up and 2,950 in
+  the overview; the Foundry deck draws about 1,310 and 2,880. Frame rates on
+  that machine were not comparable (the CPU sat at 100 % from other work);
+  other devices are unmeasured.
+- Reduced motion stills the Core, the rails, the beams' ripples, the drones,
+  the footsteps and the nebula.
+
 ## 6. Plan
 
 1. First map (done 2026-09-28).
@@ -905,6 +982,14 @@ by a rebuilt floor plan is put on the nearest free ground.
   free plot) is covered by unit tests for the plan (the stand and its
   standing place, the arch at the desk, 1.2 m or more to walk along both
   windows) and was then checked in a browser by the orchestrator.
+- City (2026-10-14): `cityPlan.test.ts` holds the plan for a hall-sized, a
+  typical and a large floor: deterministic, the plaza empty, every roof
+  within the roof limit, no two towers on one spot, the crater clear with
+  its ring of spires and the disc and rings inside it, every lane below the
+  floor, outside the plaza and above the roofs under it.
+  `CampusScene.test.tsx` mounts the city without a GPU (draw calls, no
+  shadows, towers on the street level). Checked in Chrome against the dev
+  build: overview, walking view and the flattest angle.
 - Floors (2026-10-12): `progression/verseFloors.test.ts` reads
   `VERSE_FLOORS` from jarvis/progression/service.py and holds it equal to the
   client's `METERED_FLOORS` and the elevator's `OFFICE_FLOORS`; a world
