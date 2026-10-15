@@ -347,6 +347,20 @@ describe("GitOverviewTab — the checkout at a glance", () => {
     await vi.waitFor(() => expect(openExternalUrl).toHaveBeenCalledWith("https://github.com/o/r/pull/11"));
   });
 
+  it("reviews untracked-only work without claiming the checkout is up to date or staging files", async () => {
+    answer = { ...withCheckout({ ahead: 0, files: 1, untracked: 1, has_remote: false, upstream: "" }, { ahead: 0, pull_requests: [], ci: noCi }), github: { ...OVERVIEW.github, available: false, code: "not_connected" } };
+    render(<GitOverviewTab />);
+    const next = await screen.findByTestId("git-next");
+    expect(next.dataset.step).toBe("review");
+    expect(next.textContent).toContain("1 changed file");
+    expect(next.textContent).not.toContain("Everything is up to date");
+    expect(screen.queryByTestId("git-extra-commit")).toBeNull();
+    fireEvent.click(screen.getByTestId("git-next-action"));
+    await screen.findByLabelText("Commit message");
+    expect(posted("staging/stage")).toEqual([]);
+    expect(posted("staging/commit")).toEqual([]);
+  });
+
   it("says so when there is nothing to do", async () => {
     answer = { ...withCheckout({ branch: "main", upstream: "origin/main", ahead: 0 }), branch: "main", branches: [branch("main", { current: true })], remote_branches: [] };
     render(<GitOverviewTab />);
