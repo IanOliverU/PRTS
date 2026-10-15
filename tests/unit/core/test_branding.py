@@ -83,7 +83,7 @@ def test_default_exported_identity_values_are_frozen() -> None:
 
 
 def test_display_name_is_separate_from_persistent_identity() -> None:
-    assert branding.PRODUCT_NAME == "Dodaios"
+    assert branding.PRODUCT_NAME == "PRTS"
     # No persistent identifier is built from the display name: renaming the
     # product must never move a path, a registry key or a credential store.
     display = branding.PRODUCT_NAME.casefold()
@@ -102,10 +102,10 @@ def test_persistent_identity_does_not_follow_the_display_name(monkeypatch) -> No
     # Derivation, not coincidence: read the module source with a different
     # display name and every frozen value must come out unchanged.
     source = branding.__spec__.loader.get_source(branding.__name__)
-    assert source.count('PRODUCT_NAME = "Dodaios"') == 1
+    assert source.count('PRODUCT_NAME = "PRTS"') == 1
     monkeypatch.delenv(branding.OFFICIAL_REPO_SLUG_ENV_VAR, raising=False)
     namespace: dict[str, object] = {"__name__": "branding_renamed"}
-    renamed = source.replace('PRODUCT_NAME = "Dodaios"', 'PRODUCT_NAME = "Renamed Again"')
+    renamed = source.replace('PRODUCT_NAME = "PRTS"', 'PRODUCT_NAME = "Renamed Again"')
     exec(compile(renamed, "branding_renamed", "exec"), namespace)  # noqa: S102
     assert namespace["PRODUCT_NAME"] == "Renamed Again"
     assert {name: namespace[name] for name in _CURRENT_IDENTITY} == _CURRENT_IDENTITY

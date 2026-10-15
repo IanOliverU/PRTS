@@ -1,3 +1,4 @@
+import { PRODUCT_NAME } from "@/lib/branding";
 import {
   Loader2,
   Mic,
@@ -510,7 +511,7 @@ export function Sidebar({
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-35">
               <MoreHorizontal aria-hidden className="h-4 w-4" />
             </button>
-            <button type="button" aria-label="Dodaios Live" title="Dodaios Live" onClick={toggleIdeVoice}
+            <button type="button" aria-label={`${PRODUCT_NAME} Live`} title={`${PRODUCT_NAME} Live`} onClick={toggleIdeVoice}
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
               <Mic aria-hidden className="h-4 w-4" />
             </button>

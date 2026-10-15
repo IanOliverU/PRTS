@@ -1,3 +1,4 @@
+import { PRODUCT_NAME } from "@/lib/branding";
 import { useCallback, useEffect, useState } from "react";
 
 import { ToastLayer } from "@/components/ToastLayer";
@@ -33,7 +34,7 @@ export function JarvisXEditorWindow() {
 
   useEffect(() => {
     void hydrateUiLanguage();
-    document.title = "Dodaios X";
+    document.title = `${PRODUCT_NAME} X`;
   }, []);
 
   const [maximized, setMaximized] = useState(false);

@@ -45,10 +45,10 @@ describe("agent vector identities", () => {
     }
     rerender(<AgentSwatch agent={{ ...agent, tier: "lead", state: "working" }} />);
     // The lead stays in the picture at work and carries the same bubble as everyone else.
-    expect(container.querySelector("[data-agent-mascot=gigi]")).not.toBeNull();
+    expect(container.querySelector("[data-agent-avatar=priestess]")).not.toBeNull();
     expect(container.querySelector("[data-thinking=true]")).not.toBeNull();
     expect(container.querySelector("[data-agent-working]")).not.toBeNull();
-    expect(container.querySelector(".society-agent-symbol [data-agent-mascot=gigi]")).toBeNull();
+    expect(container.querySelector(".society-agent-symbol [data-agent-avatar=priestess]")).toBeNull();
   });
   it("renders a symbol immediately without a portrait, image request or canvas", () => {
     const { container } = render(<AgentSwatch agent={agent} size={40} />);
@@ -66,10 +66,10 @@ describe("agent vector identities", () => {
     expect(container.querySelector("[data-agent-mascot]")).toBeNull();
   });
 
-  it("draws the animated companion for the lead, even with an old figure recipe", () => {
+  it("shows the Priestess portrait for the lead, even with an old figure recipe", () => {
     const { container } = render(<AgentSwatch agent={{ ...agent, tier: "lead", name: "Coordinator" }} size={56} />);
-    expect(container.querySelector("[data-agent-mascot=gigi] svg")).not.toBeNull();
-    expect(container.querySelector("img, canvas")).toBeNull();
+    expect(container.querySelector("img[data-agent-avatar=priestess]")).not.toBeNull();
+    expect(container.querySelector("canvas")).toBeNull();
     expect(container.querySelector("[data-agent-symbol]")).toBeNull();
   });
 
@@ -77,7 +77,7 @@ describe("agent vector identities", () => {
     const { container, rerender } = render(<AgentSwatch agent={{ name: "Worker", figure: null, palette: agent.palette }} />);
     expect(container.querySelector("svg")).not.toBeNull();
     rerender(<AgentSwatch agent={{ name: "Jarvis", palette: agent.palette, figure: { contract: 1, archetype: "spirit", base: "gigi", parts: {}, palette: {} } }} />);
-    expect(container.querySelector("[data-agent-mascot=gigi]")).not.toBeNull();
+    expect(container.querySelector("[data-agent-avatar=priestess]")).not.toBeNull();
   });
 
   it("distributes a roster across multiple silhouettes and colours deterministically", () => {

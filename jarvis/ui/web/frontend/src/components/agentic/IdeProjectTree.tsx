@@ -1,3 +1,4 @@
+import { PRODUCT_NAME } from "@/lib/branding";
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { createPortal } from "react-dom";
 import { ArrowUpRight, Check, Copy, CopyPlus, Folder, FolderGit2, GitBranch, FolderOpen, FolderPlus, Globe, Loader2, Mic, MoreHorizontal, OctagonPause, Pencil, Pin, PinOff, Plus, Server, SquareCode, Trash2, X, type LucideIcon } from "lucide-react";
@@ -832,7 +833,7 @@ export function IdeProjectTree() {
     <div className="flex h-8 items-center justify-between pl-2 pr-1 text-[15px] font-semibold text-foreground">
       <span>{t("ide_projects.workspaces")}</span>
       <div className="flex items-center gap-0.5">
-        <button type="button" aria-label="Dodaios Live" title="Dodaios Live" onClick={toggleVoice}
+        <button type="button" aria-label={`${PRODUCT_NAME} Live`} title={`${PRODUCT_NAME} Live`} onClick={toggleVoice}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Mic className="h-3.5 w-3.5" /></button>
         <button type="button" aria-label={t("ide_projects.connect_title")} title={t("ide_projects.connect_folder_title")} onClick={connectProject}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Plus className="h-3.5 w-3.5" /></button>

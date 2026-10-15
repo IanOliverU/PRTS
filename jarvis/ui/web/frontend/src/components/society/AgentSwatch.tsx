@@ -1,4 +1,4 @@
-import { GigiAvatar } from "./GigiAvatar";
+import priestessAvatar from "@/assets/priestess-avatar.png";
 import { cn } from "@/lib/utils";
 
 import { resolveCompanion } from "./companion/appearance";
@@ -10,7 +10,7 @@ import type { SocietyAgent } from "./data";
 type SwatchAgent = Pick<SocietyAgent, "figure" | "palette" | "name"> &
   Partial<Pick<SocietyAgent, "agentId" | "tier" | "state">>;
 
-/** The gold of the lead's mark (GigiAvatar's lens rim). */
+/** The lead tier's shared accent, independent of the portrait. */
 export const LEAD_COLOR = "#ffcd61";
 
 /**
@@ -31,7 +31,7 @@ function isLead(agent: SwatchAgent): boolean {
   );
 }
 
-/** Lightweight vector identity shared by roster, profile and message surfaces. */
+/** Stable identity shared by roster, profile and message surfaces. */
 export function AgentSwatch({
   agent,
   size = 36,
@@ -59,7 +59,7 @@ export function AgentSwatch({
     >
       {isJarvis ? (
         <>
-        <GigiAvatar size={size} />
+        <img src={priestessAvatar} alt="" data-agent-avatar="priestess" width={size} height={size} className="h-full w-full object-contain" decoding="async" draggable={false} />
         {thinking && <WorkingBadge size={size} />}
         </>
       ) : (

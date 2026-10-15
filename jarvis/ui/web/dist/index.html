@@ -7,14 +7,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/jarvis.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="256x256" href="/jarvis-gigi-256.png?v=hood" />
-    <link rel="icon" type="image/x-icon" href="/jarvis-gigi.ico" />
-    <!-- Neutral, trademark-free fallback title. The inline boot script below
-         overwrites it with the user's own assistant name (from the localStorage
-         cache) the instant the window opens, so a trademarked placeholder is
-         never shown. -->
-    <title>Assistant</title>
+    <link rel="icon" type="image/svg+xml" href="/prts-icon.svg" />
+    <!-- Product fallback title. The inline boot script below uses the user's
+         chosen assistant name from the localStorage cache when available. -->
+    <title>PRTS</title>
     <script>
       // Resolve the theme SYNCHRONOUSLY, before a single pixel is painted.
       //
@@ -83,6 +79,7 @@
          frame. The accent is --accent. Keep the three in lockstep. */
       :root {
         --jbs-bg: #ffffff;
+        --jbs-mark-bg: #171717;
         --jbs-accent: #096cdc;
         --jbs-ring: rgba(9, 108, 220, 0.22);
         --jbs-track: rgba(0, 0, 0, 0.07);
@@ -94,6 +91,7 @@
       }
       :root.dark {
         --jbs-bg: #0a0a0a;
+        --jbs-mark-bg: #171717;
         --jbs-accent: #3d8bff;
         --jbs-ring: rgba(61, 139, 255, 0.2);
         --jbs-track: rgba(255, 255, 255, 0.08);
@@ -130,6 +128,7 @@
       }
       #jarvis-boot-splash .jbs-mark {
         width: 96px; height: 96px; border-radius: 24%;
+        background: var(--jbs-mark-bg);
         box-shadow: var(--jbs-shadow), 0 0 0 1px var(--jbs-rim);
         animation: jbs-mark-in .9s var(--jbs-ease) both;
         animation-delay: var(--jbs-shift, 0s);
@@ -223,7 +222,7 @@
         #jarvis-boot-splash .name { margin-top: 16px; }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-B6mdHOEk.js"></script>
+    <script type="module" crossorigin src="/assets/index-CrVzA5_1.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-DGzfX7xh.css">
   </head>
   <body>
@@ -231,7 +230,7 @@
       <div id="jarvis-boot-splash">
         <div class="jbs-group">
           <div class="jbs-mark" aria-hidden="true">
-            <img src="/jarvis-gigi-256.png?v=hood" alt="" width="256" height="256" />
+            <img src="/prts-mark.png" alt="" width="256" height="256" />
           </div>
           <!-- Painted synchronously by the inline script below from the cached
                assistant name (the user's chosen wake word, e.g. "Nico"). Left
@@ -448,7 +447,7 @@
           var mark = document.createElement("div");
           mark.className = "jbs-mark";
           mark.setAttribute("aria-hidden", "true");
-          mark.innerHTML = '<img src="/jarvis-gigi-256.png?v=hood" alt="" width="256" height="256">';
+          mark.innerHTML = '<img src="/prts-mark.png" alt="" width="256" height="256">';
           var progress = document.createElement("div");
           progress.className = "jbs-progress";
           progress.setAttribute("aria-hidden", "true");

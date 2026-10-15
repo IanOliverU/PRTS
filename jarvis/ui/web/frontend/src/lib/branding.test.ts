@@ -12,7 +12,7 @@ import {
 
 describe("branding", () => {
   it("shows the product display name", () => {
-    expect(PRODUCT_NAME).toBe("Dodaios");
+    expect(PRODUCT_NAME).toBe("PRTS");
   });
 
   it("links to the official repository", () => {
