@@ -8,6 +8,8 @@ usage-logging path the real ``cli_<name>`` tools use.
 
 from __future__ import annotations
 
+import shlex
+import subprocess
 import sys
 from pathlib import Path
 from uuid import uuid4
@@ -62,15 +64,14 @@ def _make_tool(tmp_path: Path) -> tuple[CliTool, UsageLog]:
 def _script_command(tmp_path: Path, body: str, *, name: str = "s.py") -> str:
     """Write a Python script and return a ``python <path>`` command.
 
-    Avoids shell-quoting pitfalls: ``CliTool`` runs ``shlex.split(command,
-    posix=False)`` on Windows, which keeps inner double-quotes literal. Running
-    a script file sidesteps inline ``-c "..."`` quoting entirely so the test is
-    portable across platforms.
+    Quote the script path with the host command-line rules, including spaces
+    in temporary directories. The subprocess executes the file without a shell.
     """
     binary = Path(sys.executable).name
     script = tmp_path / name
     script.write_text(body, encoding="utf-8")
-    return f"{binary} {script}"
+    arguments = [binary, str(script)]
+    return subprocess.list2cmdline(arguments) if sys.platform == "win32" else shlex.join(arguments)
 
 
 def test_tool_name_is_prefixed() -> None:
@@ -196,9 +197,7 @@ async def test_execute_injects_noninteractive_env(
     import jarvis.clis.tool as tool_mod
 
     binary = Path(sys.executable).name
-    monkeypatch.setitem(
-        tool_mod._NONINTERACTIVE_ENV, binary, {"JARVIS_NONINTERACTIVE_PROBE": "1"}
-    )
+    monkeypatch.setitem(tool_mod._NONINTERACTIVE_ENV, binary, {"JARVIS_NONINTERACTIVE_PROBE": "1"})
     tool, _ = _make_tool(tmp_path)
     cmd = _script_command(
         tmp_path,
@@ -244,8 +243,7 @@ async def test_stdin_is_devnull_so_reading_stdin_gets_eof(tmp_path: Path) -> Non
     tool, _ = _make_tool(tmp_path)
     cmd = _script_command(
         tmp_path,
-        "import sys; d = sys.stdin.read(); "
-        "print('STDIN_EOF' if d == '' else 'STDIN_DATA')",
+        "import sys; d = sys.stdin.read(); print('STDIN_EOF' if d == '' else 'STDIN_DATA')",
     )
     result = await tool.execute({"command": cmd, "timeout_s": 5}, _ctx())
     assert result.success is True
@@ -269,3 +267,17 @@ def test_jarvisctl_tool_description_carries_the_command_index(tmp_path: Path) ->
 
     other, _ = _make_tool(tmp_path)
     assert "Command index" not in other.description
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows command-line rules")
+def test_windows_arguments_preserve_spaces_quotes_and_backslashes() -> None:
+    from jarvis.clis.tool import _split_command
+
+    arguments = [
+        "python.exe",
+        r"C:\project with spaces\script.py",
+        'say "hello"',
+        "",
+        "end" + chr(92),
+    ]
+    assert _split_command(subprocess.list2cmdline(arguments)) == arguments

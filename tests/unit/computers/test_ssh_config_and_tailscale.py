@@ -195,7 +195,7 @@ async def test_auto_login_uses_the_identity_file_the_config_names(
 ) -> None:
     key = asyncssh.generate_private_key("ssh-ed25519")
     key_path = tmp_path / ".ssh" / "hetzner"
-    home = _home(tmp_path, f"Host hz\n  HostName 127.0.0.1\n  IdentityFile {key_path}\n")
+    home = _home(tmp_path, f'Host hz\n  HostName 127.0.0.1\n  IdentityFile "{key_path}"\n')
     key.write_private_key(str(key_path))
     monkeypatch.setattr(ssh_config, "home_dir", lambda: home)
     monkeypatch.setattr(ssh, "this_pc_keys", lambda: [])

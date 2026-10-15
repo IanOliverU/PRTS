@@ -1931,3 +1931,12 @@ inbound port, reverse proxy, or paid provider is activated by pairing.
 The protocol, auth-boundary, persistence, and frontend tests run on Windows and
 use portable Python/HTTP paths. Actual macOS/Linux keychains and external
 HTTPS deployments have not been exercised. See [server pairing](server-pairing.md).
+
+## CLI argument decoding
+
+Windows CLI tools decode quoted arguments with the native CommandLineToArgvW
+API before launching a process without a shell. Spaces, escaped quotes, empty
+arguments, and trailing backslashes retain their argument boundaries. POSIX
+continues to use shlex parsing. The configured executable guard still applies.
+Real subprocess checks and Windows argument round-trip checks passed locally;
+POSIX execution is covered by the CI CLI suite, not claimed verified locally.
