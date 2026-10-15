@@ -106,9 +106,10 @@ _CODEX: Final[tuple[PermissionMode, ...]] = (
     ),
     PermissionMode(
         "auto",
-        "Auto",
-        "Edits and commands inside the working folder run on their own; "
-        "anything outside it or on the network is blocked "
+        "Auto (sandboxed)",
+        "Edits and commands inside the working folder run in a sandbox. "
+        "Outside-folder or network operations may need approval; "
+        "in the chat the CLI cannot ask back, so they are declined and reported "
         "(`--sandbox workspace-write`).",
     ),
     PermissionMode(

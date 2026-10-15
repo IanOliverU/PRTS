@@ -152,9 +152,15 @@ describe("PaneChangesDialog", () => {
     await waitFor(() => expect(paths()).toEqual(["src/app.ts", "src/other.ts", "notes.md"]));
   });
 
-  it("says so when the agent has nothing uncommitted", async () => {
+  it("offers explicit whole-folder review when no changes are attributed to the agent", async () => {
     render(<PaneChangesDialog open onOpenChange={() => {}} workspaceId="w1" pane="T9" />);
-    expect(await screen.findByTestId("pane-changes-empty")).toBeTruthy();
+    const empty = await screen.findByTestId("pane-changes-empty");
+    expect(empty.textContent).toContain("No file changes found in this agent view.");
+    expect(empty.textContent).toContain("also includes work by others");
+    expect(urls.some((url) => url.includes("/w1/changes"))).toBe(false);
+    fireEvent.click(within(empty).getByRole("button", { name: "Whole folder" }));
+    await waitFor(() => expect(paths()).toEqual(["src/app.ts", "src/other.ts", "notes.md"]));
+    expect(screen.getByTestId("pane-changes-scope-folder").getAttribute("aria-checked")).toBe("true");
   });
 
   it("shows committed work and diffs it against the base the list answered", async () => {

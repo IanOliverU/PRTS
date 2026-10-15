@@ -320,6 +320,15 @@ export function PaneChangesDialog({
               <p className="max-w-md text-xs text-muted-foreground">
                 {t(scope === "pane" || folder ? "pane_review.empty_pane_hint" : "pane_review.empty_hint")}
               </p>
+              {scope === "pane" && !folder && (
+                <button
+                  type="button"
+                  onClick={() => setScope("folder")}
+                  className="mt-3 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {t("pane_review.scope_folder")}
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex min-h-0 flex-1">
