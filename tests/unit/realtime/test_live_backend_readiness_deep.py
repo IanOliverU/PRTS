@@ -16,6 +16,14 @@ from jarvis.plugins.realtime._live_transport import startup_http_trace
 
 @pytest.fixture
 def voice(monkeypatch, tmp_path):
+    from tests.fakes.fake_subscription_live_wire import FakeSubscriptionLiveWire
+
+    # These tests bound handoff ownership and cancellation, not filesystem
+    # initialization or the process-wide upstream connection rate limit.
+    ledger = module.LiveLedger(":memory:")
+    wire = FakeSubscriptionLiveWire()
+    monkeypatch.setattr(module, "LiveLedger", lambda _path: ledger)
+    monkeypatch.setattr("jarvis.live.recovery.connection_permit", wire.permit)
     messages = []
 
     async def send(message):
@@ -53,23 +61,41 @@ def voice(monkeypatch, tmp_path):
     monkeypatch.setattr(module, "_identity", lambda cfg: "")
     monkeypatch.setattr(module.LiveTools, "declarations", lambda self, **kw: [])
     monkeypatch.setattr(module.LiveVoiceSession, "_adopt_desktop_session", lambda self: None)
-    config = SimpleNamespace(brain=SimpleNamespace(reply_language="en"),
-                             live=LiveConfig(configured=True, backend_model="test"))
-    session = module.LiveVoiceSession(session_id="deep-startup", send_binary=send,
-                                     send_json=send, providers=[provider], config=config)
-    return session, provider, connection, messages
+    config = SimpleNamespace(
+        brain=SimpleNamespace(reply_language="en"),
+        live=LiveConfig(configured=True, backend_model="test"),
+    )
+    session = module.LiveVoiceSession(
+        session_id="deep-startup",
+        send_binary=send,
+        send_json=send,
+        providers=[provider],
+        config=config,
+    )
+    try:
+        yield session, provider, connection, messages
+    finally:
+        ledger.close()
 
 
 def start(session):
-    return asyncio.create_task(session.handle_control({
-        "type": "audio_start", "sample_rate": 48000, "webrtc_offer_sdp": "offer",
-    }))
+    return asyncio.create_task(
+        session.handle_control(
+            {
+                "type": "audio_start",
+                "sample_rate": 48000,
+                "webrtc_offer_sdp": "offer",
+            }
+        )
+    )
 
 
 async def test_native_handoff_overlaps_provider_but_prefix_precedes_audio_ready(voice, monkeypatch):
     session, provider, connection, messages = voice
     handoff_started, release_handoff, provider_finished = (
-        asyncio.Event(), asyncio.Event(), asyncio.Event()
+        asyncio.Event(),
+        asyncio.Event(),
+        asyncio.Event(),
     )
 
     async def handoff(message):
@@ -106,7 +132,9 @@ async def test_native_handoff_overlaps_provider_but_prefix_precedes_audio_ready(
 
 @pytest.mark.parametrize("cancel_start", [False, True])
 async def test_failed_handoff_owns_provider_that_returns_during_cancellation(
-    voice, monkeypatch, cancel_start,
+    voice,
+    monkeypatch,
+    cancel_start,
 ):
     session, provider, connection, messages = voice
     opening, handoff_waiting = asyncio.Event(), asyncio.Event()
@@ -137,8 +165,10 @@ async def test_failed_handoff_owns_provider_that_returns_during_cancellation(
         await asyncio.wait_for(task, 2)
     assert connection.closed == 1 and connection.close_requested == 1
     assert not any(item["type"] == "audio_ready" for item in messages)
-    assert not any(task.get_name() in {"live-input-handoff", "live-provider-open"}
-                   for task in asyncio.all_tasks())
+    assert not any(
+        task.get_name() in {"live-input-handoff", "live-provider-open"}
+        for task in asyncio.all_tasks()
+    )
 
 
 async def test_failed_provider_cancels_pending_native_handoff(voice, monkeypatch):
@@ -165,7 +195,9 @@ async def test_failed_provider_cancels_pending_native_handoff(voice, monkeypatch
 
 @pytest.mark.parametrize("late_allocation", [False, True])
 async def test_hangup_alone_closes_allocation_while_handoff_never_finishes(
-    voice, monkeypatch, late_allocation,
+    voice,
+    monkeypatch,
+    late_allocation,
 ):
     session, provider, connection, messages = voice
     opening, handoff_cancelled = asyncio.Event(), asyncio.Event()
@@ -198,8 +230,10 @@ async def test_hangup_alone_closes_allocation_while_handoff_never_finishes(
     await session.end()  # Repeated end() must not close the allocation twice.
     assert connection.closed == 1 and connection.close_requested == 1
     assert session._opening_task is None
-    assert not any(task.get_name() in {"live-startup", "live-input-handoff", "live-provider-open"}
-                   for task in asyncio.all_tasks())
+    assert not any(
+        task.get_name() in {"live-startup", "live-input-handoff", "live-provider-open"}
+        for task in asyncio.all_tasks()
+    )
     assert not any(item["type"] == "audio_ready" for item in messages)
 
 
@@ -210,12 +244,14 @@ async def test_output_signal_timing_ignores_silent_provider_packets(voice):
     session._connection = connection
     session._startup_timing = StartupTimings(session.session_id)
     for pcm in (b"", b"\0\0" * 240):
-        await session._event({"type": "session.output_audio.delta",
-                              "delta": base64.b64encode(pcm).decode()})
+        await session._event(
+            {"type": "session.output_audio.delta", "delta": base64.b64encode(pcm).decode()}
+        )
     assert "first_output_audio_received" in session._startup_timing.marks
     assert "first_output_signal_received" not in session._startup_timing.marks
-    await session._event({"type": "session.output_audio.delta",
-                          "delta": base64.b64encode(b"\1\0" * 240).decode()})
+    await session._event(
+        {"type": "session.output_audio.delta", "delta": base64.b64encode(b"\1\0" * 240).decode()}
+    )
     assert "first_output_signal_received" in session._startup_timing.marks
     assert messages[-1] == b"\1\0" * 240
 
@@ -260,7 +296,10 @@ async def test_surface_cancel_during_hangup_cannot_interrupt_remote_cleanup(voic
 
 @pytest.mark.parametrize("stalled_operation", ["send", "close"])
 async def test_startup_remote_cleanup_has_a_deadline(
-    voice, monkeypatch, caplog, stalled_operation,
+    voice,
+    monkeypatch,
+    caplog,
+    stalled_operation,
 ):
     session, provider, connection, messages = voice
     opened = asyncio.Event()
@@ -321,8 +360,12 @@ async def test_http_trace_ignores_all_payloads_and_unknown_events():
     await trace("http11.send_request_body.complete", metadata)
     await trace("http11.receive_response_headers.complete", metadata)
     await trace("unknown.private.event", metadata)
-    assert phases == ["http_tcp_connected", "http_tls_connected",
-                      "http_request_sent", "http_response_headers"]
+    assert phases == [
+        "http_tcp_connected",
+        "http_tls_connected",
+        "http_request_sent",
+        "http_response_headers",
+    ]
 
 
 async def test_subscription_allocation_installs_content_free_http_trace():
@@ -337,3 +380,23 @@ async def test_subscription_allocation_installs_content_free_http_trace():
     await trace("http2.send_request_body.complete", {"request": "private"})
     assert phases[-1] == "http_request_sent"
     await connection.close()
+
+
+async def test_handoff_fixture_is_independent_of_connection_backlog(voice, monkeypatch):
+    import time
+
+    from jarvis.live import recovery
+
+    session, provider, connection, messages = voice
+    monkeypatch.setattr(recovery, "_next_connection", time.monotonic() + 60)
+
+    async def handoff(message):
+        return None
+
+    monkeypatch.setattr(session, "_take_startup_input", handoff)
+    try:
+        await asyncio.wait_for(start(session), 2)
+        assert session._connection is connection
+        assert any(item["type"] == "audio_ready" for item in messages)
+    finally:
+        await session.end()
