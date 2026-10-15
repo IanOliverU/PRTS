@@ -9804,5 +9804,29 @@
       "objections_one": "{count} objection",
       "objections_other": "{count} objections"
     }
+  },
+  "git_review": {
+    "title": "Review changes",
+    "refresh": "Refresh changes",
+    "scope": "Repository:",
+    "loading": "Reading changes…",
+    "staged": "Staged changes",
+    "unstaged": "Unstaged changes",
+    "empty": "No files.",
+    "conflicts": "Resolve conflicts in the editor, then stage each resolved file. Commits are blocked while conflicts remain.",
+    "truncated": "Only the first 500 changed files are shown. Use Git to narrow this set before committing.",
+    "stage": "Stage",
+    "unstage": "Unstage",
+    "stage_file": "Stage {path}",
+    "unstage_file": "Unstage {path}",
+    "review_staged": "Review staged {path}",
+    "review_unstaged": "Review unstaged {path}",
+    "status": "Git status",
+    "diff": "File diff",
+    "binary": "Binary file: no text preview.",
+    "no_text": "No text diff. The file may have only metadata changes.",
+    "diff_truncated": "This preview is truncated. Review the full diff with Git before committing.",
+    "commit_scope": "Commits staged changes across this repository. Unstaged edits stay on disk. Save editor buffers before staging.",
+    "commit": "Commit staged changes"
   }
 }

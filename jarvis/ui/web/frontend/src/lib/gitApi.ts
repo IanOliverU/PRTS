@@ -221,3 +221,33 @@ export const KEEP_CHECKOUT: GitPlan = { mode: "current", branch: "", base: "" };
 export function folderName(path: string): string {
   return path.split(/[\\/]/).filter(Boolean).at(-1) ?? path;
 }
+
+/** Repository-relative paths; index and worktree are separate Git status letters. */
+export interface GitStagingState {
+  root: string;
+  revision: string;
+  staged: number;
+  conflicted: number;
+  truncated: boolean;
+  files: GitChange[];
+}
+
+export async function fetchStaging(folder: string, signal?: AbortSignal): Promise<GitStagingState> {
+  const res = await fetch(`${BASE}/staging?${new URLSearchParams({ folder })}`, { signal });
+  if (!res.ok) throw await failure(res);
+  return res.json() as Promise<GitStagingState>;
+}
+
+export function stageGitFile(folder: string, path: string, unstage = false): Promise<GitStagingState> {
+  return post(`/staging/${unstage ? "unstage" : "stage"}`, { folder, path });
+}
+
+export function commitStaged(folder: string, message: string, revision: string): Promise<{ commit: string }> {
+  return post("/staging/commit", { folder, message, revision });
+}
+
+export async function fetchStagingDiff(folder: string, path: string, side: "staged" | "unstaged", signal?: AbortSignal) {
+  const res = await fetch(`${BASE}/staging/diff?${new URLSearchParams({ folder, path, side })}`, { signal });
+  if (!res.ok) throw await failure(res);
+  return res.json() as Promise<import("@/components/agentic/sidePanel/explorer/explorerApi").FileDiff>;
+}

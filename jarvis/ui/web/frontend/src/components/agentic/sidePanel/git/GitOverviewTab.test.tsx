@@ -165,7 +165,7 @@ const REPOS = {
     { name: "o/r", description: "", private: false, fork: false, url: "", pushed_at: "" },
   ],
 };
-const ACTION = /\/api\/agentic-ide\/git\/(fetch|pull|commit|switch|prepare|branch\/push|branch\/pull-request|branch\/update|branch\/delete)$/;
+const ACTION = /\/api\/agentic-ide\/git\/(fetch|pull|commit|staging\/commit|switch|prepare|branch\/push|branch\/pull-request|branch\/update|branch\/delete)$/;
 
 beforeEach(() => {
   answer = OVERVIEW;
@@ -185,6 +185,7 @@ beforeEach(() => {
       calls.push(url);
       const json = (body: unknown, code = 200) =>
         new Response(JSON.stringify(body), { status: code, headers: { "Content-Type": "application/json" } });
+      if (url.includes("/staging?")) return json({ root: "/code/app", revision: "a".repeat(64), staged: 1, conflicted: 0, truncated: false, files: [{ path: "app.ts", index: "M", worktree: " " }] });
       const action = ACTION.exec(url);
       if (action && init?.method === "POST") {
         posts.push({ path: action[1], body: JSON.parse(String(init.body)) });
@@ -260,11 +261,11 @@ describe("GitOverviewTab — the checkout at a glance", () => {
     expect(tree.textContent).toContain("2 modified · 1 new");
     expect(screen.getByTestId("git-next").dataset.step).toBe("commit");
     fireEvent.click(screen.getByTestId("git-next-action"));
-    expect(screen.getByTestId("git-commit-form").textContent).toContain("Commits all 3 changed files");
-    expect((screen.getByTestId("git-commit-submit") as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.change(screen.getByTestId("git-commit-message"), { target: { value: "feat: add the widget" } });
-    fireEvent.click(screen.getByTestId("git-commit-submit"));
-    await vi.waitFor(() => expect(posted("commit")).toEqual([{ folder: "/code/app", message: "feat: add the widget" }]));
+    await screen.findByText(/Unstaged edits stay on disk/);
+    expect((await screen.findByRole("button", { name: "Commit staged changes" }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(await screen.findByLabelText("Commit message"), { target: { value: "feat: add the widget" } });
+    fireEvent.click(screen.getByRole("button", { name: "Commit staged changes" }));
+    await vi.waitFor(() => expect(posted("staging/commit")).toEqual([{ folder: "/code/app", message: "feat: add the widget", revision: "a".repeat(64) }]));
     await vi.waitFor(() => expect(screen.queryByTestId("git-commit-form")).toBeNull());
   });
 
@@ -750,7 +751,7 @@ describe("GitOverviewTab — branches", () => {
     answer = withCheckout({ ahead: 0, files: 3, unstaged: 2, untracked: 1 }, { ahead: 0 });
     render(<GitOverviewTab />);
     fireEvent.click(await screen.findByTestId("git-next-action"));
-    fireEvent.change(screen.getByTestId("git-commit-message"), { target: { value: "meant for the first workspace" } });
+    fireEvent.change(await screen.findByLabelText("Commit message"), { target: { value: "meant for the first workspace" } });
     fireEvent.click(within(row("feature/draft")).getByTestId("git-branch-toggle"));
     fireEvent.click(within(row("feature/draft")).getByTestId("git-act-delete"));
     expect(await screen.findByTestId("git-confirm")).toBeTruthy();

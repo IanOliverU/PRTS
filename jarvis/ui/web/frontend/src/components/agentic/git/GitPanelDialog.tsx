@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
-  CloudDownload, ExternalLink, FolderGit2, GitCommitHorizontal, GitFork, GitMerge, GitPullRequest,
+  CloudDownload, ExternalLink, FolderGit2, GitFork, GitMerge, GitPullRequest,
   Loader2, RefreshCw, Sparkles, Trash2, Upload, X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { openExternalUrl } from "@/lib/openExternal";
 import {
-  GitApiError, commitAll, fetchRemotes, folderName, inspectGit, mergeBack, openPullRequest, prepareGit,
+  GitApiError, fetchRemotes, folderName, inspectGit, mergeBack, openPullRequest, prepareGit,
   pruneWorktrees, pushBranch, removeWorktree, type GitRepoInfo, type GitWorktree,
 } from "@/lib/gitApi";
+import { GitStagingPanel } from "./GitStagingPanel";
 import { GitStatusLine } from "./GitStatusLine";
-import { fill, translate, useT } from "@/i18n";
+import { fill, useT } from "@/i18n";
 
 interface Props {
   open: boolean;
@@ -23,13 +24,6 @@ interface Props {
   onOpenWorktree: (tree: GitWorktree) => void;
   /** Start the "New workspace" flow preset to a fresh worktree. */
   onNewWorktree: () => void;
-}
-
-/** Git letters → a short, readable tag for the change list. */
-function changeTag(index: string, worktree: string): string {
-  const letter = index === "?" ? "?" : index !== "." ? index : worktree;
-  const key = ({ M: "modified", A: "added", D: "deleted", R: "renamed", C: "copied", U: "conflict", "?": "new" } as Record<string, string>)[letter];
-  return key ? translate(`ide_git.tag_${key}`) : letter;
 }
 
 type Busy = "" | "refresh" | "commit" | "push" | "fetch" | "pr" | "merge" | "prune" | "init" | `remove:${string}`;
@@ -44,7 +38,6 @@ export function GitPanelDialog({ open, onOpenChange, folder, workspace, onOpenWo
   const [info, setInfo] = useState<GitRepoInfo | null>(null);
   const [busy, setBusy] = useState<Busy>("");
   const [notice, setNotice] = useState<{ tone: "ok" | "error"; text: string; url?: string } | null>(null);
-  const [message, setMessage] = useState("");
   const [draft, setDraft] = useState(false);
   const [removing, setRemoving] = useState<{ tree: GitWorktree; deleteBranch: boolean; dirty: string } | null>(null);
 
@@ -72,11 +65,6 @@ export function GitPanelDialog({ open, onOpenChange, folder, workspace, onOpenWo
     } finally { setBusy(""); }
   };
 
-  const commit = () => act("commit", async () => {
-    const { commit: sha } = await commitAll(folder, message.trim());
-    setMessage("");
-    return fill(t("ide_git.committed"), { sha });
-  });
   const push = () => act("push", async () => fill(t("ide_git.pushed_to"), { upstream: (await pushBranch(folder)).upstream }));
   const fetchAll = () => act("fetch", async () => { await fetchRemotes(folder); return t("ide_git.fetched"); });
   const pr = () => act("pr", async () => {
@@ -151,22 +139,7 @@ export function GitPanelDialog({ open, onOpenChange, folder, workspace, onOpenWo
               })()}
             </section>
 
-            <section aria-label={t("ide_git.changes")} className="space-y-2.5">
-              <h3 className="text-sm font-medium">{t("ide_git.changes")}</h3>
-              {info.changes.length === 0 ? <p className="text-xs text-muted-foreground">{t("ide_git.nothing_uncommitted_full")}</p>
-              : <ul className="max-h-40 space-y-0.5 overflow-y-auto rounded-lg border border-border bg-muted/30 p-2">
-                {info.changes.map((change) => <li key={`${change.path}-${change.index}${change.worktree}`} className="flex items-center gap-2 text-xs">
-                  <span className={cn("w-16 shrink-0 text-[10px] uppercase tracking-wide", change.index === "U" ? "text-destructive" : "text-muted-foreground")}>{changeTag(change.index, change.worktree)}</span>
-                  <span className="truncate font-mono" title={change.path}>{change.path}</span>
-                </li>)}
-              </ul>}
-              <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); void commit(); }}>
-                <input value={message} onChange={(event) => setMessage(event.target.value)} disabled={locked || !info.dirty} aria-label={t("ide_git.commit_message")}
-                  placeholder={info.dirty ? t("ide_git.commit_placeholder") : t("ide_git.no_changes")}
-                  className="h-9 min-w-0 flex-1 rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-ring focus:ring-1 focus:ring-ring/30 disabled:opacity-50" />
-                <button type="submit" disabled={locked || !info.dirty || !message.trim()} className={button}>{spin("commit", GitCommitHorizontal)}{t("ide_git.commit_all")}</button>
-              </form>
-            </section>
+            <GitStagingPanel key={folder} folder={folder} disabled={locked} onCommitted={() => void refresh()} />
 
             <section aria-label={t("ide_git.share")} className="space-y-2.5">
               <h3 className="text-sm font-medium">{t("ide_git.share")}</h3>

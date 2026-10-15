@@ -110,6 +110,9 @@ _Generated from the curated command tree by `scripts/ci/gen_cli_reference.py` �
 
 - `dodaios ide archive-terminal <name> --restore --workspace --dry-run` — Hide a coding session from the chat list, or restore it.
 - `dodaios ide close-terminals <names> --yes --dry-run` — Stop several coding agents and close their terminal panes.
+- `dodaios ide git-changes <folder> --dry-run` — Review staged and unstaged files and the current index revision.
+- `dodaios ide git-commit-staged <folder> --message --revision --yes --dry-run` — Commit only the reviewed staged changes; requires --yes.
+- `dodaios ide git-stage <folder> <path> --unstage --dry-run` — Stage one file, or unstage it without changing its working copy.
 - `dodaios ide move-terminal <name> <target_workspace> --workspace --beside --side --dry-run` — Move a terminal pane into another open workspace.
 - `dodaios ide rename-terminal <name> <new_name> --dry-run` — Rename a running terminal pane without restarting its agent.
 

@@ -9804,5 +9804,29 @@
       "objections_one": "{count} objeção",
       "objections_other": "{count} objeções"
     }
+  },
+  "git_review": {
+    "title": "Revisar alterações",
+    "refresh": "Atualizar alterações",
+    "scope": "Repositório:",
+    "loading": "Lendo alterações…",
+    "staged": "Alterações preparadas",
+    "unstaged": "Alterações não preparadas",
+    "empty": "Nenhum arquivo.",
+    "conflicts": "Resolva os conflitos no editor e prepare cada arquivo resolvido. Os commits ficam bloqueados enquanto houver conflitos.",
+    "truncated": "Apenas os primeiros 500 arquivos alterados são exibidos. Reduza este conjunto com o Git antes do commit.",
+    "stage": "Preparar",
+    "unstage": "Retirar",
+    "stage_file": "Preparar {path}",
+    "unstage_file": "Retirar {path}",
+    "review_staged": "Revisar alterações preparadas de {path}",
+    "review_unstaged": "Revisar alterações não preparadas de {path}",
+    "status": "Estado do Git",
+    "diff": "Diferenças do arquivo",
+    "binary": "Arquivo binário: sem prévia de texto.",
+    "no_text": "Sem diferenças de texto. Talvez apenas os metadados tenham mudado.",
+    "diff_truncated": "Esta prévia está truncada. Revise as diferenças completas com o Git antes do commit.",
+    "commit_scope": "Confirma as alterações preparadas deste repositório. As alterações não preparadas permanecem no disco. Salve o editor antes de preparar.",
+    "commit": "Confirmar alterações preparadas"
   }
 }
