@@ -115,3 +115,51 @@ def close_terminals(
     )
     if isinstance(result, dict) and result.get("ok") is False:
         raise typer.Exit(code=1)
+
+
+@app.command("git-changes")
+def git_changes(
+    folder: Annotated[str, typer.Argument(help="An open workspace or connected project folder.")],
+    dry_run: bool = options.dry_opt(),
+) -> None:
+    """Review staged and unstaged files and the current index revision."""
+    invoke.run("GET", "/api/agentic-ide/git/staging", params={"folder": folder}, dry_run=dry_run)
+
+
+@app.command("git-stage")
+def git_stage(
+    folder: Annotated[str, typer.Argument(help="An open workspace or connected project folder.")],
+    path: Annotated[str, typer.Argument(help="One repository-relative file path.")],
+    unstage: bool = typer.Option(False, "--unstage", help="Unstage while keeping working edits."),
+    dry_run: bool = options.dry_opt(),
+) -> None:
+    """Stage one file, or unstage it without changing its working copy."""
+    action = "unstage" if unstage else "stage"
+    invoke.run(
+        "POST",
+        f"/api/agentic-ide/git/staging/{action}",
+        body={"folder": folder, "path": path},
+        dry_run=dry_run,
+        dangerous=False,
+    )
+
+
+@app.command("git-commit-staged")
+def git_commit_staged(
+    folder: Annotated[str, typer.Argument(help="An open workspace or connected project folder.")],
+    message: Annotated[str, typer.Option("--message", "-m", help="Commit message.")],
+    revision: Annotated[
+        str, typer.Option("--revision", help="Index revision from ide git-changes.")
+    ],
+    yes: bool = options.yes_opt(),
+    dry_run: bool = options.dry_opt(),
+) -> None:
+    """Commit only the reviewed staged changes; requires --yes."""
+    invoke.run(
+        "POST",
+        "/api/agentic-ide/git/staging/commit",
+        body={"folder": folder, "message": message, "revision": revision},
+        dry_run=dry_run,
+        assume_yes=yes,
+        dangerous=True,
+    )

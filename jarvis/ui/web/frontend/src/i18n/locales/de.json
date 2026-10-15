@@ -9804,5 +9804,29 @@
       "objections_one": "{count} Einwand",
       "objections_other": "{count} Einwände"
     }
+  },
+  "git_review": {
+    "title": "Änderungen prüfen",
+    "refresh": "Änderungen aktualisieren",
+    "scope": "Repository:",
+    "loading": "Änderungen werden gelesen…",
+    "staged": "Vorgemerkte Änderungen",
+    "unstaged": "Nicht vorgemerkte Änderungen",
+    "empty": "Keine Dateien.",
+    "conflicts": "Konflikte im Editor lösen und jede gelöste Datei vormerken. Solange Konflikte bestehen, sind Commits gesperrt.",
+    "truncated": "Nur die ersten 500 geänderten Dateien werden angezeigt. Diese Auswahl vor dem Commit mit Git eingrenzen.",
+    "stage": "Vormerken",
+    "unstage": "Zurücknehmen",
+    "stage_file": "{path} vormerken",
+    "unstage_file": "Vormerkung für {path} zurücknehmen",
+    "review_staged": "Vorgemerkte Änderungen an {path} prüfen",
+    "review_unstaged": "Nicht vorgemerkte Änderungen an {path} prüfen",
+    "status": "Git-Status",
+    "diff": "Dateiunterschiede",
+    "binary": "Binärdatei: keine Textvorschau.",
+    "no_text": "Keine Textunterschiede. Möglicherweise wurden nur Dateimetadaten geändert.",
+    "diff_truncated": "Diese Vorschau ist gekürzt. Vor dem Commit den vollständigen Diff mit Git prüfen.",
+    "commit_scope": "Übernimmt die vorgemerkten Änderungen dieses Repositorys. Nicht vorgemerkte Änderungen bleiben auf dem Datenträger. Editorpuffer vor dem Vormerken speichern.",
+    "commit": "Vorgemerkte Änderungen committen"
   }
 }

@@ -9804,5 +9804,29 @@
       "objections_one": "{count} 条异议",
       "objections_other": "{count} 条异议"
     }
+  },
+  "git_review": {
+    "title": "审查更改",
+    "refresh": "刷新更改",
+    "scope": "仓库：",
+    "loading": "正在读取更改…",
+    "staged": "已暂存的更改",
+    "unstaged": "未暂存的更改",
+    "empty": "没有文件。",
+    "conflicts": "请在编辑器中解决冲突，然后暂存每个已解决的文件。仍有冲突时无法提交。",
+    "truncated": "仅显示前 500 个更改的文件。提交前请使用 Git 缩小此集合。",
+    "stage": "暂存",
+    "unstage": "取消暂存",
+    "stage_file": "暂存 {path}",
+    "unstage_file": "取消暂存 {path}",
+    "review_staged": "审查 {path} 的已暂存更改",
+    "review_unstaged": "审查 {path} 的未暂存更改",
+    "status": "Git 状态",
+    "diff": "文件差异",
+    "binary": "二进制文件：无法预览文本。",
+    "no_text": "没有文本差异。可能只更改了文件元数据。",
+    "diff_truncated": "此预览已截断。提交前请使用 Git 审查完整差异。",
+    "commit_scope": "提交此仓库中已暂存的更改。未暂存的编辑会保留在磁盘上。暂存前请保存编辑器内容。",
+    "commit": "提交已暂存的更改"
   }
 }

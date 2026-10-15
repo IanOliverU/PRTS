@@ -403,7 +403,7 @@ export function GitOverviewTab() {
           ) : (
             <>
               {!data.checkout && <OlderBackendNote />}
-              <StatusPanel key={workspace.id} overview={data} actions={actions} onOpenChanges={() => useIdeSidePanelStore.getState().openTab("changes")} />
+              <StatusPanel key={workspace.id} folder={workspace.path} onCommitted={refresh} overview={data} actions={actions} onOpenChanges={() => useIdeSidePanelStore.getState().openTab("changes")} />
               {github?.code === "not_connected" && <ConnectGitHubCard />}
               {github?.code === "needs_repo" && !pickedRepo && (
                 <ConnectRepositoryCard

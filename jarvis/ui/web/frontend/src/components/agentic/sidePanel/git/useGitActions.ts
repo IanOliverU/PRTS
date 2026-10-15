@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fill, useT } from "@/i18n";
 import {
-  commitAll,
   deleteBranch,
   fetchRemotes,
   GitApiError,
@@ -36,8 +35,6 @@ export interface GitActions {
   rebase: () => void;
   /** Push the current branch, or `branch` without checking it out. */
   push: (branch?: string) => void;
-  /** Stage everything and commit; resolves true when the commit was made. */
-  commit: (message: string) => Promise<boolean>;
   /** Start a new branch here, taking the uncommitted changes along; true when it exists. */
   createBranch: (name: string) => Promise<boolean>;
   switchTo: (branch: string) => void;
@@ -144,10 +141,6 @@ export function useGitActions(workspaceId: string, folder: string, branch: strin
       rebase,
       push: (target = "") => {
         void run(`push:${target}`, async () => fill(t("ide_side_panel.git.done.pushed"), { upstream: (await pushWorkspaceBranch(workspaceId, target)).upstream }));
-      },
-      commit: async (message) => {
-        const failure = await run("commit", async () => fill(t("ide_side_panel.git.done.committed"), { commit: (await commitAll(folder, message)).commit }));
-        return failure === null;
       },
       createBranch: async (name) => {
         const failure = await run(`branch:${name}`, async () => {

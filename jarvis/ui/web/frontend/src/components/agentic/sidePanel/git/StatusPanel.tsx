@@ -1,3 +1,4 @@
+import { GitStagingPanel } from "../../git/GitStagingPanel";
 import { useState } from "react";
 import { ArrowDown, ArrowUp, Check, CircleAlert, FileDiff, GitBranch, Loader2 } from "lucide-react";
 import { fill, useT } from "@/i18n";
@@ -146,10 +147,14 @@ function busyKey(step: NextStep): string {
  */
 export function StatusPanel({
   overview,
+  folder,
+  onCommitted,
   actions,
   onOpenChanges,
 }: {
   overview: RepoOverview;
+  folder: string;
+  onCommitted: () => void;
   actions: GitActions;
   onOpenChanges: () => void;
 }) {
@@ -160,7 +165,6 @@ export function StatusPanel({
   const view = describe(t, step, overview);
   const tree = workingTree(t, overview);
   const [composing, setComposing] = useState(false);
-  const [message, setMessage] = useState("");
   const [naming, setNaming] = useState(false);
   const [branchName, setBranchName] = useState("");
   const tracking = Boolean(checkout.upstream) && !row?.upstream_gone && !checkout.detached;
@@ -214,13 +218,6 @@ export function StatusPanel({
     if (await actions.createBranch(name)) {
       setBranchName("");
       setNaming(false);
-    }
-  };
-  const commit = async () => {
-    if (!message.trim()) return;
-    if (await actions.commit(message.trim())) {
-      setMessage("");
-      setComposing(false);
     }
   };
 
@@ -317,43 +314,8 @@ export function StatusPanel({
         </div>
       ) : composing ? (
         <div data-testid="git-commit-form" className="mt-2.5 space-y-1.5 rounded-lg border border-border/70 bg-secondary/40 p-2">
-          <textarea
-            data-testid="git-commit-message"
-            autoFocus
-            rows={2}
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) void commit();
-              if (event.key === "Escape") {
-                event.stopPropagation();
-                setComposing(false);
-              }
-            }}
-            placeholder={t("ide_side_panel.git.commit.placeholder")}
-            aria-label={t("ide_side_panel.git.commit.placeholder")}
-            className="w-full resize-none rounded-md border border-border/70 bg-background px-2 py-1.5 text-[12px] text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-          />
-          <p className="text-[10.5px] leading-snug text-muted-foreground">{plural(t, "ide_side_panel.git.commit.scope", checkout.files)}</p>
-          <div className="flex justify-end gap-1.5">
-            <button
-              type="button"
-              onClick={() => setComposing(false)}
-              className="h-7 rounded-md px-2.5 text-[11.5px] text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {t("ide_side_panel.git.confirm.cancel")}
-            </button>
-            <button
-              type="button"
-              data-testid="git-commit-submit"
-              disabled={!message.trim() || actions.busy !== ""}
-              onClick={() => void commit()}
-              className="inline-flex h-7 items-center gap-1.5 rounded-md bg-primary px-2.5 text-[11.5px] font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
-            >
-              {actions.busy === "commit" && <Loader2 className="h-3 w-3 animate-spin motion-reduce:animate-none" aria-hidden />}
-              {t("ide_side_panel.git.commit.submit")}
-            </button>
-          </div>
+          <GitStagingPanel key={folder} folder={folder} disabled={actions.busy !== ""} onCommitted={() => { setComposing(false); onCommitted(); }} />
+          <button type="button" onClick={() => setComposing(false)} className="rounded px-2 py-1 text-xs hover:bg-muted">{t("common.cancel")}</button>
         </div>
       ) : (
         <div

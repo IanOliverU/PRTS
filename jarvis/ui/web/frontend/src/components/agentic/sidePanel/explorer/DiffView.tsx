@@ -34,7 +34,7 @@ export function DiffView({ hunks }: { hunks: DiffHunk[] }) {
                 className={cn(
                   "w-4 shrink-0 select-none text-center",
                   line.kind === "add" && "text-success",
-                  line.kind === "del" && "text-destructive",
+                  line.kind === "del" && "text-destructive dark:text-destructive-foreground",
                 )}
               >
                 {line.kind === "add" ? "+" : line.kind === "del" ? "−" : ""}
@@ -43,7 +43,7 @@ export function DiffView({ hunks }: { hunks: DiffHunk[] }) {
                 className={cn(
                   "whitespace-pre pr-4",
                   line.kind === "add" && "text-success",
-                  line.kind === "del" && "text-destructive",
+                  line.kind === "del" && "text-destructive dark:text-destructive-foreground",
                   line.kind === "ctx" && "text-foreground/80",
                 )}
               >

@@ -5,7 +5,7 @@ import { GitCheckoutPicker } from "./GitCheckoutPicker";
 import { GitApiError, KEEP_CHECKOUT, type GitRepoInfo } from "@/lib/gitApi";
 
 const git = vi.hoisted(() => ({
-  inspectGit: vi.fn(), commitAll: vi.fn(), pushBranch: vi.fn(), fetchRemotes: vi.fn(), openPullRequest: vi.fn(),
+  inspectGit: vi.fn(), commitAll: vi.fn(), fetchStaging: vi.fn(), stageGitFile: vi.fn(), commitStaged: vi.fn(), pushBranch: vi.fn(), fetchRemotes: vi.fn(), openPullRequest: vi.fn(),
   mergeBack: vi.fn(), removeWorktree: vi.fn(), pruneWorktrees: vi.fn(), prepareGit: vi.fn(),
 }));
 vi.mock("@/lib/gitApi", async (importOriginal) => ({ ...(await importOriginal<object>()), ...git }));
@@ -28,7 +28,7 @@ const info: GitRepoInfo = {
   suggested_branch: "agent/brave-river-0001", worktree_dir: "/code/app/.worktrees/agent-brave-river-0001",
 };
 
-beforeEach(() => { vi.clearAllMocks(); git.inspectGit.mockResolvedValue(info); });
+beforeEach(() => { vi.clearAllMocks(); git.inspectGit.mockResolvedValue(info); git.fetchStaging.mockResolvedValue({ root: "/code/app", revision: "a".repeat(64), staged: 1, conflicted: 0, truncated: false, files: info.changes.map((f) => ({ ...f, index: f.index === "." ? "M" : f.index, worktree: f.worktree === "M" ? " " : f.worktree })) }); });
 afterEach(cleanup);
 
 function panel(overrides: Partial<Parameters<typeof GitPanelDialog>[0]> = {}) {
@@ -45,12 +45,12 @@ describe("GitPanelDialog", () => {
     expect(screen.getByText("+12")).toBeTruthy();
   });
 
-  it("commits everything with the typed message", async () => {
-    git.commitAll.mockResolvedValue({ commit: "1234abc" });
+  it("commits staged changes with the typed message", async () => {
+    git.commitStaged.mockResolvedValue({ commit: "1234abc" });
     panel();
     fireEvent.change(await screen.findByLabelText("Commit message"), { target: { value: "feat: login" } });
-    fireEvent.click(screen.getByRole("button", { name: "Commit all" }));
-    await waitFor(() => expect(git.commitAll).toHaveBeenCalledWith("/code/app", "feat: login"));
+    fireEvent.click(screen.getByRole("button", { name: "Commit staged changes" }));
+    await waitFor(() => expect(git.commitStaged).toHaveBeenCalledWith("/code/app", "feat: login", "a".repeat(64)));
     expect(await screen.findByText("Committed 1234abc.")).toBeTruthy();
   });
 

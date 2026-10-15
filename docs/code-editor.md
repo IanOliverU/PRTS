@@ -105,3 +105,29 @@ own app.
 - Frontend: `components/agentic/editor/`, `store/codeEditor.ts`, the Folder
   and Changes tabs in `components/agentic/sidePanel/explorer/ExplorerPanel.tsx`
   and the Search tab in `components/agentic/sidePanel/search/`.
+
+
+### Review and commit selected files
+
+The Git panel and the Git tab's commit form show **Staged changes** and
+**Unstaged changes** separately. Click a file to review that side's diff. A file
+with staged content and later edits appears in both lists. **Stage** adds only
+that file; **Unstage** keeps its working edits on disk. Save editor buffers
+before staging. Paths and commits cover the repository shown above the lists,
+including staged files outside a workspace opened in a subfolder.
+
+**Commit staged changes** commits the index without adding other working files.
+Before committing, PRTS compares the staged set and HEAD with the revision
+last read. If they differ, refresh and review again. Conflicted files remain visible; resolve them in the
+editor and stage the resolved versions. Commits stay blocked while conflicts
+remain. Binary and truncated diffs are identified explicitly. Lists larger than
+500 changed files cannot be committed from this panel. Selection is per file;
+individual diff hunks are not staged by this interface.
+
+The CLI exposes the same flow as `ide git-changes <folder>`,
+`ide git-stage <folder> <path>` (or `--unstage`), and
+`ide git-commit-staged <folder> --message <text> --revision <revision> --yes`.
+The revision comes from `ide git-changes`. All routes are also available under
+`api agentic-ide-git`. The legacy `/git/commit` API retains its explicit
+stage-everything behavior for existing callers; the review interfaces use
+`/git/staging/commit`.

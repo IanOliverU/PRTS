@@ -13,7 +13,12 @@ Endpoints (all under ``/api/agentic-ide/git``)::
     GET  /github/repos        The person's GitHub repositories, for the one-time pick
     PUT  /github/binding      Remember which GitHub repository a workspace folder is
     POST /prepare             Git half of opening a workspace or an agent
-    POST /commit              Stage everything and commit
+    GET  /staging             Staged and unstaged repository files
+    GET  /staging/diff        One file against HEAD or the index
+    POST /staging/stage       Stage one literal file path
+    POST /staging/unstage     Unstage one file, preserving working edits
+    POST /staging/commit      Commit the reviewed index only
+    POST /commit              Stage everything and commit (legacy callers)
     POST /push                Push the current branch (sets upstream once)
     POST /fetch               Fetch every remote
     POST /pull-request        Open a PR with the GitHub CLI
@@ -41,6 +46,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from pathlib import Path
+from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field
@@ -50,6 +56,7 @@ from jarvis.agentic_ide import (
     git_changes,
     git_ops,
     git_overview,
+    git_staging,
     github_link,
     github_pulls,
     github_status,
@@ -406,6 +413,59 @@ def prepare_checkout(req: PrepareRequest) -> dict:
         raise _fail(exc) from exc
 
 
+class StageFileRequest(FolderRequest):
+    path: str = Field(..., min_length=1, max_length=4096)
+
+
+class CommitStagedRequest(CommitRequest):
+    revision: str = Field(..., min_length=64, max_length=64)
+
+
+@router.get("/staging", summary="Review staged and unstaged repository files")
+def get_staging(folder: str = Query(..., min_length=1)) -> git_staging.StagingState:
+    try:
+        return git_staging.inspect_staging(_thread_folder(folder))
+    except GitError as exc:
+        raise _fail(exc) from exc
+
+
+@router.get("/staging/diff", summary="Read one file's staged or unstaged diff")
+def get_staging_diff(
+    folder: str = Query(..., min_length=1),
+    path: str = Query(..., min_length=1),
+    side: Literal["staged", "unstaged"] = "unstaged",
+) -> git_changes.FileDiff:
+    try:
+        return git_staging.staging_diff(_thread_folder(folder), path, side)
+    except GitError as exc:
+        raise _fail(exc) from exc
+
+
+@router.post("/staging/stage", summary="Stage one file without touching other files")
+def stage_file(req: StageFileRequest) -> git_staging.StagingState:
+    try:
+        return git_staging.stage_file(_thread_folder(req.folder), req.path)
+    except GitError as exc:
+        raise _fail(exc) from exc
+
+
+@router.post("/staging/unstage", summary="Unstage one file while keeping working edits")
+def unstage_file(req: StageFileRequest) -> git_staging.StagingState:
+    try:
+        return git_staging.stage_file(_thread_folder(req.folder), req.path, unstage=True)
+    except GitError as exc:
+        raise _fail(exc) from exc
+
+
+@router.post("/staging/commit", summary="Commit the reviewed staged changes only")
+def commit_staged(req: CommitStagedRequest) -> dict:
+    try:
+        sha = git_staging.commit_staged(_thread_folder(req.folder), req.message, req.revision)
+    except GitError as exc:
+        raise _fail(exc) from exc
+    return {"ok": True, "commit": sha}
+
+
 @router.post("/commit", summary="Stage every change and commit it")
 def commit_changes(req: CommitRequest) -> dict:
     try:
@@ -523,9 +583,7 @@ def delete_branch(req: DeleteBranchRequest) -> dict:
 
 def _create_pull_request(folder: Path, req: BranchPullRequestRequest) -> str:
     """Push the branch if needed and open its pull request. Returns the URL."""
-    return github_pulls.open_for_branch(
-        folder, branch=req.branch, title=req.title, draft=req.draft
-    )
+    return github_pulls.open_for_branch(folder, branch=req.branch, title=req.title, draft=req.draft)
 
 
 @router.post("/branch/pull-request", summary="Open a pull request for a workspace's branch")

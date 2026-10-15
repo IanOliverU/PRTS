@@ -33,7 +33,7 @@ COMMAND_INDEX: dict[str, tuple[str, ...]] = {
     "skills": (
         "list",
         "show <name>",
-        'create "<what it should do>" [--name --trigger --schedule --language]',
+        'create "<description>"',
         'draft "<what it should do>"',
         "commit --draft <json>",
         "enable <name>",
@@ -124,7 +124,15 @@ COMMAND_INDEX: dict[str, tuple[str, ...]] = {
         'message <name> "<text>"',
     ),
     "frontier": ("pending", "ack"),
-    "ide": ("rename-terminal", "close-terminals", "archive-terminal", "move-terminal"),
+    "ide": (
+        "git-changes",
+        "git-stage",
+        "git-commit-staged",
+        "rename-terminal",
+        "close-terminals",
+        "archive-terminal",
+        "move-terminal",
+    ),
     "local-models": (
         "assistant setup",
         "assistant diagnose",

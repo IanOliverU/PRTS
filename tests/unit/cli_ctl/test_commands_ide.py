@@ -103,3 +103,28 @@ def test_move_terminal_can_name_its_place(capture_api) -> None:
         "anchor": "T1",
         "side": "below",
     }
+
+
+def test_git_changes_exposes_the_reviewed_revision(capture_api) -> None:
+    result = runner.invoke(app, ["ide", "git-changes", "/code/app"])
+    assert result.exit_code == 0
+    assert capture_api["calls"][-1]["path"] == "/api/agentic-ide/git/staging"
+
+
+def test_git_stage_and_unstage_name_only_one_file(capture_api) -> None:
+    for extra, action in (([], "stage"), (["--unstage"], "unstage")):
+        result = runner.invoke(app, ["ide", "git-stage", "/code/app", "new file.ts", *extra])
+        assert result.exit_code == 0
+        call = capture_api["calls"][-1]
+        assert call["path"] == f"/api/agentic-ide/git/staging/{action}"
+        assert call["body"] == {"folder": "/code/app", "path": "new file.ts"}
+
+
+def test_git_commit_staged_requires_yes_and_preserves_the_revision(capture_api) -> None:
+    args = ["ide", "git-commit-staged", "/code/app", "-m", "Fix", "--revision", "a" * 64]
+    assert runner.invoke(app, args).exit_code == 1
+    assert capture_api["calls"] == []
+    assert runner.invoke(app, [*args, "--yes"]).exit_code == 0
+    call = capture_api["calls"][-1]
+    assert call["path"] == "/api/agentic-ide/git/staging/commit"
+    assert call["body"] == {"folder": "/code/app", "message": "Fix", "revision": "a" * 64}
