@@ -18,6 +18,12 @@ from jarvis.core.paths import user_data_dir
 from jarvis.core.runtime_refs import get_supervisor_tool_gateway
 from jarvis.core.tool_budget import VOICE_TOOL_BUDGET_S
 from jarvis.cu.direct import COMPUTER_CONTROL_RULES
+from jarvis.live.coordination import (
+    ON_SCREEN_RULE,
+    TEAM_TALK_RULE,
+    WORK_STATUS_RULE,
+    conversation_rules,
+)
 from jarvis.live.product import PRODUCT_BRIEF
 from jarvis.live.runtime import claim, register, unregister
 from jarvis.live.session import LiveVoiceSession, _identity
@@ -48,13 +54,18 @@ _SESSION_TOOLS = frozenset({
 # or ``[voice].realtime_tool_declaration_budget_tokens``, the smaller wins), at
 # most this many catalog tools are declared directly; every other tool stays
 # reachable through discover_tools/call_tool. A small local model pays a full
-# LLM round per discovery step, so the frequent tools come first.
+# LLM round per discovery step, so the frequent tools come first. The tools the
+# conversation rules name by name (show_on_screen, ask_agent) stay direct: a
+# small model that does not see a named tool declares it missing instead of
+# discovering it.
 _DIRECT_TOOL_LIMIT = 12
 _DIRECT_TOOL_PREFERENCE = (
     "workspace-orchestrate",
     "find-app-action",
     "run-app-action",
     "search_web",
+    "show_on_screen",
+    "ask_agent",
     "open_app",
     "take_appshot",
     "screen_snapshot",
@@ -152,6 +163,7 @@ class NativeLiveVoiceSession(LiveVoiceSession):
                     + PRODUCT_BRIEF
                     + " "
                     + language_rule
+                    + conversation_rules("your tools")
                     + "Use your tools directly "
                     "for actions, private information and current facts. Use discover_tools and "
                     "call_tool for any tool not declared directly. "
@@ -175,6 +187,9 @@ class NativeLiveVoiceSession(LiveVoiceSession):
                     "Explicit references override the visible workspace; ask on ambiguity. "
                     "Do not switch the UI to address another workspace. Reuse request_id on "
                     "retries and never replay uncertain delivery. "
+                    + WORK_STATUS_RULE
+                    + ON_SCREEN_RULE
+                    + TEAM_TALK_RULE
                     + AGENT_BRIEF_RULE
                 ),
                 history=tuple(

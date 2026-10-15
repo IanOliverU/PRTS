@@ -144,7 +144,7 @@ export async function fetchVoiceChat(): Promise<VoiceChatBinding> {
  * (``jarvis/agent_chat/surface_kits.py``): the front page, the coding
  * agents, and the Local models section's setup assistant.
  */
-export type AgentChatSurface = "jarvis" | "agent" | "local-models" | "society";
+export type AgentChatSurface = "jarvis" | "agent" | "local-models" | "society" | "side";
 
 export interface AgentChatSession {
   session_id: string;
@@ -170,6 +170,8 @@ export interface AgentChatSession {
    * the stored title is still the first message's; absent otherwise.
    */
   cli_title?: string;
+  /** The team thread this session is a member of ("" or absent: an ordinary thread). */
+  team_id?: string;
 }
 
 export const INTERNAL_DELIVERY_STATUSES = ["queued", "delivered", "failed"] as const;

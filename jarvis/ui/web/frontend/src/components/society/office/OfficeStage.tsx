@@ -23,7 +23,7 @@ import { isCreateCancelled } from "../create/createAgentStore";
 import { OfficeScene } from "./OfficeScene";
 import { allDesks, buildOfficeLayout, countStates, seatedCount, type OfficeTeamInput } from "./officeLayout";
 import { buildHallLayout } from "./hallFloorLayout";
-import { useSocietyChatGroups } from "@/lib/societyChatGroups";
+import { chatGroupsKnown, useSocietyChatGroups } from "@/lib/societyChatGroups";
 import { buildNavGrid } from "./officeNav";
 import { SpotBook } from "./officeBehavior";
 import { CAMERA_FOV } from "./officeCamera";
@@ -206,8 +206,7 @@ export function OfficeStage({ onOpenLedger, onSelectAgent, onCreateAgent, onOpen
   // The agents floor is built from the teams (society chat groups): every team has its studio. The roster waits
   // for the first answer about them, so nobody is seated in the pool and then sent across the floor.
   const chatGroups = useSocietyChatGroups(awake && floor === "agents");
-  // A first failed read counts as an answer too: the floor opens without teams and rebuilds if a retry brings them.
-  const teamsKnown = chatGroups.isSuccess || chatGroups.isError || chatGroups.failureCount > 0;
+  const teamsKnown = chatGroupsKnown(chatGroups);
   const teams = useMemo<OfficeTeamInput[]>(() => (chatGroups.data ?? []).map((group) => ({
     id: group.group_id, name: group.name, members: group.members, createdMs: group.created_ms, leadId: group.lead_agent_id ?? null,
   })), [chatGroups.data]);
@@ -606,13 +605,13 @@ export function OfficeStage({ onOpenLedger, onSelectAgent, onCreateAgent, onOpen
         {webgl ? (
           <RenderBoundary key={generation} fallbackText={t("society.office.no_graphics")}>
             <Suspense fallback={<div className="office-fallback" role="status">{t("society.office.loading")}</div>}>
-              <Canvas shadows="percentage" camera={{ fov: CAMERA_FOV, near: 0.2, far: 800, position: [30, 30, 30] }} dpr={dpr}
+              <Canvas shadows="percentage" camera={{ fov: CAMERA_FOV, near: 0.2, far: 1400, position: [30, 30, 30] }} dpr={dpr}
                 gl={{ antialias: true, alpha: true, preserveDrawingBuffer: import.meta.env.DEV }}
                 frameloop={!awake ? "never" : compact ? "demand" : "always"}
                 onPointerMissed={() => select(null)}>
                 <OfficeFrameDriver enabled={awake && compact} />
                 <OfficeScene floor={floor} occupants={occupants} ready={ready} layout={layout} grid={grid} walkers={walkers} agents={agents} newcomers={newcomers}
-                  awake={awake} reduced={reduced} overview={overview} player={{ look: playerToyLook, name: playerName }}
+                  awake={awake} reduced={reduced} compact={compact} overview={overview} player={{ look: playerToyLook, name: playerName }}
                   selection={selection} nearby={nearby} chats={chats} onOpenScreen={openScreen}
                   elevatorCall={{ lit: picking || !!ride, picking, onPress: pressCall }} />
               </Canvas>

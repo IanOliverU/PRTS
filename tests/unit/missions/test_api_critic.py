@@ -3,6 +3,7 @@ any keyed API brain provider, so a mission's review no longer requires the absen
 `claude` CLI binary. Covers the provider-agnostic critic resolver + the text→verdict
 parser used by the in-process path.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -53,11 +54,16 @@ def test_parse_verdict_recovers_from_surrounding_prose():
 
 
 def test_parse_verdict_returns_none_on_garbage():
-    assert _parse_verdict_from_text("no json here at all", iteration=0, adversarial_reframe=False) is None
+    assert (
+        _parse_verdict_from_text("no json here at all", iteration=0, adversarial_reframe=False)
+        is None
+    )
 
 
 def test_api_critic_provider_prefers_keyed_primary(monkeypatch):
-    monkeypatch.setattr(cfg_mod, "get_provider_secret", lambda p: "k" if p == "openrouter" else None)
+    monkeypatch.setattr(
+        cfg_mod, "get_provider_secret", lambda p: "k" if p == "openrouter" else None
+    )
     prov, model = _resolve_api_critic_provider("openrouter", "anthropic/claude-opus-4.8")
     assert prov == "openrouter" and model == "anthropic/claude-opus-4.8"
 
@@ -161,6 +167,10 @@ async def test_critic_walks_to_next_api_family_after_invalid_verdict(
         "jarvis.missions.init._api_key_family_viable",
         lambda provider: provider in {"openrouter", "gemini"},
     )
+    # This test exercises API fallback, independent of installed subscriptions.
+    monkeypatch.setattr(
+        "jarvis.missions.critic.runner._critic_subscription_only", lambda provider: False
+    )
     attempted: list[str] = []
 
     async def _fake_api_critic(self, **kwargs):  # noqa: ANN001, ANN202
@@ -169,10 +179,7 @@ async def test_critic_walks_to_next_api_family_after_invalid_verdict(
             return None
         return CriticVerdict(
             verdict="approve",
-            axes={
-                axis: CriticAxis(status="pass", evidence=["verified"])
-                for axis in REQUIRED_AXES
-            },
+            axes={axis: CriticAxis(status="pass", evidence=["verified"]) for axis in REQUIRED_AXES},
             issues=[],
             correction_instruction="",
             summary="The mission output is verified.",

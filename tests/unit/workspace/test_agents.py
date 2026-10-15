@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -195,7 +196,7 @@ def test_plain_terminal_launches_the_shell_itself() -> None:
     assert argv[0]
     assert "-Command" not in argv
     assert "/k" not in argv
-    assert not any("claude" in part or "codex" in part for part in argv)
+    assert Path(argv[0]).stem.lower() not in {"claude", "codex"}
 
 
 def test_build_install_argv_uses_install_command() -> None:

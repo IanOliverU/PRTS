@@ -50,6 +50,30 @@ def _noninteractive_env_for(binary_name: str) -> dict[str, str]:
     return dict(_NONINTERACTIVE_ENV.get(binary_name, {}))
 
 
+def _split_command(command: str) -> list[str]:
+    """Decode arguments using the host's quoting rules without a shell."""
+    if sys.platform != "win32":
+        return shlex.split(command)
+
+    import ctypes  # noqa: PLC0415 - Windows-only, lazy native import
+    from ctypes import wintypes  # noqa: PLC0415
+
+    shell32 = ctypes.WinDLL("shell32", use_last_error=True)
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    shell32.CommandLineToArgvW.argtypes = [wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
+    shell32.CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
+    kernel32.LocalFree.argtypes = [wintypes.HLOCAL]
+    kernel32.LocalFree.restype = wintypes.HLOCAL
+    count = ctypes.c_int()
+    arguments = shell32.CommandLineToArgvW(command, ctypes.byref(count))
+    if not arguments:
+        raise ctypes.WinError(ctypes.get_last_error())
+    try:
+        return [arguments[index] for index in range(count.value)]
+    finally:
+        kernel32.LocalFree(ctypes.cast(arguments, wintypes.HLOCAL))
+
+
 def _is_help_command(parts: list[str]) -> bool:
     """True if the invocation is a help/discovery call (``--help``/``-h``/``help``).
 
@@ -128,20 +152,19 @@ class CliTool:
         cwd = args.get("cwd") or None
 
         if not command:
-            return ToolResult(success=False, output=None, error="command fehlt")
+            return ToolResult(success=False, output=None, error="empty command")
         if not command.split(maxsplit=1)[0] == self._spec.binary_name:
             return ToolResult(
                 success=False,
                 output=None,
                 error=(
-                    f"command must start with '{self._spec.binary_name}' — "
-                    f"got '{command[:40]}...'"
+                    f"command must start with '{self._spec.binary_name}' — got '{command[:40]}...'"
                 ),
             )
 
         try:
-            parts = shlex.split(command, posix=(sys.platform != "win32"))
-        except ValueError as exc:
+            parts = _split_command(command)
+        except (ValueError, OSError) as exc:
             return ToolResult(success=False, output=None, error=f"parse error: {exc}")
         if not parts:
             return ToolResult(success=False, output=None, error="empty command")
@@ -149,9 +172,7 @@ class CliTool:
         # (gcloud, npm, vercel, ...) are exec'able under shell=False on Windows.
         # The binary-guard above already pinned parts[0] to spec.binary_name.
         parts[0] = resolve_executable(parts[0])
-        stdout_cap = (
-            MAX_HELP_STDOUT_CHARS if _is_help_command(parts) else MAX_STDOUT_CHARS
-        )
+        stdout_cap = MAX_HELP_STDOUT_CHARS if _is_help_command(parts) else MAX_STDOUT_CHARS
 
         env = os.environ.copy()
         env.update(self._auth.env_for(self._spec))

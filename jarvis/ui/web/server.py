@@ -562,6 +562,7 @@ class WebServer:
         from .starter_plan_routes import router as starter_plan_router
         from .sub_agents_routes import router as sub_agents_router
         from .tasks_routes import router as tasks_router
+        from .team_thread_routes import router as team_thread_router
         from .telephony_routes import router as telephony_router
         from .tool_model_routes import router as tool_model_router
         from .tools_routes import router as tools_router
@@ -691,6 +692,8 @@ class WebServer:
         # the focused coding mode.
         # Before the IDE router, so its /{…} paths never shadow /git/….
         app.include_router(agentic_ide_git_router)
+        app.state.team_threads = None
+        app.include_router(team_thread_router)
         # The Skills tab's library of saved Markdown prompts (/api/agentic-ide/skills/*).
         app.include_router(ide_skills_router)
         app.include_router(agentic_ide_router)
@@ -3433,8 +3436,23 @@ class WebServer:
         from jarvis.memory.wiki.db_path import resolve_wiki_db_path
         from jarvis.memory.wiki.fts_index import rebuild_index
 
+        def _resume_semantic_search() -> None:
+            # Semantic search, when the user switched it on: its own thread
+            # loads the model and encodes only the pages that changed. Called
+            # on every way out of this function, so the switch always learns
+            # an honest state, also when there is no vault to search.
+            try:
+                from jarvis.memory.wiki import semantic_setup
+
+                semantic_setup.resume(self.cfg)
+            except Exception:  # noqa: BLE001 - the word search stands on its own
+                logger.opt(exception=True).warning(
+                    "wiki_boot_index: semantic search could not be resumed"
+                )
+
         wiki_cfg = self.cfg.wiki_integration
         if not wiki_cfg.enabled:
+            _resume_semantic_search()
             return
 
         from jarvis.memory.wiki.vault_root import resolve_vault_root
@@ -3442,6 +3460,7 @@ class WebServer:
         vault_root = resolve_vault_root(wiki_cfg.vault_root).path
         if not vault_root.is_dir():
             logger.info("wiki_boot_index: vault missing — skipping ({})", vault_root)
+            _resume_semantic_search()
             return
 
         db_path = resolve_wiki_db_path(self.cfg.memory.data_dir)
@@ -3469,6 +3488,8 @@ class WebServer:
                     logger.debug("wiki index health recording failed", exc_info=True)
             finally:
                 conn.close()
+            # Behind the word index, so it never competes with start-up (AP-26).
+            _resume_semantic_search()
 
         if background:
             thread = threading.Thread(
@@ -4078,6 +4099,15 @@ class WebServer:
             await stop_learning()
         except Exception as exc:  # noqa: BLE001 -- finish independent cleanup below
             logger.opt(exception=exc).debug("Jarvis learning loop stop failed")
+
+        team_threads = getattr(self.app.state, "team_threads", None)
+        if team_threads is not None:
+            # Before the chat turns end: a coordinator that sees its members'
+            # turns cancelled under it would read that as members failing.
+            try:
+                await team_threads.close()
+            except Exception as exc:  # noqa: BLE001 -- finish independent cleanup below
+                logger.opt(exception=exc).debug("team threads close failed")
 
         agent_chat = getattr(self.app.state, "agent_chat", None)
         if agent_chat is not None:
