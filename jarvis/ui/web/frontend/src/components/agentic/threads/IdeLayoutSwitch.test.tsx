@@ -15,10 +15,10 @@ afterEach(cleanup);
 const checked = (id: string) => screen.getByTestId(`ide-layout-${id}`).getAttribute("aria-checked");
 
 describe("IdeLayoutSwitch", () => {
-  it("offers grid, threads and the Dodaios Verse as icon buttons", () => {
+  it("offers grid, threads and the PRTS Verse as icon buttons", () => {
     render(<IdeLayoutSwitch />);
     expect(screen.getAllByRole("radio").map((button) => button.getAttribute("aria-label")))
-      .toEqual(["Terminal grid", "Threads", "Dodaios Verse"]);
+      .toEqual(["Terminal grid", "Threads", "PRTS Verse"]);
     for (const button of screen.getAllByRole("radio")) expect(button.textContent).toBe("");
     expect(checked("grid")).toBe("true");
   });

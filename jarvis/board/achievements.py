@@ -33,6 +33,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Literal, Protocol
 
+from jarvis.core.branding import PRODUCT_NAME
 from jarvis.core.events import Event
 
 log = logging.getLogger(__name__)
@@ -253,7 +254,7 @@ ACHIEVEMENTS: list[AchievementSpec] = [
     ),
     AchievementSpec(
         id="one_year_with_jarvis",
-        title="One Year with Dodaios",
+        title=f"One Year with {PRODUCT_NAME}",
         description="365 days since first activity.",
         tier="reflection",
         evaluator=_eval_one_year,

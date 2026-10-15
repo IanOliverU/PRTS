@@ -79,7 +79,7 @@ def test_get_seeds_on_first_run(client: TestClient) -> None:
     assert any(e["platform"] == "instagram" for e in entries)
     # The X card carries the product's display name.
     x_labels = [e["label"] for e in entries if e["platform"] == "x"]
-    assert x_labels == ["Dodaios"]
+    assert x_labels == ["PRTS"]
     # Every entry carries the stable wire shape.
     for e in entries:
         assert set(e) >= {"id", "platform", "label", "url", "enabled", "order"}
