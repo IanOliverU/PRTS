@@ -145,6 +145,7 @@ export type NextStep =
   | { kind: "wait_queue"; pr: PullRequest }
   | { kind: "wait_ci"; number: number | null; url: string }
   | { kind: "ready"; pr: PullRequest }
+  | { kind: "review"; count: number }
   | { kind: "done" };
 
 /**
@@ -155,6 +156,8 @@ export type NextStep =
 export function nextStep(overview: RepoOverview): NextStep {
   const checkout = checkoutOf(overview);
   const row = overview.branches.find((branch) => branch.current);
+  // New files need explicit review before they enter the index.
+  const idle: NextStep = checkout.untracked > 0 ? { kind: "review", count: checkout.untracked } : { kind: "done" };
   if (checkout.operation || checkout.conflicted > 0) {
     return { kind: "resolve", operation: checkout.operation, conflicts: checkout.conflicted };
   }
@@ -187,7 +190,7 @@ export function nextStep(overview: RepoOverview): NextStep {
     if (pr.state === "queued") return { kind: "wait_queue", pr };
     if (pr.ci.state === "running" || pr.ci.state === "pending") return { kind: "wait_ci", number: pr.number, url: pr.ci.url || pr.url };
     if (pr.state === "open" && pr.ci.state === "success") return { kind: "ready", pr };
-    return { kind: "done" };
+    return idle;
   }
   if (row && !isDefault && row.upstream && !row.upstream_gone && !isMerged(row) && hasWork && overview.github.available) {
     return { kind: "open_pr" };
@@ -198,7 +201,7 @@ export function nextStep(overview: RepoOverview): NextStep {
   if (row && (row.ci.state === "running" || row.ci.state === "pending") && !row.ci_stale) {
     return { kind: "wait_ci", number: null, url: row.ci.url };
   }
-  return { kind: "done" };
+  return idle;
 }
 
 // ------------------------------------------------------------------ attention

@@ -143,7 +143,11 @@ describe("nextStep", () => {
   });
 
   it("does not suggest committing files git does not track yet", () => {
-    expect(step({ files: 5, untracked: 5 }).kind).not.toBe("commit");
+    expect(step({ files: 5, untracked: 5, has_remote: false, upstream: "" })).toEqual({ kind: "review", count: 5 });
+    expect(step({ files: 1, untracked: 1 }, { pull_requests: [pr(4)] })).toEqual({ kind: "review", count: 1 });
+    // Remote synchronization keeps its established priority over reviewing new files.
+    expect(step({ files: 1, untracked: 1, ahead: 2 })).toEqual({ kind: "push", count: 2 });
+    expect(step({ files: 1, untracked: 1, behind: 2 })).toEqual({ kind: "pull", count: 2 });
   });
 
   it("looks after the pull request once the branch is shared", () => {

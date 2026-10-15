@@ -84,6 +84,8 @@ function describe(t: Translate, step: NextStep, overview: RepoOverview): StepVie
         action: key("pull_action"),
         tone: "action",
       };
+    case "review":
+      return { title: plural(t, "ide_side_panel.git.status.changed", step.count), reason: key("commit_reason"), action: t("ide_side_panel.git.status.review"), tone: "action" };
     case "commit":
       return { title: plural(t, "ide_side_panel.git.next.commit", step.count), reason: key("commit_reason"), action: key("commit_action"), tone: "action" };
     case "branch_off":
@@ -180,6 +182,7 @@ export function StatusPanel({
         return actions.pull();
       case "rebase":
         return actions.rebase();
+      case "review":
       case "commit":
         return setComposing(true);
       case "branch_off":
@@ -203,7 +206,7 @@ export function StatusPanel({
   };
   // What else is possible right now, beside the one next step.
   const extras: { id: string; label: string; run: () => void }[] = [];
-  if (checkout.files > 0 && step.kind !== "commit" && step.kind !== "resolve" && !checkout.detached) {
+  if (checkout.files > 0 && step.kind !== "commit" && step.kind !== "review" && step.kind !== "resolve" && !checkout.detached) {
     extras.push({ id: "commit", label: t("ide_side_panel.git.next.commit_action"), run: () => setComposing(true) });
   }
   if (tracking && checkout.behind > 0 && step.kind !== "pull" && step.kind !== "rebase" && step.kind !== "resolve") {
