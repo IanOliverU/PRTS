@@ -60,6 +60,7 @@ from typing import Any
 # the test-isolation hooks remain reachable at this module path. None of these
 # import ``global_hotkeys`` at module scope — that import is lazy inside the
 # backend's ``register`` (HN-7).
+from jarvis.core.branding import PRODUCT_NAME
 from jarvis.platform.self_input import synthetic_input_recent
 from jarvis.trigger.backends import HotkeyBackend, make_hotkey_backend
 from jarvis.trigger.backends import global_hotkeys as _gh_backend
@@ -449,7 +450,7 @@ MOUSE_HOTKEY_REASONS: dict[str, str] = {
     "wayland": (
         "Wayland does not let an application watch the mouse buttons "
         "globally, so a mouse-button shortcut cannot work here. Use a "
-        "key combination, or bind a compositor shortcut to the Dodaios "
+        f"key combination, or bind a compositor shortcut to the {PRODUCT_NAME} "
         "CLI."
     ),
     "linux_needs_pynput": (
@@ -619,7 +620,7 @@ def modifier_snapshot(
             return None, (
                 "Wayland does not let an application read the modifier keys "
                 "globally. Click the keys on the on-screen keyboard, or bind "
-                "a compositor shortcut to the Dodaios CLI."
+                f"a compositor shortcut to the {PRODUCT_NAME} CLI."
             )
         return None, (
             "This Linux session cannot read the modifier keys until global "
