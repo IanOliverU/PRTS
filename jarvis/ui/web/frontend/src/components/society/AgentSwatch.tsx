@@ -1,4 +1,4 @@
-import priestessAvatar from "@/assets/priestess-avatar.png";
+import { PriestessMascot } from "@/components/brand/PriestessMascot";
 import { cn } from "@/lib/utils";
 
 import { resolveCompanion } from "./companion/appearance";
@@ -59,7 +59,7 @@ export function AgentSwatch({
     >
       {isJarvis ? (
         <>
-        <img src={priestessAvatar} alt="" data-agent-avatar="priestess" width={size} height={size} className="h-full w-full object-contain" decoding="async" draggable={false} />
+        <PriestessMascot size={size} state={thinking ? "working" : "idle"} />
         {thinking && <WorkingBadge size={size} />}
         </>
       ) : (

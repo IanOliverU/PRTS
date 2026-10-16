@@ -1,156 +1,29 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { JARVIS_LOGO_PATH } from "@/components/brand/jarvisLogoPath";
+import { PriestessMascot } from "@/components/brand/PriestessMascot";
 import { cn } from "@/lib/utils";
-import { fill, translate, useT } from "@/i18n";
+import { fill, translate } from "@/i18n";
 import { useEventStore, type VoiceState, type SectionId } from "@/store/events";
 
-export type MascotAction =
-  | "idle"
-  | "blink"
-  | "wave"
-  | "spin"
-  | "jump"
-  | "shake"
-  | "look-left"
-  | "look-right"
-  | "glitch";
-
-const RANDOM_ACTIONS: MascotAction[] = [
-  "blink",
-  "blink",
-  "wave",
-  "wave",
-  "jump",
-  "shake",
-  "look-left",
-  "look-right",
-  "glitch",
-  "spin",
-];
-
-const ACTION_DURATION_MS: Record<MascotAction, number> = {
-  idle: 0,
-  blink: 320,
-  wave: 1800,
-  spin: 900,
-  jump: 700,
-  shake: 600,
-  "look-left": 900,
-  "look-right": 900,
-  glitch: 450,
-};
+export type MascotAction = "idle" | "blink" | "wave" | "spin" | "jump" | "shake" | "look-left" | "look-right" | "glitch";
 
 type Props = {
-  size?: number;
-  className?: string;
-  reactToVoice?: boolean;
-  enableComments?: boolean;
-  /**
-   * A one-shot move asked for by the parent — the first-run guide greets each
-   * step with one. A new `key` replays the move even when the action repeats.
-   */
-  cue?: { action: MascotAction; key: string | number };
+  size?: number; className?: string; reactToVoice?: boolean; enableComments?: boolean;
+  /** Compatibility cue for older callers; the approved artwork holds its pose. */
+  cue?: {action:MascotAction;key:string|number};
 };
 
-export function MascotGigi({
-  size = 56,
-  className,
-  reactToVoice = true,
-  enableComments = true,
-  cue,
-}: Props) {
-  const t = useT();
-  const [action, setAction] = useState<MascotAction>("idle");
-  const voiceState = useEventStore((s) => s.voiceState);
-  const transcription = useEventStore((s) => s.transcription);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const comment = useMascotComments(enableComments);
-  const listeningText =
-    voiceState === "listening" ? transcription.trim() : "";
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const scheduleNext = () => {
-      if (cancelled) return;
-      const delay = 4500 + Math.random() * 9000;
-      timerRef.current = setTimeout(() => {
-        if (cancelled) return;
-        const next = RANDOM_ACTIONS[Math.floor(Math.random() * RANDOM_ACTIONS.length)];
-        setAction(next);
-        const back = setTimeout(() => {
-          if (cancelled) return;
-          setAction("idle");
-          scheduleNext();
-        }, ACTION_DURATION_MS[next]);
-        timerRef.current = back;
-      }, delay);
-    };
-
-    scheduleNext();
-    return () => {
-      cancelled = true;
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  const cueAction = cue?.action;
-  const cueKey = cue?.key;
-  useEffect(() => {
-    if (!cueAction || cueAction === "idle") return;
-    setAction(cueAction);
-    const back = setTimeout(() => setAction("idle"), ACTION_DURATION_MS[cueAction]);
-    return () => clearTimeout(back);
-  }, [cueAction, cueKey]);
-
-  const voiceClass = reactToVoice ? voiceClassFor(voiceState) : "";
-  // Small marks hold still: a floating 20px figure only reads as jitter.
-  const compact = size < 80;
-
-  return (
-    <div
-      className={cn("gigi-container", compact && "gigi-compact")}
-      style={{ width: size, height: size }}
-    >
-      <div
-        className={cn("gigi-root", `gigi-${action}`, voiceClass, className)}
-        aria-label={t("mascot_gigi.aria_label")}
-        title="Gigi"
-      >
-        {/* The Dodaios mark: ink on paper, paper on charcoal. */}
-        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" className="gigi-svg">
-          <path className="gigi-body" d={JARVIS_LOGO_PATH} fillRule="evenodd" fill="hsl(var(--gigi-trim))" />
-        </svg>
-      </div>
-
-      {enableComments && listeningText && (
-        <GigiBubble text={listeningText} variant="listening" />
-      )}
-      {enableComments && voiceState !== "listening" && comment && (
-        <GigiBubble text={comment} variant="comment" />
-      )}
-    </div>
-  );
+export function MascotGigi({size=56,className,reactToVoice=true,enableComments=true}:Props) {
+  const voiceState=useEventStore(s=>s.voiceState);
+  const transcription=useEventStore(s=>s.transcription);
+  const comment=useMascotComments(enableComments);
+  const listeningText=voiceState === "listening" ? transcription.trim() : "";
+  const state=!reactToVoice ? "idle" : voiceState === "speaking" ? "talking" : voiceState === "thinking" || voiceState === "connecting" ? "working" : "idle";
+  return <div className={cn("gigi-container",className)} style={{width:size,height:size}}>
+    <PriestessMascot size={size} state={state} label="Priestess" />
+    {enableComments && listeningText && <GigiBubble text={listeningText} variant="listening" />}
+    {enableComments && voiceState !== "listening" && comment && <GigiBubble text={comment} variant="comment" />}
+  </div>;
 }
-
-function voiceClassFor(state: VoiceState): string {
-  switch (state) {
-    case "listening":
-      return "gigi-voice-listening";
-    case "thinking":
-      return "gigi-voice-thinking";
-    case "speaking":
-      return "gigi-voice-speaking";
-    case "error":
-      return "gigi-voice-error";
-    default:
-      return "";
-  }
-}
-
-// ============================================================================
-// Comment-Bubble + Kontext-Hook
-// ============================================================================
 
 function GigiBubble({
   text,

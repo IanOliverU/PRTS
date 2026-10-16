@@ -1,21 +1,7 @@
-/**
- * The pet that guides a new user: the user's own desktop pet (Settings → My
- * Pets), drawn from its sprite sheet, speaking in a bubble.
- *
- * Used by every guide surface — the "how it works" walk, the setup steps,
- * the app tour and the first-steps guide — so one character explains the
- * whole first run. While a line is being "said" the text types itself out
- * and the pet plays its talking row; then it settles into the beat's own
- * state (thinking, working, success …). A click on the bubble finishes the
- * line at once; reduced motion shows it whole.
- *
- * The pet comes from `/api/pets` (read once per window). With no pet chosen
- * the built-in default stands in; without the endpoint (an older backend,
- * a test) the Gigi mascot does.
- */
+/** The shared first-run guide uses Priestess or the user's chosen custom pet. */
 import { useReducedMotion } from "framer-motion";
-import { useEffect, useState, type ReactNode } from "react";
-import { MascotGigi } from "@/components/MascotGigi";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { PriestessMascot, usesPriestess } from "@/components/brand/PriestessMascot";
 import { PetSprite } from "@/components/pets/PetSprite";
 import { pickActivePet } from "@/hooks/usePets";
 import type { PetState } from "@/lib/petStates";
@@ -64,40 +50,47 @@ export function _resetGuidePetForTests(): void {
 /** Reveals `text` character by character; `done` once it is all there. */
 export function useTypedText(text: string): { shown: string; done: boolean; finish: () => void } {
   const reduced = useReducedMotion() ?? false;
-  const [count, setCount] = useState(reduced ? text.length : 0);
+  const [progress, setProgress] = useState({text, count: reduced ? text.length : 0});
+  const timer = useRef<number | null>(null);
+  const count = reduced ? text.length : progress.text === text ? progress.count : 0;
   useEffect(() => {
-    if (reduced) {
-      setCount(text.length);
-      return;
-    }
-    setCount(0);
+    if (reduced || !text.length) return;
+    setProgress({text,count:0});
     let n = 0;
-    const timer = window.setInterval(() => {
-      n += 2;
-      setCount(Math.min(n, text.length));
-      if (n >= text.length) window.clearInterval(timer);
+    timer.current = window.setInterval(() => {
+      n = Math.min(n + 2,text.length);
+      setProgress({text,count:n});
+      if (n === text.length && timer.current !== null) {
+        window.clearInterval(timer.current);
+        timer.current = null;
+      }
     }, TYPE_MS * 2);
-    return () => window.clearInterval(timer);
+    return () => { if (timer.current !== null) window.clearInterval(timer.current); timer.current = null; };
   }, [text, reduced]);
-  return { shown: text.slice(0, count), done: count >= text.length, finish: () => setCount(text.length) };
+  const finish = () => {
+    if (timer.current !== null) window.clearInterval(timer.current);
+    timer.current = null;
+    setProgress({text,count:text.length});
+  };
+  return { shown: text.slice(0, count), done: count >= text.length, finish };
 }
 
 /** The pet itself at `px` size, or the mascot when there is no pet. */
 export function GuidePetFigure({ state, px = 96, className }: { state: PetState; px?: number; className?: string }) {
   const pet = useGuidePet();
-  if (!pet) {
+  if (usesPriestess(pet)) {
     return (
       <div className={cn("flex shrink-0 items-end justify-center", className)} style={{ width: px, height: px }}>
-        <MascotGigi size={Math.round(px * 0.7)} reactToVoice={false} enableComments={false} />
+        <PriestessMascot size={px} state={state === "talking" ? "talking" : "idle"} guide label="Priestess" />
       </div>
     );
   }
   return (
     <PetSprite
-      pet={pet}
+      pet={pet!}
       state={state}
-      scale={Math.max(1, Math.floor(px / pet.frame_size))}
-      label={pet.name}
+      px={px}
+      label={pet!.name}
       className={className}
     />
   );

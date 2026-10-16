@@ -79,12 +79,12 @@ describe("DeckOrb", () => {
     }
   });
 
-  test("the centre is the user's pet — no bitmap image left", () => {
+  test("the centre uses the shared Priestess mark and retains its voice state", () => {
     render(<DeckOrb steps={[]} busy={false} />);
     const orb = screen.getByTestId("jarvis-orb");
     expect(orb.getAttribute("data-voice")).toBe("idle");
-    // The PNG is gone from the tree, so it cannot come back in through here.
-    expect(orb.querySelectorAll("img")).toHaveLength(0);
+    // The approved default portrait is rendered through the shared pet mark.
+    expect(orb.querySelector("img[data-agent-avatar=priestess]")).not.toBeNull();
     expect(orb.querySelector('[data-testid="pet-mark"]')).toBeTruthy();
   });
 
