@@ -36,7 +36,11 @@ def emblem(size: int, span: float = 1.0) -> Image.Image:
     with Image.open(LOGO_PNG) as source:
         mark = source.convert("RGBA")
     side = max(1, round(size * span))
-    mark.thumbnail((side, side), Image.Resampling.LANCZOS)
+    scale = side / max(mark.size)
+    mark = mark.resize(
+        (max(1, round(mark.width * scale)), max(1, round(mark.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
     canvas = Image.new("RGBA", (size, size))
     canvas.alpha_composite(mark, ((size - mark.width) // 2, (size - mark.height) // 2))
     return canvas
