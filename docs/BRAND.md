@@ -56,9 +56,12 @@ asset must stay on the same values so nothing drifts.
   composer. No glows.
 - **Both modes, always.** A colour comes from a theme token or from the per-appearance
   tables in `terminalThemes.ts`. Never hardcode one mode's value.
-- **The logo** is the hooded figure in black and white: black ink on a white tile, white ink
-  on dark surfaces. It is the primary Dodaios logo; no other mark stands in for it. Its single source is `assets/brand/dodaios-logo.svg`; every icon is
-  rendered from it by `scripts/make_app_icon.py`.
+- **The application emblem** is the approved PRTS mark in
+  `jarvis/ui/web/frontend/public/prts-mark.png`. Native icons use it on a dark
+  rounded tile, with an amber DEV badge for development instances.
+  `scripts/make_app_icon.py` generates the shared exports; run
+  `packaging/macos/make_icns.py` afterward for the macOS container.
+  Priestess is the separate in-app mascot, including typing and talking states.
 - **Rasters convert on max(r, g, b), the orb on luma.** That is what keeps a mark legible
   after it loses its colour.
 
@@ -132,7 +135,7 @@ Write like a senior engineer who respects the reader's time.
 | Hero banner (CSS fallback source) | `assets/brand/banner.html` → `banner-css.png` |
 | Banner render script | `assets/brand/render.ps1` |
 | Product Orb | `jarvis/ui/web/frontend/public/hero-orb.png` |
-| Logo (vector source) | `assets/brand/dodaios-logo.svg` |
-| Logo (raster master, 1254 px) | `assets/brand/dodaios-logo.png` |
+| Application emblem (source) | `jarvis/ui/web/frontend/public/prts-mark.png` |
+| Compatibility emblem exports | `assets/brand/dodaios-logo.svg`, `assets/brand/dodaios-logo.png` |
 | App icon (rendered) | `assets/icons/jarvis.ico`, `jarvis-1024.png`, `jarvis.icns` |
 | App screenshots | `assets/screenshots/` |
