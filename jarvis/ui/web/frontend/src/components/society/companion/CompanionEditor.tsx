@@ -12,7 +12,7 @@ import { DesignPicker } from "./DesignPicker";
 import { SegmentedChoice } from "./SegmentedChoice";
 import { PetSprite } from "@/components/pets/PetSprite";
 import { usePets } from "@/hooks/usePets";
-import gigiMark from "@/assets/gigi-companion-avatar.png";
+import priestessAvatar from "@/assets/priestess-avatar.png";
 import { lazy, Suspense, useEffect, useState } from "react";
 const CompanionPreview = lazy(() => import("./CompanionPreview").then(m => ({ default: m.CompanionPreview })));
 
@@ -51,7 +51,7 @@ export function CompanionEditor({ value, onChange, disabled = false, lead = fals
   }, [kind, value, firstPet, onChange]);
   return <fieldset disabled={disabled} className="flex min-w-0 flex-col gap-5 p-4" data-testid="companion-editor">
     <div className="flex items-center gap-5 rounded-xl bg-secondary/50 p-5">
-      {lead ? <img src={gigiMark} width={88} height={88} alt="" /> : <CompanionMark appearance={value} size={88} mood={kind === "creature" ? mood : undefined} />}
+      {lead ? <img src={priestessAvatar} width={88} height={88} alt="" /> : <CompanionMark appearance={value} size={88} mood={kind === "creature" ? mood : undefined} />}
       {/* A previewed state plays its sign beside the head; keep the text clear of it. */}
       {!lead && kind === "creature" && <span aria-hidden className="w-2 shrink-0" />}
       <div><h3 className="font-medium">{t("society.companion.title")}</h3><p className="mt-1 text-sm text-muted-foreground">{t("society.companion.hint")}</p></div>

@@ -261,9 +261,8 @@ describe("Sidebar header avatar", () => {
     overlayMock.style = "jarvis_bar";
   });
 
-  // The mark is the user's pet (Gigi by default), drawn by PetMark from the
-  // pets answer — never the old static Gigi image.
-  test("renders the pet mark, not the old Gigi image", () => {
+  // The shared mark preserves custom pets and uses Priestess by default.
+  test("renders Priestess through the shared pet mark", () => {
     // The mark heads the identity row, which returns when the quick
     // switcher (and with it the search bar) is switched off.
     useQuickSwitchSettings.setState({ enabled: false });
@@ -273,7 +272,7 @@ describe("Sidebar header avatar", () => {
     expect(avatar).not.toBeNull();
     expect(avatar?.getAttribute("data-variant")).toBe("logo");
     expect(avatar?.querySelector('[data-testid="pet-mark"]')).toBeTruthy();
-    expect(avatar?.querySelector("img")).toBeNull();
+    expect(avatar?.querySelector("img[data-agent-avatar=priestess]")).not.toBeNull();
   });
 });
 

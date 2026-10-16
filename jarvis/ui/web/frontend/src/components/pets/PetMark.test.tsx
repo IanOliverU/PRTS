@@ -69,26 +69,27 @@ describe("PetMark", () => {
   });
 
   it("stays pixel-crisp at a whole-number size", () => {
-    renderWith(pets("gigi"), <PetMark size={96} />);
+    renderWith(pets("bolt"), <PetMark size={96} />);
     expect(screen.getByTestId("pet-sprite-cell").className).toContain("pixelated");
   });
 
-  it("shows Gigi when the user chose no pet", () => {
+  it("shows Priestess for the built-in default when the user chose no pet", () => {
     renderWith(pets(NO_PET_ID), <PetMark size={32} />);
     expect(screen.getByTestId("pet-mark").dataset.pet).toBe("gigi");
+    expect(document.querySelector("[data-agent-avatar=priestess]")).not.toBeNull();
   });
 
   it("plays the given state, or follows the voice when reactive", () => {
-    renderWith(pets("gigi"), <><PetMark size={32} state="thinking" /><PetMark size={32} reactive /></>);
+    renderWith(pets("bolt"), <><PetMark size={32} state="thinking" /><PetMark size={32} reactive /></>);
     const [fixed, reactive] = screen.getAllByTestId("pet-sprite");
     expect(fixed.dataset.state).toBe("thinking");
     expect(reactive.dataset.state).toBe("idle");
   });
 
-  it("keeps an empty box of the final size outside a query client", () => {
+  it("draws Priestess without requiring a query client", () => {
     render(<PetMark size={40} />);
     const box = screen.getByTestId("pet-mark");
-    expect(box.style.width).toBe("40px");
+    expect(box.querySelector("img")?.getAttribute("width")).toBe("40");
     expect(screen.queryByTestId("pet-sprite")).toBeNull();
   });
 });

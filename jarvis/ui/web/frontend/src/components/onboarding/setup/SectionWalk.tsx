@@ -8,6 +8,7 @@
  * storage. When it ends it leaves the app on the chat, on the home surface the
  * user had before.
  */
+import { guidePetName } from "@/components/brand/PriestessMascot";
 import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FOCUS_RING } from "@/components/agentic/controls";
@@ -106,7 +107,7 @@ export function SectionWalk({ onDone }: { onDone: () => void }) {
 
   if (!ready) return null;
 
-  const text = fill(t(`first_run.tour.stops.${stop.id}`), { pet: pet?.name ?? "Gigi" });
+  const text = fill(t(`first_run.tour.stops.${stop.id}`), { pet: guidePetName(pet) });
   const heading = t(`first_run.tour.labels.${stop.id}`);
 
   return (
