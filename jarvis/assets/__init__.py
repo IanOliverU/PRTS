@@ -11,7 +11,7 @@ Currently:
   ``silero-vad`` pip package or torch. The model is run through base CPU
   ``onnxruntime``. Loaded via
   :func:`bundled_silero_vad_model`.
-- ``icons/``: the desktop/taskbar icon (the Gigi ghost mascot), in two formats:
+- ``icons/``: the desktop/taskbar icon (the PRTS emblem), in two formats:
   ``jarvis.ico`` for every Win32 icon surface (window class icon, AUMID icon,
   Start-Menu + autostart shortcut, taskbar name) and ``jarvis.png`` for the
   Linux XDG ``.desktop`` ``Icon=`` key (most Linux desktops cannot render

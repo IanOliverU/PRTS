@@ -1,92 +1,49 @@
-"""Render every Personal Jarvis app icon from the vector logo.
+"""Render native and compatibility app icons from the approved PRTS emblem.
 
-    python scripts/make_app_icon.py
-
-The single source is ``assets/brand/dodaios-logo.svg``: the hooded figure as one
-even-odd path in a ``0 0 256 256`` viewBox. Everything else is generated from
-it — the taskbar/dock tile at every ICO size, the 1024 px master the macOS
-``.icns`` is built from, the DEV-badged copy, the free-standing white mark for
-dark surfaces, and ``src/components/brand/jarvisLogoPath.ts`` that the
-frontend draws the same figure with. ``tests/test_app_icon.py`` fails when the
-TypeScript copy drifts from the SVG.
-
-The tile is the logo as it was drawn: black ink on white paper, cut to a
-superellipse (the shape platforms use for their own icons). A faint dark
-hairline inside the edge keeps the tile's outline on a light taskbar.
-
-Sizes are rendered, not downsampled from one bitmap, and the figure grows to
-fill more of the tile as the tile shrinks — at 16 px it is the silhouette, not
-the margin, that a person recognises.
+Run ``python scripts/make_app_icon.py``, then
+``python packaging/macos/make_icns.py`` for the macOS container.
+The in-app Priestess mascot is maintained separately from the app emblem.
 """
-
 from __future__ import annotations
 
+import base64
 import math
-import re
 from pathlib import Path
 
-import numpy as np
-from PIL import Image, ImageChops, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent.parent
-LOGO_SVG = ROOT / "assets" / "brand" / "dodaios-logo.svg"
 FRONTEND = ROOT / "jarvis" / "ui" / "web" / "frontend"
-LOGO_TS = FRONTEND / "src" / "components" / "brand" / "jarvisLogoPath.ts"
-VIEWBOX = 256.0
+LOGO_PNG = FRONTEND / "public" / "prts-mark.png"
 
 SQUIRCLE_N = 5.0  # superellipse exponent; 5 is the shape platforms settled on
 SUPERSAMPLE = 4
-PAPER = (255, 255, 255)
-INK = (10, 10, 10)
+PAPER = (23, 23, 23)
 DEV_AMBER = (241, 180, 103)  # the interface's "degraded" amber (#F1B467)
 DEV_INK = (20, 20, 20)
 #: The figure's box as a fraction of the tile — bigger where the tile is smaller.
-SPAN_LARGE = 0.72
-SPAN_SMALL = 0.88
+SPAN_LARGE = 0.90
+SPAN_SMALL = 0.96
 SPAN_FULL_AT = 64
 SPAN_SMALL_AT = 16
-HAIRLINE_ALPHA = 0.14
-HAIRLINE_WIDTH = 0.007
 
 MASTER = 1024
 ICO_SIZES = (16, 20, 24, 32, 40, 48, 64, 128, 256)
 
 
-def logo_path_data(svg: Path = LOGO_SVG) -> str:
-    """The ``d`` attribute of the logo's single path."""
-    match = re.search(r'<path[^>]*\sd="([^"]+)"', svg.read_text(encoding="utf-8"))
-    if not match:
-        raise SystemExit(f"{svg} has no <path d=...>")
-    return match.group(1)
-
-
-def logo_polygons(d: str) -> list[list[tuple[float, float]]]:
-    """Split an ``M … L … Z`` path into closed polygons in viewBox units."""
-    polygons = []
-    for sub in d.split("Z"):
-        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", sub)]
-        if len(numbers) >= 6:
-            polygons.append(list(zip(numbers[0::2], numbers[1::2], strict=True)))
-    return polygons
-
-
-def figure_mask(size: int, span: float) -> Image.Image:
-    """The figure as an antialiased ``L`` mask, centred in a ``size`` square.
-
-    The path's subpaths are filled even-odd: each one is XOR-ed into the mask,
-    so a hole (an eye, a fold of the cloak) cuts the shape it sits in.
-    """
-    big = size * SUPERSAMPLE
-    scale = big * span / VIEWBOX
-    offset = (big - VIEWBOX * scale) / 2.0
-    acc = np.zeros((big, big), dtype=bool)
-    for polygon in logo_polygons(logo_path_data()):
-        layer = Image.new("1", (big, big), 0)
-        points = [(x * scale + offset, y * scale + offset) for x, y in polygon]
-        ImageDraw.Draw(layer).polygon(points, fill=1)
-        acc ^= np.asarray(layer, dtype=bool)
-    mask = Image.fromarray((acc * 255).astype(np.uint8), mode="L")
-    return mask.resize((size, size), Image.Resampling.LANCZOS)
+def emblem(size: int, span: float = 1.0) -> Image.Image:
+    """Fit the approved transparent emblem inside a square without distortion."""
+    with Image.open(LOGO_PNG) as source:
+        mark = source.convert("RGBA")
+    side = max(1, round(size * span))
+    scale = side / max(mark.size)
+    mark = mark.resize(
+        (max(1, round(mark.width * scale)), max(1, round(mark.height * scale))),
+        Image.Resampling.LANCZOS,
+    )
+    canvas = Image.new("RGBA", (size, size))
+    canvas.alpha_composite(mark, ((size - mark.width) // 2, (size - mark.height) // 2))
+    return canvas
 
 
 def squircle_mask(size: int) -> Image.Image:
@@ -112,24 +69,10 @@ def mark_span(size: int) -> float:
     return SPAN_SMALL + (SPAN_LARGE - SPAN_SMALL) * t
 
 
-def _hairline(size: int) -> Image.Image:
-    """A ring just inside the tile edge, so the white tile survives a light taskbar."""
-    inset = max(1, round(size * HAIRLINE_WIDTH))
-    inner = Image.new("L", (size, size), 0)
-    inner.paste(squircle_mask(size - 2 * inset), (inset, inset))
-    ring = ImageChops.subtract(squircle_mask(size), inner)
-    line = Image.new("RGBA", (size, size), (*INK, 255))
-    line.putalpha(ring.point(lambda v: int(v * HAIRLINE_ALPHA)))
-    return line
-
-
 def render_tile(size: int) -> Image.Image:
-    """Render one icon size from the vector — never by resampling a bigger one."""
+    """Render the emblem on a dark rounded tile at the requested native size."""
     tile = Image.new("RGBA", (size, size), (*PAPER, 255))
-    tile.alpha_composite(_hairline(size))
-    ink = Image.new("RGBA", (size, size), (*INK, 255))
-    ink.putalpha(figure_mask(size, mark_span(size)))
-    tile.alpha_composite(ink)
+    tile.alpha_composite(emblem(size, mark_span(size)))
     tile.putalpha(squircle_mask(size))
     return tile
 
@@ -167,10 +110,8 @@ def render_dev_tile(size: int) -> Image.Image:
 
 
 def render_mark(size: int) -> Image.Image:
-    """The free-standing figure in white, for dark surfaces with their own frame."""
-    mark = Image.new("RGBA", (size, size), (*PAPER, 255))
-    mark.putalpha(figure_mask(size, 1.0))
-    return mark
+    """The original transparent emblem for surfaces with their own frame."""
+    return emblem(size)
 
 
 def write_png(path: Path, image: Image.Image) -> None:
@@ -185,17 +126,16 @@ def write_ico(path: Path, members: list[Image.Image]) -> None:
     largest.save(path, format="ICO", sizes=[m.size for m in members], append_images=rest)
 
 
-def logo_ts_source(d: str) -> str:
-    return (
-        "// Generated from assets/brand/dodaios-logo.svg by scripts/make_app_icon.py.\n"
-        '// The Dodaios mark in a 0 0 256 256 viewBox; fill it with fill-rule="evenodd".\n'
-        f'export const JARVIS_LOGO_PATH =\n  "{d}";\n'
-    )
-
-
 def main() -> None:
-    LOGO_TS.write_text(logo_ts_source(logo_path_data()), encoding="utf-8", newline="\n")
-
+    # Keep legacy asset names for callers while replacing their artwork.
+    source = LOGO_PNG.read_bytes()
+    (ROOT / "assets/brand/dodaios-logo.png").write_bytes(source)
+    encoded = base64.b64encode(source).decode("ascii")
+    (ROOT / "assets/brand/dodaios-logo.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">'
+        f'<image href="data:image/png;base64,{encoded}" width="180" height="180"/>'
+        '</svg>\n', encoding="utf-8",
+    )
     tile_256 = render_tile(256)
     members = [render_tile(s) for s in sorted(ICO_SIZES, reverse=True)]
     public = FRONTEND / "public"
@@ -221,7 +161,7 @@ def main() -> None:
     ):
         write_ico(path, members)
     # The dev instance (``--instance dev``) shows its own DEV-badged copy on the
-    # taskbar and in its shortcut, rendered from the same vector.
+    # taskbar and in its shortcut, rendered from the same emblem.
     dev_members = [render_dev_tile(s) for s in sorted(ICO_SIZES, reverse=True)]
     dev_png = render_dev_tile(256)
     write_png(ROOT / "assets" / "icons" / "jarvis-dev.png", dev_png)

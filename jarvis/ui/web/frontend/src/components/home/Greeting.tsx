@@ -34,8 +34,8 @@ export function Greeting({
     >
       {/* The user's pet above, the line under it in regular weight — the
           a quiet opening, softer than a bold headline beside a logo.
-          The pet follows the voice: it listens, thinks and talks along. */}
-      <PetMark size={48} reactive className="mb-3" />
+          The opening mascot types while the user prepares a conversation. */}
+      <PetMark size={48} state={muted ? undefined : "working"} reactive className="mb-3" />
       <h1 className="text-2xl font-normal tracking-tight text-foreground [text-wrap:balance]">
         {text}
       </h1>
