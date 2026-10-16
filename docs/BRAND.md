@@ -57,7 +57,7 @@ asset must stay on the same values so nothing drifts.
 - **Both modes, always.** A colour comes from a theme token or from the per-appearance
   tables in `terminalThemes.ts`. Never hardcode one mode's value.
 - **The application emblem** is the approved PRTS mark in
-  `jarvis/ui/web/frontend/public/prts-mark.png`. Native icons use it on a dark
+  `jarvis/ui/web/frontend/public/prts-mark.png`. Native icons use the minimalist PRTS wordmark on a light
   rounded tile, with an amber DEV badge for development instances.
   `scripts/make_app_icon.py` generates the shared exports; run
   `packaging/macos/make_icns.py` afterward for the macOS container.

@@ -50,12 +50,14 @@ export function BootSplash({
       className={exiting ? "jbs-exit" : undefined}
       style={{ "--jbs-shift": shift } as CSSProperties}
       onAnimationEnd={(event) => {
-        if (exiting && event.target === event.currentTarget) onExited?.();
+        if (exiting && event.target === event.currentTarget && event.animationName === "jbs-fade-out") {
+          onExited?.();
+        }
       }}
     >
       <div className="jbs-group">
         <div className="jbs-mark" aria-hidden="true">
-          <img src="/prts-mark.png" alt="" width={256} height={256} />
+          <img src="/prts-wordmark.svg" alt="" width={256} height={256} />
         </div>
         <div className="name">{name}</div>
         <div
