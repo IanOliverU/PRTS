@@ -12,7 +12,7 @@ export const StartupRow:React.FC<{time:number}>=({time:t})=>{
  const load=move(t,9.35,9.8,0,1);
  const percent=Math.round(move(t,9.8,11.0,0,100));
  return <div style={{opacity:show}}>
-  <div data-testid="main-wordmark" style={{position:'absolute',left,top:314+move(t,COMPACT_START,COMPACT_END,0,17),height:92,width:170,transformOrigin:'left center',scale:compact}}>
+  <div data-testid="main-wordmark" style={{position:'absolute',left,top:314+move(t,COMPACT_START,COMPACT_END,0,17),height:92,width:170,transformOrigin:'left center',transform:`scale(${compact})`}}>
    <div style={{position:'absolute',top:46-split,width:170,height:1,background:'#111719'}}/>
    <div style={{height:92,display:'flex',justifyContent:'center',alignItems:'center',fontFamily:'Terminal Condensed, sans-serif',fontSize:86,fontWeight:800,letterSpacing:-4,lineHeight:1,clipPath:`inset(${46-split}px 0)`}}>PRTS</div>
    <div style={{position:'absolute',top:46+split,width:170,height:1,background:'#111719'}}/>
