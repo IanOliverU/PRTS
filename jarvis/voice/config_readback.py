@@ -33,13 +33,13 @@ _PHRASES: dict[str, dict[str, str]] = {
         "pt": "Feito — {label} agora é {value}.",
     },
     "applied_restart": {
-        "de": "Erledigt — {label} ist jetzt {value}. Starte Dodaios einmal neu, "
+        "de": "Erledigt — {label} ist jetzt {value}. Starte PRTS einmal neu, "
               "damit es wirkt.",
-        "en": "Done — {label} is now {value}. Restart Dodaios once for it to take "
+        "en": "Done — {label} is now {value}. Restart PRTS once for it to take "
               "effect.",
-        "es": "Listo — {label} ahora es {value}. Reinicia Dodaios una vez para que "
+        "es": "Listo — {label} ahora es {value}. Reinicia PRTS una vez para que "
               "surta efecto.",
-        "pt": "Feito — {label} agora é {value}. Reinicia o Dodaios uma vez para "
+        "pt": "Feito — {label} agora é {value}. Reinicia o PRTS uma vez para "
               "que tenha efeito.",
     },
     # Hard-refuse (secrets / self-lockout) — an honest decline, never a question.

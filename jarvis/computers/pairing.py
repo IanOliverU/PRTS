@@ -146,7 +146,7 @@ class ServerPairing:
 
     def identity(self) -> ServerIdentity:
         return ServerIdentity(
-            protocol=PROTOCOL, name=platform.node()[:120] or "Dodaios", platform=platform.system()
+            protocol=PROTOCOL, name=platform.node()[:120] or "PRTS", platform=platform.system()
         )
 
     def issue_code(self) -> dict[str, Any]:
@@ -171,7 +171,7 @@ class ServerPairing:
             state.grants.append(
                 PairingGrant(
                     id="g_" + secrets.token_hex(8),
-                    name=name.strip() or "Dodaios client",
+                    name=name.strip() or "PRTS client",
                     digest=_digest(credential),
                     created_at=time.time(),
                 )
@@ -261,7 +261,7 @@ class ServerPairing:
         except (httpx.HTTPError, ValueError) as exc:
             # Never echo response bodies or submitted credentials into user errors or logs.
             raise PairingError(
-                "Could not reach a compatible Dodaios server securely.", 502
+                "Could not reach a compatible PRTS server securely.", 502
             ) from exc
 
     async def add(self, host: str, code: str) -> PairedServer:

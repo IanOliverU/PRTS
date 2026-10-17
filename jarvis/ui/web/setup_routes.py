@@ -230,7 +230,7 @@ def _reindex_vault_fts(request: Request, jarvis_root: Path) -> None:
 # ---------------------------------------------------------------------------
 @router.get("/obsidian/status", response_model=ObsidianStatusResponse)
 def obsidian_status(request: Request) -> ObsidianStatusResponse:
-    """Detect Obsidian + report whether the Dodaios vault is registered.
+    """Detect Obsidian + report whether the PRTS vault is registered.
 
     Never raises a 5xx — any unexpected detection error is captured in
     the ``note`` field with a benign default payload so the UI keeps
@@ -304,7 +304,7 @@ def obsidian_register(
     body: ObsidianRegisterRequest | None = None,
     dry_run: bool = Query(default=False),
 ) -> ObsidianRegisterResponse:
-    """Register a vault for Dodaios's wiki (spec A6: vault choice).
+    """Register a vault for PRTS's wiki (spec A6: vault choice).
 
     ``body`` is optional and backward compatible: no body (or an explicit
     ``{"mode": "separate"}``) is today's unchanged behavior — register the

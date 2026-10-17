@@ -17,7 +17,7 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-GITHUB_ISSUES_URL = "https://github.com/Dodaios/Dodaios/issues"
+GITHUB_ISSUES_URL = "https://github.com/IanOliverU/PRTS/issues"
 
 
 def _client() -> TestClient:

@@ -4195,7 +4195,7 @@ async def codex_login(request: Request) -> dict[str, Any]:
 
 @router.post("/codex/subscription-voice/login")
 async def codex_subscription_voice_login(request: Request) -> dict[str, Any]:
-    """Start Codex's own login in Dodaios's isolated voice profile."""
+    """Start Codex's own login in PRTS's isolated voice profile."""
     from jarvis.codex_app_server import (
         CodexSubscriptionUnavailable,
         start_codex_subscription_login,
@@ -4288,7 +4288,7 @@ def _secret_slot_labels(slots: tuple[str, ...]) -> list[str]:
                 found = True
         if not found:
             # Agent rows are not provider specs; name the section instead.
-            labels.setdefault("Dodaios-Agents" if slot.startswith("jarvis_agent_") else slot)
+            labels.setdefault("PRTS-Agents" if slot.startswith("jarvis_agent_") else slot)
     return list(labels)
 
 

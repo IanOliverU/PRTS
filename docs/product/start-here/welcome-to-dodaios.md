@@ -1,7 +1,7 @@
 ---
-title: "Welcome to Dodaios"
+title: "Welcome to PRTS"
 slug: welcome-to-dodaios
-summary: "See how Dodaios turns your computer into an AI agent, what stays under your control, and where to begin."
+summary: "See how PRTS turns your computer into an AI agent, what stays under your control, and where to begin."
 section: "Start here"
 section_order: 1
 order: 1
@@ -15,7 +15,7 @@ tags: [overview, getting-started, privacy, safety]
 related: [install-dodaios, desktop-app-tour, start-your-first-chat]
 ---
 
-Dodaios turns your computer into an AI agent. Give it a task in chat or
+PRTS turns your computer into an AI agent. Give it a task in chat or
 by voice. It can use the desktop and browser on its host, call connected tools,
 delegate longer work to specialized agents, and return results in one workspace.
 You choose the models, services, and device permissions it can use.
@@ -27,9 +27,15 @@ Several visible labels follow the assistant name you chose, including the
 Agents area and Voice hub. This guide uses the neutral words **assistant**,
 **Agents**, and **Voice** so it applies to every name.
 
+## About This Fork
+
+PRTS is currently a personal development project, built on a fork of [Dodaios](https://github.com/Dodaios/Dodaios). Thank you to its maintainers and contributors for the foundation. The project idea has been developing since July; everyday coding-workspace validation is the current focus.
+
+The PRTS name, Priestess mascot and startup presentation are fork-specific. The inherited workspace and agent infrastructure are credited to upstream. This is independently maintained and is not an official Dodaios release. See the [project background](https://github.com/IanOliverU/PRTS/blob/main/docs/project.md) for current scope, compatibility names and license notices.
+
 ## What You Can Do Now
 
-| Goal | What Dodaios provides |
+| Goal | What PRTS provides |
 |---|---|
 | Talk or type | Saved chats, Pipeline or Realtime voice conversations, and push-to-talk from the current conversation. |
 | Dictate into another app | Local or hosted speech recognition, a personal dictionary, optional wording cleanup, and recent dictation history. |
@@ -46,7 +52,7 @@ unless you choose it.
 
 ## Choose Local, Self-Hosted, or Cloud
 
-Dodaios does not make one provider load-bearing. You choose providers
+PRTS does not make one provider load-bearing. You choose providers
 for different jobs such as Brain reasoning, speech input, speech output,
 Realtime voice, tool use, Agents, and knowledge processing.
 
@@ -94,7 +100,7 @@ are related, but not identical.
 
 ## What It Does Not Do Automatically
 
-Dodaios does not include paid provider access, create third-party
+PRTS does not include paid provider access, create third-party
 accounts, or turn a chat message into secure credential setup. It does not need
 every provider card filled in, and a missing optional integration should not
 break unrelated features.
@@ -128,7 +134,7 @@ about a particular GPU or operating system.
 
 ## Follow a Simple Reader Journey
 
-1. [Install Dodaios](install-dodaios) for your platform and
+1. [Install PRTS](install-dodaios) for your platform and
    complete the in-app setup.
 2. Choose one Brain path in **API Keys**. Use a provider you already trust or
    start with a key-free local option.
@@ -187,6 +193,6 @@ visible error.
 
 ## Next Steps
 
-- [Install Dodaios](install-dodaios).
+- [Install PRTS](install-dodaios).
 - [Tour the Desktop App](desktop-app-tour).
 - [Start Your First Chat](start-your-first-chat).

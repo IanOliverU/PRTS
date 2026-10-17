@@ -4,7 +4,7 @@ content_root: docs/product
 page_count: 49
 navigation_principle: reader-journey
 authoring_contract:
-  audience: People using Dodaios, including readers with no software background.
+  audience: People using PRTS, including readers with no software background.
   style: Lead with the outcome, explain one idea at a time, and prefer short examples and diagrams over large code blocks.
   safety: Use placeholders for credentials, account identifiers, paths, phone numbers, and personal data. Never copy local secrets or PII into documentation.
   connections: Every page must explain how its feature connects to the related features named in this manifest.
@@ -21,9 +21,9 @@ pages:
     order: 1
     slug: welcome-to-dodaios
     file: docs/product/start-here/welcome-to-dodaios.md
-    title: Welcome to Dodaios
+    title: Welcome to PRTS
     diataxis: explanation
-    summary: See how Dodaios turns your computer into an AI agent, what stays under your control, and where to begin.
+    summary: See how PRTS turns your computer into an AI agent, what stays under your control, and where to begin.
     authoritative_sources:
       - README.md
       - AGENTS.md
@@ -41,9 +41,9 @@ pages:
     order: 2
     slug: install-dodaios
     file: docs/product/start-here/install-dodaios.md
-    title: Install Dodaios
+    title: Install PRTS
     diataxis: howto
-    summary: Install Dodaios on a desktop or headless Linux host, choose an update path, and protect your data during repair.
+    summary: Install PRTS on a desktop or headless Linux host, choose an update path, and protect your data during repair.
     authoritative_sources:
       - install/README.md
       - install/install.ps1
@@ -382,7 +382,7 @@ pages:
     file: docs/product/personalize-and-connect/settings-and-appearance.md
     title: Settings and Appearance
     diataxis: howto
-    summary: Adjust startup, sound, keyboard shortcuts, the Dodaios Bar, overlays, and other everyday behavior.
+    summary: Adjust startup, sound, keyboard shortcuts, the PRTS Bar, overlays, and other everyday behavior.
     authoritative_sources:
       - jarvis/ui/web/frontend/src/views/SettingsView.tsx
       - jarvis/ui/web/frontend/src/views/settings/AppSettingsGroup.tsx
@@ -469,7 +469,7 @@ pages:
     file: docs/product/knowledge-and-sharing/wiki-and-memory.md
     title: Wiki and Memory
     diataxis: explanation
-    summary: Understand what Dodaios can remember, how the Wiki connects ideas, and how memory supports chats, contacts, and agents.
+    summary: Understand what PRTS can remember, how the Wiki connects ideas, and how memory supports chats, contacts, and agents.
     authoritative_sources:
       - jarvis/ui/web/frontend/src/views/WikiView.tsx
       - jarvis/ui/web/wiki_routes.py
@@ -510,7 +510,7 @@ pages:
     order: 3
     slug: jarvis-board
     file: docs/product/knowledge-and-sharing/jarvis-board.md
-    title: Dodaios Board
+    title: PRTS Board
     diataxis: explanation
     summary: Explore personal activity, achievements, and optional sharing, including what data leaves the device.
     authoritative_sources:
@@ -572,9 +572,9 @@ pages:
     order: 1
     slug: jarvis-agents
     file: docs/product/extend-and-automate/jarvis-agents.md
-    title: Dodaios-Agents
+    title: PRTS-Agents
     diataxis: explanation
-    summary: Learn when Dodaios delegates longer work, how missions and workers fit together, and how to follow progress and results.
+    summary: Learn when PRTS delegates longer work, how missions and workers fit together, and how to follow progress and results.
     authoritative_sources:
       - jarvis/ui/web/frontend/src/views/JarvisAgentsView.tsx
       - jarvis/ui/web/missions_routes.py
@@ -595,7 +595,7 @@ pages:
     file: docs/product/extend-and-automate/skills.md
     title: Skills
     diataxis: explanation
-    summary: Understand how a skill gives Dodaios repeatable instructions, when it runs, and how drafts differ from enabled skills.
+    summary: Understand how a skill gives PRTS repeatable instructions, when it runs, and how drafts differ from enabled skills.
     authoritative_sources:
       - jarvis/ui/web/frontend/src/views/SkillsView.tsx
       - jarvis/ui/web/skills_routes.py
@@ -661,7 +661,7 @@ pages:
     file: docs/product/extend-and-automate/cli-connections.md
     title: CLI Connections
     diataxis: howto
-    summary: Let Dodaios discover command-line tools, check their readiness, and use only the capabilities available on the current computer.
+    summary: Let PRTS discover command-line tools, check their readiness, and use only the capabilities available on the current computer.
     authoritative_sources:
       - jarvis/ui/web/frontend/src/views/ClisView.tsx
       - jarvis/ui/web/cli_routes.py
@@ -683,7 +683,7 @@ pages:
     file: docs/product/extend-and-automate/computer-use.md
     title: Computer Use
     diataxis: howto
-    summary: Understand how Dodaios sees and operates desktop apps, when it asks for confirmation, and how to stop or recover a run.
+    summary: Understand how PRTS sees and operates desktop apps, when it asks for confirmation, and how to stop or recover a run.
     authoritative_sources:
       - docs/computer-use.md
       - jarvis/plugins/tool/computer_use_tool.py
@@ -798,7 +798,7 @@ pages:
     file: docs/product/privacy-safety-and-support/privacy-and-local-data.md
     title: Privacy and Local Data
     diataxis: explanation
-    summary: Learn what Dodaios stores locally, what may be sent to a connected service, and how each optional feature changes that boundary.
+    summary: Learn what PRTS stores locally, what may be sent to a connected service, and how each optional feature changes that boundary.
     authoritative_sources:
       - AGENTS.md
       - jarvis/core/paths.py
@@ -910,7 +910,7 @@ pages:
     file: docs/product/privacy-safety-and-support/control-key.md
     title: "Your Assistant's Key (Control Key)"
     diataxis: howto
-    summary: Find, use, replace, and regenerate the one key that unlocks Dodaios in a browser and authenticates local agents.
+    summary: Find, use, replace, and regenerate the one key that unlocks PRTS in a browser and authenticates local agents.
     authoritative_sources:
       - jarvis/core/control_key.py
       - jarvis/ui/web/control_routes.py
@@ -1018,7 +1018,7 @@ pages:
     order: 5
     slug: architecture
     file: docs/product/reference/architecture.md
-    title: How Dodaios Fits Together
+    title: How PRTS Fits Together
     diataxis: explanation
     summary: Follow a request from the user interface through providers, tools, safety checks, events, agents, memory, and output.
     authoritative_sources:

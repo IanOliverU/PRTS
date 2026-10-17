@@ -601,7 +601,7 @@ if __name__ == "__main__":  # pragma: no cover
         assert r == _QUESTIONS[2]
 
         # --- Stage 2 → 3: role ---
-        r = runner.handle_answer("Ich baue Dodaios, Solo-Developer")
+        r = runner.handle_answer("Ich baue PRTS, Solo-Developer")
         print(f"[A3] Rolle -> next: {r}")
         assert r == _QUESTIONS[3]
 

@@ -1,4 +1,4 @@
-"""Dodaios provider-slug to worker-harness provider-slug mapping.
+"""PRTS provider-slug to worker-harness provider-slug mapping.
 
 Pure data module without IO — subprocess spawn mechanics live in
 `jarvis/missions/workers/provider_chain.py`.
@@ -157,7 +157,7 @@ _BY_JARVIS: Final[dict[str, ProviderMapping]] = {m.jarvis: m for m in MAPPINGS}
 
 
 class NoWorkerSlugMappingError(ValueError):
-    """Dodaios provider has no worker-harness slug mapping.
+    """PRTS provider has no worker-harness slug mapping.
 
     The bridge must not guess — when switching providers in `jarvis.toml` this
     table must be deliberately extended so that the spike finding (B-2) is preserved.
@@ -165,7 +165,7 @@ class NoWorkerSlugMappingError(ValueError):
 
 
 class NoJarvisFromWorkerSlugError(ValueError):
-    """Worker-harness provider slug has no Dodaios mapping (reverse direction).
+    """Worker-harness provider slug has no PRTS mapping (reverse direction).
 
     Used for telemetry/voice readback when the bridge receives only the worker
     slug from the JSON output (`meta.agentMeta.provider`).
@@ -173,7 +173,7 @@ class NoJarvisFromWorkerSlugError(ValueError):
 
 
 def to_worker_slug(jarvis_provider: str) -> str:
-    """Dodaios-Slug to worker-harness slug.
+    """PRTS-Slug to worker-harness slug.
 
     Example:
         >>> to_worker_slug("gemini")
@@ -187,13 +187,13 @@ def to_worker_slug(jarvis_provider: str) -> str:
     except KeyError:
         known = ", ".join(sorted(JARVIS_TO_WORKER_SLUG))
         raise NoWorkerSlugMappingError(
-            f"No worker-harness mapping for Dodaios provider {jarvis_provider!r}. "
+            f"No worker-harness mapping for PRTS provider {jarvis_provider!r}. "
             f"Known: {known}. Extend jarvis.missions.worker_runtime.provider_map.MAPPINGS."
         ) from None
 
 
 def to_jarvis_from_worker_slug(worker_provider: str) -> str:
-    """Worker-harness slug to Dodaios slug (reverse mapping for telemetry).
+    """Worker-harness slug to PRTS slug (reverse mapping for telemetry).
 
     Example:
         >>> to_jarvis_from_worker_slug("google")
@@ -207,7 +207,7 @@ def to_jarvis_from_worker_slug(worker_provider: str) -> str:
     except KeyError:
         known = ", ".join(sorted(WORKER_SLUG_TO_JARVIS))
         raise NoJarvisFromWorkerSlugError(
-            f"No Dodaios mapping for worker provider {worker_provider!r}. "
+            f"No PRTS mapping for worker provider {worker_provider!r}. "
             f"Known: {known}."
         ) from None
 

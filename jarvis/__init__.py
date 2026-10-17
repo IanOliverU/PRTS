@@ -1,4 +1,4 @@
-"""Dodaios — a voice-driven, cross-platform meta-orchestrator."""
+"""PRTS — a voice-driven, cross-platform meta-orchestrator."""
 
 __version__ = "3.2.0"
 

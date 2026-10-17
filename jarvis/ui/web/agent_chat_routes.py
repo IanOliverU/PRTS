@@ -107,13 +107,13 @@ class ChatSelectionBody(BaseModel):
     account_id: str = ""
 
 
-@router.put("/selection", summary="Remember the model for new Dodaios chats and agents")
+@router.put("/selection", summary="Remember the model for new PRTS chats and agents")
 def save_chat_selection(body: ChatSelectionBody, request: Request) -> dict[str, str]:
     from jarvis.agent_chat.store import ChatSelection
 
     provider = body.provider.strip().lower()
     if not offers("jarvis", provider):
-        raise HTTPException(400, "This provider is not offered on the Dodaios chat")
+        raise HTTPException(400, "This provider is not offered on the PRTS chat")
     if body.account_id:
         from jarvis import agent_accounts
         from jarvis.agent_chat.catalog import provider_row
@@ -167,12 +167,12 @@ def _archived_voice_history(request: Request, voice_session_id: str) -> Any:
     return history
 
 
-@router.get("/voice-chat", summary="The Dodaios chat voice calls continue")
+@router.get("/voice-chat", summary="The PRTS chat voice calls continue")
 def get_voice_chat(request: Request) -> VoiceChatResponse:
     return _voice_chat_answer(_service(request))
 
 
-@router.put("/voice-chat", summary="Continue voice calls in this Dodaios chat")
+@router.put("/voice-chat", summary="Continue voice calls in this PRTS chat")
 def put_voice_chat(body: VoiceChatBody, request: Request) -> VoiceChatResponse:
     """Bind the chat the front page shows: calls file into it and start with its history."""
     svc = _service(request)
@@ -546,7 +546,7 @@ async def get_composer_tools(
     cwd: str | None = None,
     stance: str = "ask",
 ) -> dict[str, Any]:
-    """Discover tools for the Dodaios chat without executing any capability."""
+    """Discover tools for the PRTS chat without executing any capability."""
     from jarvis.agent_chat.tool_catalog import discover
 
     svc = (await _async_service(request))
@@ -969,7 +969,7 @@ def _title_chats(request: Request, svc: Any, rows: list[dict[str, Any]]) -> None
     try:
         titles = chat_titles.titler_for_state(request.app.state).titles_for(requests)
     except Exception:  # noqa: BLE001 - the stored title is a fine answer; logged
-        log.warning("Dodaios chat titles unavailable, keeping the stored ones", exc_info=True)
+        log.warning("PRTS chat titles unavailable, keeping the stored ones", exc_info=True)
         return
     for row in rows:
         key = (chat_titles.KIND_TYPED, str(row["session_id"]))

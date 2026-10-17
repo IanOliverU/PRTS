@@ -206,7 +206,7 @@ are reachable through the CLI's `api` group like every other route.
 
 - Members build one after another, never at the same time: the work is not
   split across parallel builders.
-- A team thread is started from the IDE, not by voice or from the Dodaios chat.
+- A team thread is started from the IDE, not by voice or from the PRTS chat.
 - A finished thread takes no follow-up task; start a new one.
 - A member runs on its provider's active account; a second subscription account
   of one provider cannot be picked per member.

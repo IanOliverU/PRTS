@@ -37,7 +37,7 @@ class AskAgentTool:
     risk_tier = "safe"
     is_action_tool = True
     description = (
-        "Ask one of the user's named Dodaios agents a question and wait for its answer, so "
+        "Ask one of the user's named PRTS agents a question and wait for its answer, so "
         "the user can talk with that agent through you. Use it when the user wants to "
         "speak with or ask an agent ('ask Scout what it found', 'let me talk to the Gmail "
         "agent'). Say the answer as that agent's words and name the agent once. While the "

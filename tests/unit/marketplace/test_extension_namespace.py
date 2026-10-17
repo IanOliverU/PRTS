@@ -1,4 +1,4 @@
-"""A plugin manifest's Dodaios block has two addresses: one written, both read.
+"""A plugin manifest's PRTS block has two addresses: one written, both read.
 
 ``plugin.json`` keeps this app's data under ``extensions[<namespace>]``. The
 namespace was ``io.github.personaljarvis`` and is ``io.github.dodaios`` now.

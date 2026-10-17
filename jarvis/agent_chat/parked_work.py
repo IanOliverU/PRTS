@@ -85,7 +85,7 @@ class ParkedWorkBoard:
 
     @staticmethod
     def parks(session: Any) -> bool:
-        """Dodaios' own chat takes several orders; an agent's one chat keeps its turn."""
+        """PRTS' own chat takes several orders; an agent's one chat keeps its turn."""
         return getattr(session, "surface", "") == "jarvis"
 
     @contextmanager

@@ -1,5 +1,5 @@
 /**
- * The city outside the Dodaios tower: a megacity in the singularity, seen from
+ * The city outside the PRTS tower: a megacity in the singularity, seen from
  * high above. Hundreds of glass towers on a street grid with lit windows,
  * light seams and crowns, avenues full of traffic, flying traffic weaving
  * round the tower above the roofs, beams of light over the tallest roofs,

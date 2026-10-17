@@ -2286,7 +2286,7 @@
       "status_blocked": "Couldn't open X — the image is on your clipboard, open x.com and paste it.",
       "status_blocked_without_image": "Couldn't open X or copy the image. Save the PNG, then open x.com and attach it manually.",
       "card": {
-        "brand": "DODAIOS",
+        "brand": "PRTS",
         "hero_label": "Words spoken",
         "jarvis_suffix": "spoken by {name}",
         "talk_line": "{0} h active · {1} chats",

@@ -625,7 +625,7 @@ READ_TOOLS: Final[tuple[ToolSpec, ...]] = (
     ),
     _s(
         "lm_server_log",
-        "The last lines of the Ollama server log Dodaios writes.",
+        "The last lines of the Ollama server log PRTS writes.",
         _obj({"lines": {"type": "integer", "minimum": 1, "maximum": 200}}),
         "safe",
         _server_log,
@@ -686,7 +686,7 @@ ACTION_TOOLS: Final[tuple[ToolSpec, ...]] = (
     ),
     _s(
         "lm_stop_server",
-        "Stop the Ollama server Dodaios started (never one started elsewhere).",
+        "Stop the Ollama server PRTS started (never one started elsewhere).",
         _obj(),
         "ask",
         _stop_server,
@@ -726,7 +726,7 @@ ACTION_TOOLS: Final[tuple[ToolSpec, ...]] = (
     ),
     _s(
         "lm_install_voice_server",
-        "Install the Dodaios-managed local voice server "
+        "Install the PRTS-managed local voice server "
         "(background; follow with lm_server_status).",
         _obj({"brain_model": _MODEL, "voice_model": {"type": "string"}}),
         "ask",

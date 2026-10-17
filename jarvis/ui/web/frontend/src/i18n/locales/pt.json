@@ -2286,7 +2286,7 @@
       "status_blocked": "Não foi possível abrir o X — a imagem está na área de transferência; abre x.com e cola-a.",
       "status_blocked_without_image": "Não foi possível abrir o X nem copiar a imagem. Guarda o PNG, abre x.com e anexa-o manualmente.",
       "card": {
-        "brand": "DODAIOS",
+        "brand": "PRTS",
         "hero_label": "Palavras faladas",
         "jarvis_suffix": "faladas pelo {name}",
         "talk_line": "{0} h ativo · {1} chats",

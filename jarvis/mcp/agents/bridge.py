@@ -121,7 +121,7 @@ async def _upstream() -> AsyncIterator[Any]:
     key = control_key()
     if not key:
         raise RuntimeError(
-            "No Dodaios credential found. Pair this client from the Dodaios app to "
+            "No PRTS credential found. Pair this client from the PRTS app to "
             "get its own token, or set JARVIS_MCP_TOKEN / JARVIS_CONTROL_KEY."
         )
     url = f"{api_base_url()}{SURFACE_PATH}"
@@ -134,8 +134,8 @@ async def _upstream() -> AsyncIterator[Any]:
 
 def _offline_note(exc: Exception) -> str:
     return (
-        "Dodaios is not reachable right now, so its agents cannot be listed or "
-        f"talked to ({type(exc).__name__}: {exc}). Start the Dodaios app "
+        "PRTS is not reachable right now, so its agents cannot be listed or "
+        f"talked to ({type(exc).__name__}: {exc}). Start the PRTS app "
         f"(expected at {api_base_url()}) and try again."
     )
 

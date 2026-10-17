@@ -482,7 +482,7 @@ class BrowserProfiles:
                 (_digest(code), time.time()),
             ).fetchone()
             if row is None:
-                raise ValueError("Pairing code expired or invalid; create a new code in Dodaios")
+                raise ValueError("Pairing code expired or invalid; create a new code in PRTS")
             pid = row["profile_id"]
             self._require(db, pid)
             db.execute("DELETE FROM pairing WHERE profile_id=?", (pid,))
@@ -500,7 +500,7 @@ class BrowserProfiles:
                 (_digest(code), time.time()),
             ).fetchone()
             if row is None:
-                raise ValueError("Pairing code expired or invalid; create a new code in Dodaios")
+                raise ValueError("Pairing code expired or invalid; create a new code in PRTS")
             return str(row[0])
 
     def authenticate(self, profile_id: str, token: str, installation_id: str) -> bool:

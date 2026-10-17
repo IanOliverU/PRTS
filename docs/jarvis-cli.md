@@ -1,13 +1,13 @@
-# The Dodaios CLI
+# The PRTS CLI
 
-`dodaios` is a command-line interface to a **running** Dodaios instance. It
+`dodaios` is a command-line interface to a **running** PRTS instance. It
 exposes the same action surface as the desktop WebUI, so anything you can click in
 the UI you can also do from a terminal — and, more importantly, so can an external
 coding agent (Claude Code, Codex) or a script.
 
 This is the same relationship `gcloud` / `aws` / `az` have with their cloud
 platforms: a single CLI that surfaces the full capability plane of a service. You
-point it at a running Dodaios and drive it.
+point it at a running PRTS and drive it.
 
 > The command was called `jarvis` before the product was renamed. `jarvis`,
 > `personal-jarvis`, `jarvisctl` and `jctl` are still installed and do exactly
@@ -33,7 +33,7 @@ The CLI is a **thin HTTP client over the REST API**, in two layers:
    `permissions`, `socials`, plus `auth`, `system`, `tasks`.
 
 Because the CLI only ever calls the same routes the WebUI calls, it inherits all
-of Dodaios's safety machinery (risk tiers, the atomic config-write pipeline, the
+of PRTS's safety machinery (risk tiers, the atomic config-write pipeline, the
 event bus, audit) for free — it cannot bypass a guardrail it never re-implements.
 
 It runs on Linux, macOS, and Windows (pure-Python: `typer`, `httpx`,
@@ -54,13 +54,13 @@ still starts the headless server. Only the control subcommands (`dodaios mission
 
 ## Auth & discovery
 
-**Local is zero-config.** When Dodaios is running on the same machine, the desktop
+**Local is zero-config.** When PRTS is running on the same machine, the desktop
 app writes its live port + control token to a single-instance session file; the
 CLI discovers it automatically (and falls back to the machine's control key). Just
 run commands:
 
 ```bash
-dodaios system status        # {"reachable": true} when Dodaios is up
+dodaios system status        # {"reachable": true} when PRTS is up
 dodaios --json brain status
 ```
 
@@ -157,7 +157,7 @@ dodaios local-models server verify                  # the server, one real chat 
 dodaios local-models server autostart off           # on by default; fires only while local models are in use
 dodaios local-models server log --lines 80
 dodaios local-models server env-guide --os linux
-dodaios local-models server stop --yes              # only a server Dodaios itself started
+dodaios local-models server stop --yes              # only a server PRTS itself started
 ```
 
 `options set` replaces the whole profile: `KEY=VALUE` pairs are typed (numbers,
@@ -169,7 +169,7 @@ on a valid config. `--json` before the group prints the untouched API payload.
 
 ## macOS privacy permissions from the terminal
 
-Dodaios asks macOS for a permission at the moment a feature first needs
+PRTS asks macOS for a permission at the moment a feature first needs
 it, never at launch. The `permissions` group is the terminal view of that:
 
 ```bash
@@ -186,11 +186,11 @@ dodaios permissions reset microphone --yes          # forget macOS's answer so i
 `request` answers at once with an outcome (`granted`, `pending` while macOS may be
 showing its dialog, `needs_settings`, `denied`, `unavailable`); the person's answer
 arrives afterwards, so run `status` again. A denial is final from macOS's side: it
-does not ask a second time, and `request` does not pretend otherwise. When Dodaios
+does not ask a second time, and `request` does not pretend otherwise. When PRTS
 is not running as the installed app, `request` asks nothing and says so. The CLI
 only ever asks for the installed app: without the installed bundle `request`
-refuses before anything is sent, and a grant for the app that started Dodaios (a
-terminal, an IDE) can only be confirmed in the Dodaios window, never from the
+refuses before anything is sent, and a grant for the app that started PRTS (a
+terminal, an IDE) can only be confirmed in the PRTS window, never from the
 CLI. An AI agent driving the CLI must never answer a macOS dialog on the user's
 behalf. Both `request` and `open-settings` are rate limited by
 the server (HTTP 429). Off macOS every permission reads `not_required` and
@@ -203,7 +203,7 @@ installer's `com.personal-jarvis.desktop` or the downloaded app's
 `ai.personaljarvis.desktop`; read from the app's `Info.plist`, or named with
 `--bundle-id` when both are installed), never another app's. It does not go
 through the running app (the app's own reset route refuses scripts on purpose),
-so it works with Dodaios closed; quit and reopen Dodaios afterwards, then use the
+so it works with PRTS closed; quit and reopen PRTS afterwards, then use the
 feature and macOS asks again. It needs `--yes` (or `JARVIS_CLI_ASSUME_YES=1`) and
 `--dry-run` prints the exact `tccutil` argv. Off macOS it prints one line and
 exits 1. Permissions without a macOS privacy record (the Keychain) are refused.
@@ -229,14 +229,14 @@ the genuinely consequential:
 - Secrets are never accepted as inline arguments; they are read from a hidden
   prompt or stdin and stored in the OS credential store.
 
-## Driving Dodaios from a Claude Code / Codex session
+## Driving PRTS from a Claude Code / Codex session
 
 This is a first-class use case. An external coding agent can control your running
-Dodaios end-to-end through its shell:
+PRTS end-to-end through its shell:
 
 1. **It's already installed and authenticated.** After `pip install -e .` the
    `dodaios` binary is on PATH, and local auth is zero-config (session-file
-   discovery). The agent runs `dodaios system status` to confirm Dodaios is up.
+   discovery). The agent runs `dodaios system status` to confirm PRTS is up.
 2. **It discovers the surface** with `dodaios --help`, `dodaios <group> --help`, and
    `dodaios api --help` for the full generated list.
 3. **It reads with `--json`** and parses, and **acts with explicit intent**, using

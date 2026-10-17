@@ -79,8 +79,8 @@ def test_a_plugin_reads_keys_from_the_hosts_keyring_service(relative_path: str) 
         "jarvis/plugins/tts/openrouter_tts.py",
     ],
 )
-def test_a_plugin_attributes_requests_to_the_official_repository(relative_path: str) -> None:
-    repository = f"https://github.com/{branding.DEFAULT_OFFICIAL_REPO_SLUG}"
+def test_a_plugin_attributes_requests_to_the_project_repository(relative_path: str) -> None:
+    repository = branding.PROJECT_REPO_URL
     assert f'"HTTP-Referer": "{repository}"' in _read(relative_path)
 
 
@@ -549,3 +549,15 @@ def test_a_command_spelled_like_the_launcher_is_caught(gui_exe: str, command: st
         IdentityName("executable", f"cli:{command}", "current", command),
     ]
     assert len(_collisions(names)) == 1
+
+
+def test_public_fork_links_are_separate_from_the_update_channel() -> None:
+    source = _read("jarvis/ui/web/frontend/src/lib/branding.ts")
+    assert f'export const PROJECT_REPO_SLUG = "{branding.PROJECT_REPO_SLUG}";' in source
+    assert branding.PROJECT_REPO_URL == "https://github.com/IanOliverU/PRTS"
+    assert branding.UPSTREAM_REPO_URL == "https://github.com/Dodaios/Dodaios"
+    assert branding.PROJECT_REPO_URL != branding.OFFICIAL_REPO_URL
+    for filename in ("jarvis/ui/web/frontend/src/components/docs/docsShared.tsx",
+                     "jarvis/ui/web/frontend/src/lib/shareImage.ts"):
+        assert "PROJECT_REPO_URL" in _read(filename)
+        assert "OFFICIAL_REPO_URL" not in _read(filename)

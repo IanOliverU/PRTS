@@ -38,7 +38,7 @@ _OUTPUT_CONTRACT = """\
 The single most important decision you make is: "does this source carry
 a fact worth persisting, or is it smalltalk?". Get this wrong in the
 direction of false positives and the wiki fills with chitchat. Get it
-wrong in the direction of false negatives and Dodaios forgets
+wrong in the direction of false negatives and PRTS forgets
 real facts about its user. Apply the two lists below before considering
 any update.
 
@@ -363,7 +363,7 @@ def build_system_prompt(
     """
 
     parts: list[str] = [
-        "You are the long-term knowledge-wiki curator for Dodaios.",
+        "You are the long-term knowledge-wiki curator for PRTS.",
         "Your job: turn one new source into a small, coherent set of",
         "wiki page updates. Follow the schema below without exception.",
         "",

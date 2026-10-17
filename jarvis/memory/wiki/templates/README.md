@@ -1,4 +1,4 @@
-# Dodaios — Knowledge Vault
+# PRTS — Knowledge Vault
 
 This directory is your assistant's **long-term memory**. Every file in here
 is a piece of what it knows about you, the projects you work on, and the
@@ -36,7 +36,7 @@ Once open, you can:
 - Open the Graph view to see the whole knowledge network.
 - Search across all pages (Ctrl-Shift-F).
 
-### Option B — the Dodaios desktop app
+### Option B — the PRTS desktop app
 
 The Wiki section of the app reads this same folder, so you can browse
 the pages there without Obsidian.
@@ -63,7 +63,7 @@ the first time the migration script runs. Recover via `tar -xzf
 ## What NOT to store here
 
 - Secrets, API keys, credentials → they belong in the operating system's
-  credential store (Dodaios keeps them there, entered under API Keys).
+  credential store (PRTS keeps them there, entered under API Keys).
 - Conversation transcripts verbatim → that's the SQLite recall store's
   job (`data/jarvis.db`). Wiki holds the *distilled* knowledge, not the
   raw log.

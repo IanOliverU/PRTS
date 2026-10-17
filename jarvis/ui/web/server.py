@@ -319,7 +319,7 @@ class WebServer:
 
     def _build_app(self) -> FastAPI:
         app = FastAPI(
-            title="Dodaios — Admin/UI API",
+            title="PRTS — Admin/UI API",
             version=__version__,
             # Swagger UI on ``/api/_swagger`` — the semantic ``/api/docs``
             # path belongs to the doc-browser router (see docs_routes.py).

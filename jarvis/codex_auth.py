@@ -1,6 +1,6 @@
 """Codex CLI auth service — status, login, logout.
 
-Dodaios talks to OpenAI's ``codex`` agent CLI in two roles:
+PRTS talks to OpenAI's ``codex`` agent CLI in two roles:
 
 * **Subagent** (heavy-task worker) via ``codex exec`` using the **ChatGPT
   subscription** (``codex login`` writes OAuth tokens to ``~/.codex/auth.json``;
@@ -648,7 +648,7 @@ class _GuardedCodexLoginProcess:
                 return
             if status == "busy":
                 raise RuntimeError(
-                    "Another Dodaios process is using subscription voice."
+                    "Another PRTS process is using subscription voice."
                 )
             if process.poll() is not None:
                 raise RuntimeError(
@@ -1251,7 +1251,7 @@ class CodexAuthService:
         if sys.platform == "darwin" and process.poll() not in (None, 0):
             return RuntimeError(
                 "The ChatGPT login window could not be opened. macOS is blocking "
-                "Dodaios from controlling Terminal: allow it under System Settings "
+                "PRTS from controlling Terminal: allow it under System Settings "
                 "> Privacy & Security > Automation, then connect again. "
                 f"({exc})"
             )
@@ -1264,7 +1264,7 @@ class CodexAuthService:
             )
             return RuntimeError(
                 f"The terminal '{launch_host}' could not host the ChatGPT login: "
-                "it never started Dodaios's login guardian. Install one of these "
+                "it never started PRTS's login guardian. Install one of these "
                 f"terminals and connect again: {supported}. ({exc})"
             )
         return exc

@@ -2286,7 +2286,7 @@
       "status_blocked": "X ließ sich nicht öffnen — das Bild ist in der Zwischenablage, öffne x.com und füge es ein.",
       "status_blocked_without_image": "X ließ sich nicht öffnen und das Bild konnte nicht kopiert werden. Speichere das PNG und hänge es auf x.com manuell an.",
       "card": {
-        "brand": "DODAIOS",
+        "brand": "PRTS",
         "hero_label": "Wörter gesprochen",
         "jarvis_suffix": "von {name} gesprochen",
         "talk_line": "{0} h aktiv · {1} Gespräche",

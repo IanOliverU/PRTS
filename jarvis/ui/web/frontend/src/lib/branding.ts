@@ -1,6 +1,11 @@
 /** Product display name and public links shared by frontend surfaces. */
 
 export const PRODUCT_NAME = "PRTS";
+/** Public fork links; updater and marketplace identities stay independent. */
+export const PROJECT_REPO_SLUG = "IanOliverU/PRTS";
+export const PROJECT_REPO_URL = `https://github.com/${PROJECT_REPO_SLUG}`;
+export const PROJECT_REPO_LABEL = `github.com/${PROJECT_REPO_SLUG}`;
+export const UPSTREAM_REPO_URL = "https://github.com/Dodaios/Dodaios";
 export const OFFICIAL_REPO_SLUG = "Dodaios/Dodaios";
 export const OFFICIAL_REPO_URL = `https://github.com/${OFFICIAL_REPO_SLUG}`;
 export const OFFICIAL_REPO_LABEL = `github.com/${OFFICIAL_REPO_SLUG}`;

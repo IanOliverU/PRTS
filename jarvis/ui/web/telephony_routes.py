@@ -556,7 +556,7 @@ async def get_scripts(request: Request) -> JSONResponse:
             "path": "scripts/telephony_provision.py",
             "description": (
                 "List buyable numbers, buy one, or point an owned number's voice webhook "
-                "at Dodaios."
+                "at PRTS."
             ),
             "command": (
                 "python scripts/telephony_provision.py set-webhook "

@@ -4,7 +4,7 @@ A society agent runs on one of three runtimes:
 
 | Runtime | What executes a turn | Default |
 |---|---|---|
-| `jarvis` | Dodaios' own brain or the CLI seat the agent's model picks (Claude Code, Codex, …) | yes |
+| `jarvis` | PRTS' own brain or the CLI seat the agent's model picks (Claude Code, Codex, …) | yes |
 | `hermes` | [Hermes Agent](https://github.com/NousResearch/hermes-agent) (NousResearch, MIT) | |
 | `openclaw` | [OpenClaw](https://github.com/openclaw/openclaw) (MIT) | |
 
@@ -34,12 +34,12 @@ Nobody installs Hermes or OpenClaw by hand (`jarvis/agent_runtimes/manager.py`):
 - **Installers.** Hermes: its official `install.ps1` / `install.sh` at the
   pinned commit, without browser tools or desktop control
   (`-SkipBrowser -SkipComputerUse` / `--skip-browser --skip-computer-use`).
-  OpenClaw: Dodaios installs its own copy into `<runtimes_root>/openclaw-cli`
+  OpenClaw: PRTS installs its own copy into `<runtimes_root>/openclaw-cli`
   with a private Node.js — `install-cli.sh --prefix … --version <tested>` on
   macOS and Linux (no sudo, no shell-profile change), `install.ps1 -NodeOnly`
   (a checksum-verified private Node.js, no `winget`/UAC prompt) plus that
-  Node's npm on Windows. Dodaios never updates the person's own OpenClaw; a
-  ready one they installed is used until Dodaios' copy exists. On macOS and
+  Node's npm on Windows. PRTS never updates the person's own OpenClaw; a
+  ready one they installed is used until PRTS' copy exists. On macOS and
   Linux the installer script is downloaded first and run under
   `set -euo pipefail`, so a missing `curl`/`git`, an offline machine or a 404
   fails the job with a plain reason (exit 90 names the missing tool); the
@@ -69,31 +69,31 @@ Each app instance keeps its own runtime folders (`agent_runtimes` for the
 default app, `agent_runtimes-dev` for the dev instance), and a turn holds a
 cross-process lock on its folder.
 
-## Models: Dodaios' model gateway
+## Models: PRTS' model gateway
 
 An agent on Hermes or OpenClaw never talks to a model vendor. Its runtime is
-configured with exactly one provider — Dodaios — and Dodaios answers every model
+configured with exactly one provider — PRTS — and PRTS answers every model
 call with its own provider plugins (`gateway.py`,
 `ui/web/runtime_gateway_routes.py`, routes in `model_map.py`):
 
 - **One endpoint, two long-stable shapes.** `/api/runtime-gateway/v1` on
-  Dodaios' loopback server: `POST /chat/completions` for every API-key and
+  PRTS' loopback server: `POST /chat/completions` for every API-key and
   local provider (Hermes `transport: chat_completions`, OpenClaw
   `api: openai-completions`), `POST /responses` for the ChatGPT subscription
   (Hermes `transport: responses`, OpenClaw `api: openai-responses`),
-  `GET /models` from Dodaios' catalog (the subscription asks its account). The
+  `GET /models` from PRTS' catalog (the subscription asks its account). The
   runtime config is the same for every provider, which is what keeps it
   working across Hermes and OpenClaw updates.
 - **Every connected provider works.** The dialog lists what can answer right
   now — a signed-in subscription first, then each provider with a saved key
-  (the Agents-tier key wins, as for Dodaios' own agents), a local server with
+  (the Agents-tier key wins, as for PRTS' own agents), a local server with
   an address, or Vertex AI on a Google Cloud project without a key. The
   runtimes can use the providers listed in `model_map._ENDPOINTS`; a new
   provider plugin needs an entry there too. A way of paying that exists but
   is refused right now (a Claude login whose Extra Usage is off or spent) is
   reported in `access_blocked` on `/api/agent-runtimes` with its reason code,
   so the dialog shows it disabled.
-- **Keys and logins stay in Dodaios.** The runtime gets a per-agent token
+- **Keys and logins stay in PRTS.** The runtime gets a per-agent token
   (`jrg_…`, process environment only); `SurfaceSecurity` accepts it on
   `/api/runtime-gateway/` and nowhere else. Hermes finds it again on session
   restore through `OPENAI_BASE_URL` = the gateway URL. A token answers only
@@ -125,7 +125,7 @@ call with its own provider plugins (`gateway.py`,
   session, model and credential (LRU of 32) instead of one per call.
 - **Failures.** A provider error before the first token becomes an HTTP
   status and code the runtime acts on; after streaming began it is an `error`
-  chunk (`response.failed` on the subscription). The message is Dodaios' own,
+  chunk (`response.failed` on the subscription). The message is PRTS' own,
   never the provider's body; the body goes to the log as one bounded,
   redacted WARNING line. `provider_errors.py` tells the cases apart: 402
   `billing` (also when OpenAI sends 429 for an empty balance), 400
@@ -135,7 +135,7 @@ call with its own provider plugins (`gateway.py`,
   404 `model_not_found`, 400 `tools_unsupported` / `invalid_tool_schema` /
   `invalid_request`, 401 `provider_auth` / `claude_login_expired`, 429
   `rate_limited` with a cooldown, 502 `provider_error`. Only the codes no
-  runtime can recover from end the Dodaios turn at once
+  runtime can recover from end the PRTS turn at once
   (`provider_errors.TERMINAL_CODES`: billing, Extra Usage, refused key or
   login, unknown model, tool refusals, rate limit); an overflow, a timeout or
   an overloaded provider goes back to the runtime's own retry and
@@ -165,7 +165,7 @@ call with its own provider plugins (`gateway.py`,
 - **ChatGPT subscription.** Handing the login to the runtime would make a
   second program refresh it, and OAuth refresh tokens are single-use:
   whichever refreshed first would break the other, including the person's
-  own Codex login. The gateway answers with Dodaios' subscription client on the
+  own Codex login. The gateway answers with PRTS' subscription client on the
   agent's Codex account, whose refresh is coordinated in one place
   (`live/subscription_auth.py`); a failure mid-stream is `response.failed`.
   A runtime's thinking level is snapped to one the selected ChatGPT model
@@ -205,17 +205,17 @@ after the gateway hardening: Hermes and OpenClaw on Chat Completions and
 Hermes on the subscription, two turns each, all passing.
 
 The runtime decides which agent loop, native tools and session store a turn
-uses. Everything that makes a Dodaios agent stays in Dodaios and is identical
+uses. Everything that makes a PRTS agent stays in PRTS and is identical
 on every runtime: the one endless chat, the briefing (identity, standing
 instructions, memory head, learned skills, teammates), the memory notebooks,
 the learning loop, routines, delegation, quests, island checkpoints and
-approvals. The runtime reaches all of that through the Dodaios MCP tools.
+approvals. The runtime reaches all of that through the PRTS MCP tools.
 
 ## Why ACP
 
 Both projects ship an [Agent Client Protocol](https://agentclientprotocol.com)
 server (JSON-RPC 2.0 over stdio) and document it as the interface for
-embedding hosts. Dodaios drives both through it, plus a handful of documented
+embedding hosts. PRTS drives both through it, plus a handful of documented
 CLI commands, and never imports their internals or speaks their private wire
 formats. An upstream update keeps working as long as the protocol does;
 capabilities are read from the `initialize` answer, not from version strings.
@@ -238,7 +238,7 @@ replayed during `session/load` is swallowed because the chat already shows it.
   OpenClaw it runs on its own Gateway.
 - **Approvals never live in the runtime's config.** Hermes runs with
   `approvals.mode: manual` and OpenClaw with `tools.exec.mode: ask`; every
-  request reaches Dodaios over ACP and is answered from the chat's stance —
+  request reaches PRTS over ACP and is answered from the chat's stance —
   Bypass allows without a card, Ask shows the card, Plan refuses.
 - **A finished turn ends.** After the prompt's answer the runtime gets ten
   seconds to exit on its own, then it is ended; the answer already stands.
@@ -264,7 +264,7 @@ replayed during `session/load` is swallowed because the chat already shows it.
 ## Hermes
 
 - **Process:** `hermes acp`, one process per turn, stdin EOF ends it (exit 0).
-- **Profiles of one Dodaios data root:** every agent folder is a Hermes profile,
+- **Profiles of one PRTS data root:** every agent folder is a Hermes profile,
   `HERMES_HOME=<runtimes_root>/hermes-home/profiles/<agent>`. Hermes keeps its
   Python dependency environment (about 700 MB) per *data root*, and a profile
   shares its root's. With a root per agent, every agent's first turn — and the
@@ -272,7 +272,7 @@ replayed during `session/load` is swallowed because the chat already shows it.
   (measured 84–136 s); now the setup job prepares the shared root once per
   Hermes build (`hermes profile list` under a setup profile, 37–45 s measured
   on Windows) and a first turn starts in seconds (6.8–8.3 s measured, replay
-  model). The root is Dodaios' own, not the person's Hermes home: a profile of
+  model). The root is PRTS' own, not the person's Hermes home: a profile of
   their home would read, and rotate, their own Hermes logins through Hermes'
   global-root credential fallback.
 - **Never on the user's PATH:** Hermes' home maintenance publishes launchers
@@ -284,15 +284,15 @@ replayed during `session/load` is swallowed because the chat already shows it.
   `agent_runtimes` folder) once per app run. An agent's old folder is moved:
   its session store is copied into the profile, then the old folder and its
   private environment are removed.
-- **Config Dodaios writes** (`config.yaml`): `_config_version` from the pins (so
+- **Config PRTS writes** (`config.yaml`): `_config_version` from the pins (so
   Hermes migrates the file forward), `model.provider` / `model.default` /
   `model.base_url`, `terminal.cwd` = the agent workspace, Hermes' own memory
-  and skill nudges off (Dodaios owns memory and skills), the `browser`,
-  `computer_use` and `cronjob` toolsets always disabled (Dodaios has a visible
+  and skill nudges off (PRTS owns memory and skills), the `browser`,
+  `computer_use` and `cronjob` toolsets always disabled (PRTS has a visible
   browser and its own routines; Hermes' browser is a headless Chromium), and
-  `SOUL.md` = the agent's Dodaios briefing. The only key is the gateway token,
+  `SOUL.md` = the agent's PRTS briefing. The only key is the gateway token,
   in the process environment.
-- **Dodaios tools:** passed per session in `session/new` / `session/load`
+- **PRTS tools:** passed per session in `session/new` / `session/load`
   `mcpServers` (HTTP with headers); `HERMES_ACP_SKIP_CONFIGURED_MCP=1` keeps
   any configured servers out. The server is mounted as `dodaios`, so Hermes
   names them `mcp__dodaios__<tool>`; a conversation started while the server
@@ -300,11 +300,11 @@ replayed during `session/load` is swallowed because the chat already shows it.
   and rebuilt under the new name.
 - **Sessions:** persisted in the profile's `state.db`; `session/load` restores
   a conversation in a new process and replays it. An unknown id answers
-  `session/load` with an empty result, which Dodaios treats as "resume lost" and
+  `session/load` with an empty result, which PRTS treats as "resume lost" and
   retries fresh with the transcript in front.
 - **Session restore and the key:** Hermes rebuilds a reopened session from the
   stored `custom` provider and base URL, without the named provider's
-  `key_env`. Dodaios therefore also writes `model.base_url` and passes the
+  `key_env`. PRTS therefore also writes `model.base_url` and passes the
   gateway token as `OPENAI_API_KEY` with `OPENAI_BASE_URL` = the gateway URL,
   the pair that path reads, in that one process' environment only.
 - **Tool search:** Hermes agents keep MCP schemas behind Hermes' own
@@ -318,7 +318,7 @@ replayed during `session/load` is swallowed because the chat already shows it.
   (`tools.toolSearch: false`): a 9B local model never found deferred tools there.
 - **Not yet covered:** Hermes discovers ambient credentials (for example the
   GitHub CLI's `gh auth token` for Copilot) into each profile's credential
-  pool. Dodaios' config never routes a model call to them; switching the
+  pool. PRTS' config never routes a model call to them; switching the
   discovery off needs an upstream setting.
 
 ## OpenClaw
@@ -345,11 +345,11 @@ replayed during `session/load` is swallowed because the chat already shows it.
   where no Job Object reaps it) is stopped before a new one starts — only the
   recorded process, never a recycled pid. Descendants that left its process
   group are reaped with it.
-- **Config Dodaios writes** (`openclaw.json`, only long-stable keys):
+- **Config PRTS writes** (`openclaw.json`, only long-stable keys):
   `gateway.{mode,port,bind,auth}`, `models.providers.<id>` for the agent's
   model, `agents.defaults.{model.primary,workspace,heartbeat.every:"0m"}`,
   `session.reset.mode:"none"`, `mcp.servers.jarvis`, `tools.deny` for native
-  tools that duplicate Dodaios features (automations, messaging, the browser),
+  tools that duplicate PRTS features (automations, messaging, the browser),
   `plugins.deny` for the bundled browser, canvas, desktop-control
   (`cua-computer`), device-pairing, file-transfer, location, voice, GitHub and
   Linux-node plugins, and `logging.file` inside the agent's state folder
@@ -357,23 +357,23 @@ replayed during `session/load` is swallowed because the chat already shows it.
   file). A Gateway exit code 78 (invalid config) runs
   `openclaw doctor --fix --yes --non-interactive` once (contained, killed
   after two minutes), then retries.
-- **Dodaios tools:** OpenClaw rejects per-session `mcpServers`, so the Dodaios
+- **PRTS tools:** OpenClaw rejects per-session `mcpServers`, so the PRTS
   server is configured in the agent's own state directory. Values such as
   `${JARVIS_CONTROL_API_KEY}` are substituted from the Gateway's environment,
-  so no key is written to disk. OpenClaw names them `dodaios__<tool>`; Dodaios
+  so no key is written to disk. OpenClaw names them `dodaios__<tool>`; PRTS
   normalises that to `mcp__dodaios__<tool>`. Names under the server's earlier
   name (`jarvis__<tool>`, `mcp__jarvis__<tool>`) are read the same way
   everywhere a tool name is matched (`jarvis/core/mcp_names.py`).
 - **Sessions:** the fixed session key keeps one conversation across bridge
   processes; the ACP session id changes per process and is not stored.
 - **Heartbeat:** OpenClaw runs a background model turn every 30 minutes by
-  default. Dodaios sets `heartbeat.every: "0m"` for every agent: nothing the
+  default. PRTS sets `heartbeat.every: "0m"` for every agent: nothing the
   person did not start may bill a key.
   Its native cron scheduler and memory-core plugin/slot are also disabled:
   disabling heartbeat alone still allowed a managed dreaming job at startup.
-- **Node:** OpenClaw 2026.9 requires Node `>=24.16 <25 || >=26.1`. Dodaios' own
+- **Node:** OpenClaw 2026.9 requires Node `>=24.16 <25 || >=26.1`. PRTS' own
   copy brings Node 24.21; a person's own install on an unsuitable Node is
-  reported (`problem_kind: node`) and replaced by Dodaios' copy.
+  reported (`problem_kind: node`) and replaced by PRTS' copy.
 - **Not yet covered:** on Windows a Gateway is stopped with
   `TerminateProcess`, skipping its own shutdown drain; a graceful stop needs a
   console-less signal path upstream.
@@ -389,12 +389,12 @@ handling.
 
 Live, 2026-10-06, on a headless dev instance with a local Ollama model
 (`qwen3.5:9b`, no cost): a Hermes and an OpenClaw agent answered with the
-agent's Dodaios identity, read a fact from its Dodaios memory after switching
+agent's PRTS identity, read a fact from its PRTS memory after switching
 runtimes, and wrote a new memory entry through `society_wiki_note`; killing
 the app reaped the OpenClaw Gateway.
 
 `scripts/spikes/agent_runtimes_e2e.py hermes|openclaw` runs the same fake
-model through Dodaios' own drivers (profile and config writing, process
+model through PRTS' own drivers (profile and config writing, process
 environment, the OpenClaw Gateway supervisor): two turns in one conversation,
 no key written into the runtime's folder, no process left behind.
 
@@ -440,7 +440,7 @@ an issue and leaves the pin where it is.
 |---|---|
 | ACP turn client (transport-free) | `jarvis/agent_runtimes/acp.py` |
 | Shared types, child environment, persona text | `jarvis/agent_runtimes/base.py` |
-| Dodaios provider → runtime endpoint and key | `jarvis/agent_runtimes/model_map.py` |
+| PRTS provider → runtime endpoint and key | `jarvis/agent_runtimes/model_map.py` |
 | Hermes driver | `jarvis/agent_runtimes/hermes.py` |
 | OpenClaw driver and Gateway supervisor | `jarvis/agent_runtimes/openclaw.py` |
 | Pinned releases (minimum, tested, Hermes commit) and their reader | `jarvis/agent_runtimes/runtime-versions.json`, `jarvis/agent_runtimes/versions.py` |
@@ -454,6 +454,6 @@ an issue and leaves the pin where it is.
 ## Routines
 
 A routine run keeps its owner's runtime when the run's model can drive it
-(a pinned subscription seat runs on Dodaios' own runtime instead). On OpenClaw
+(a pinned subscription seat runs on PRTS' own runtime instead). On OpenClaw
 each run gets its own Gateway session key, so a run never resets the agent's
 main conversation.

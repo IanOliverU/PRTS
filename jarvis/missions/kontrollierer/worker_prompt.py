@@ -79,7 +79,7 @@ SUPERVISOR_BOUNDARY_DIRECTIVE: Final[str] = (
     "worktree. Never invoke jarvis, jarvisctl, or jctl to control the running "
     "app; never operate the live desktop or Computer Use; never read control "
     "credentials; and never change live configuration. For knowledge and "
-    "research work, use only the supervisor-granted Dodaios tools that appear "
+    "research work, use only the supervisor-granted PRTS tools that appear "
     "in your tool list: the wiki tools (wiki-list, wiki-recall, "
     "wiki-page-read, wiki-ingest), web search "
     "(search_web), and contact lookup (contact-lookup). A tool absent from "

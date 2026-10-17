@@ -381,7 +381,7 @@ def user_block(
             f'<file path="{path}">\n{text}\n</file>' for path, text in skeletons.items()
         )
         parts.append(
-            "FILE OUTLINES AND TASK-RELEVANT LINES (Dodaios looked into these "
+            "FILE OUTLINES AND TASK-RELEVANT LINES (PRTS looked into these "
             "files; partial - signatures plus the numbered lines that mention "
             "the task. Use them to choose the right Key files, to name real "
             "symbols instead of describing code vaguely, and for ## Context)\n"
