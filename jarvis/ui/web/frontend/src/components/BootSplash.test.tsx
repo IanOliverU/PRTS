@@ -9,6 +9,14 @@ function finishAnimation(element: Element, name: string) {
 }
 
 describe("BootSplash exit", () => {
+  it("keeps the full-window background outside the scaled artwork", () => {
+    const {container} = render(<BootSplash status="Starting up" exiting/>);
+    const backdrop = container.querySelector(".prts-viewport")!;
+    const stage = container.querySelector(".prts-stage")!;
+    expect(backdrop.parentElement?.id).toBe("jarvis-boot-splash");
+    expect(stage.contains(backdrop)).toBe(false);
+  });
+
   afterEach(cleanup);
 
   it("waits for its exit fade when a decorative animation finishes", () => {

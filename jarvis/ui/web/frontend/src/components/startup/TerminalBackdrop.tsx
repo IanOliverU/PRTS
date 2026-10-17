@@ -4,7 +4,7 @@ export const TerminalBackdrop:React.FC<{time:number}>=({time:t})=>{
  const a=move(t,0.9,1.65,0,1);
  const rail=move(t,1.02,1.55,0,1);
  return <>
-  <div style={{position:'absolute',left:323,top:43,width:620,height:620,border:'21px solid #b8c7ca',opacity:0.13*a,rotate:'45deg',scale:move(t,0.5,1.2,0.8,1)}} />
+  <div style={{position:'absolute',left:323,top:43,width:620,height:620,border:'21px solid #b8c7ca',opacity:0.13*a,transform:`rotate(45deg) scale(${move(t,0.5,1.2,0.8,1)})`}} />
   <div style={{position:'absolute',top:25,left:35,opacity:a,lineHeight:0.9,borderLeft:'5px solid #111719',paddingLeft:9}}><div style={{fontFamily:'Terminal Condensed, sans-serif',fontSize:29,fontWeight:800,letterSpacing:-1}}>PRTS</div><div style={{fontSize:11,fontWeight:700,letterSpacing:1}}>DESKTOP TERMINAL</div></div>
   <div style={{position:'absolute',top:29,right:36,fontSize:12,opacity:a}}>PERSONAL WORKSPACE / <b>PRIESTESS</b></div>
   <div style={{position:'absolute',bottom:58,width:'100%',textAlign:'center',fontSize:9,opacity:a}}>PRTS DESKTOP TERMINAL SERVICE<div style={{marginTop:12}}>SYSTEM [OS]</div></div>

@@ -80,13 +80,15 @@ export function BootSplash({ status, ready = false, locked = false, exiting = fa
 
   const scale = Math.min(size.width / 1280, size.height / 720);
   const t = still ? (ready ? 11.8 : 9.8) : Math.min(time, 13.3);
+  const appear = still ? 1 : move(t, 0.47, 0.55, 0, 1);
   return <div id="jarvis-boot-splash" className={exiting ? "jbs-exit" : undefined}
     onAnimationEnd={event => {
       if (exiting && event.target === event.currentTarget && event.animationName === "jbs-fade-out") onExited?.();
     }}>
+    <div className="prts-viewport" aria-hidden="true" style={{ opacity: appear }} />
     <audio ref={audio} src="/startup/terminal-intro.wav" preload="auto" aria-hidden="true" />
     <div className="prts-stage" aria-hidden="true" style={{ transform: `translate(-50%,-50%) scale(${scale})` }}>
-      <div className="prts-scene" style={{ opacity: still ? 1 : move(t, 0.47, 0.55, 0, 1) }}>
+      <div className="prts-scene" style={{ opacity: appear }}>
         <TerminalBackdrop time={t} />
         <StartupRow time={t} />
         <div style={{ position: "absolute", left: 0, right: 0, top: 345, textAlign: "center", fontSize: 26, fontWeight: 700, opacity: move(t, 11.35, 11.75, 0, 1) }}>Workspace ready.</div>

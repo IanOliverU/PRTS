@@ -1,13 +1,14 @@
 @font-face { font-family:'Terminal Sans'; src:url('/startup/Roboto.ttf') format('truetype'); font-weight:100 900; font-display:swap; }
 @font-face { font-family:'Terminal Condensed'; src:url('/startup/RobotoCondensed.ttf') format('truetype'); font-weight:100 900; font-display:swap; }
 #jarvis-boot-splash:has(.prts-stage) { background:#111; }
-.prts-stage { position:absolute; left:50%; top:50%; width:1280px; height:720px; overflow:hidden; background:#111; color:#111719; font-family:'Terminal Sans',sans-serif; }
-.prts-scene { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 50%,#f6f7f7 0%,#e9eeee 60%,#d8e3e5 100%); }
+.prts-stage { position:absolute; left:50%; top:50%; width:1280px; height:720px; overflow:hidden; background:transparent; color:#111719; font-family:'Terminal Sans',sans-serif; }
+.prts-viewport { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 50%,#f6f7f7 0%,#e9eeee 60%,#d8e3e5 100%); }
+.prts-scene { position:absolute; inset:0; }
 .prts-boot-status { position:absolute; bottom:64px; left:16px; right:16px; text-align:center; color:#657175; font:12px 'Terminal Sans',sans-serif; }
-.prts-boot-controls { position:absolute; right:24px; bottom:15px; display:flex; gap:16px; }
+.prts-boot-controls { position:absolute; right:24px; bottom:calc((100vh - min(100vh, 56.25vw)) / 2 + min(100vh, 56.25vw) / 12); display:flex; gap:16px; }
 .prts-boot-controls button { border:0; padding:6px; background:transparent; color:#68777c; font:12px 'Terminal Sans',sans-serif; cursor:pointer; }
 .prts-boot-controls button:focus-visible { outline:2px solid #096cdc; outline-offset:2px; }
-:root.dark .prts-scene { filter:invert(1) hue-rotate(180deg); }
+:root.dark .prts-scene, :root.dark .prts-viewport { filter:invert(1) hue-rotate(180deg); }
 :root.dark [data-testid='opening-glyph'] { filter:invert(1); }
 @media (prefers-reduced-motion:reduce) { #jarvis-boot-splash.jbs-exit { animation-duration:.01s; } }
 
