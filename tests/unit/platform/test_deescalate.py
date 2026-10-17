@@ -111,9 +111,7 @@ class TestFailureContainment:
         def boom(argv, *, cwd, env, creationflags):
             raise OSError("token duplication denied")
 
-        result = spawn_unelevated(
-            ["py"], cwd=".", env={}, _platform="win32", _spawn=boom
-        )
+        result = spawn_unelevated(["py"], cwd=".", env={}, _platform="win32", _spawn=boom)
         assert result.ok is False
         assert result.pid is None
         assert "token duplication denied" in result.detail
@@ -122,9 +120,9 @@ class TestFailureContainment:
         def refuse(argv, *, cwd, env, creationflags):
             return DeescalationResult(False, None, "no linked token")
 
-        assert spawn_unelevated(
-            ["py"], cwd=".", env={}, _platform="win32", _spawn=refuse
-        ).pid is None
+        assert (
+            spawn_unelevated(["py"], cwd=".", env={}, _platform="win32", _spawn=refuse).pid is None
+        )
 
 
 def _spawner(record: list, *, ok: bool = True):
@@ -249,3 +247,123 @@ class TestBootTimeDeescalation:
         )
 
         assert result is not None and result.ok is False
+
+
+class TestVerifiedNativeTokens:
+    @pytest.fixture
+    def native(self, monkeypatch):
+        import ctypes
+        from types import SimpleNamespace
+
+        from jarvis.platform import deescalate
+        from tests.fakes.fake_deescalation_win32 import FakeDeescalationWin32
+
+        def configure(**kwargs):
+            fake = FakeDeescalationWin32(**kwargs)
+            monkeypatch.setattr(deescalate, "os", SimpleNamespace(name="nt"))
+            monkeypatch.setattr(ctypes, "WinDLL", fake.library, raising=False)
+            monkeypatch.setattr(ctypes, "get_last_error", lambda: fake.error, raising=False)
+            return fake
+
+        return configure
+
+    @staticmethod
+    def spawn():
+        from jarvis.platform.deescalate import _spawn_unelevated_windows
+
+        return _spawn_unelevated_windows(
+            ["pythonw", "-m", "app"], cwd="C:/workspace", env={}, creationflags=0
+        )
+
+    def test_ordinary_shell_spawns_and_closes_every_handle(self, native):
+        fake = native()
+        result = self.spawn()
+        assert result.ok and result.pid == 4242
+        assert fake.created == [201]
+        assert sorted(fake.closed) == [10, 101, 201, 301, 302]
+
+    def test_elevated_shell_is_refused_without_creating_child(self, native):
+        fake = native(shell_elevated=True)
+        result = self.spawn()
+        assert not result.ok and result.pid is None
+        assert "administrator rights" in result.detail
+        assert fake.created == []
+        assert sorted(fake.closed) == [10, 101, 102, 201]
+
+    def test_elevated_shell_falls_back_to_verified_linked_token(self, native):
+        fake = native(shell_elevated=True, linked_elevated=False)
+        result = self.spawn()
+        assert result.ok
+        assert "linked token" in result.detail
+        assert fake.created == [203]
+        assert sorted(fake.closed) == [10, 101, 102, 103, 201, 203, 301, 302]
+
+    def test_linked_token_must_also_be_unelevated(self, native):
+        fake = native(shell_elevated=True, linked_elevated=True)
+        assert not self.spawn().ok
+        assert fake.created == []
+        assert sorted(fake.closed) == [10, 101, 102, 103, 201, 203]
+
+    @pytest.mark.parametrize("failure", ["unreadable_elevation", "unreadable_integrity"])
+    def test_unreadable_state_fails_closed(self, native, failure):
+        fake = native(**{failure: True})
+        result = self.spawn()
+        assert not result.ok and "could not be verified" in result.detail
+        assert fake.created == []
+        assert sorted(fake.closed) == [10, 101, 102, 201]
+
+    @pytest.mark.parametrize("integrity", [0x1000, 0x3000, 0x4000])
+    def test_only_ordinary_desktop_integrity_is_accepted(self, native, integrity):
+        fake = native(shell_integrity=integrity)
+        assert not self.spawn().ok
+        assert fake.created == []
+        assert 201 in fake.closed
+
+    def test_linked_duplication_failure_is_reported_and_cleaned_up(self, native):
+        fake = native(shell_elevated=True, linked_elevated=False, duplicate_linked=False)
+        result = self.spawn()
+        assert not result.ok and "1346" in result.detail
+        assert fake.created == []
+        assert sorted(fake.closed) == [10, 101, 102, 103, 201]
+
+    def test_spawn_failure_closes_candidate_and_reports_failure(self, native):
+        fake = native(create_ok=False)
+        result = self.spawn()
+        assert not result.ok and result.pid is None
+        assert "87" in result.detail
+        assert sorted(fake.closed) == [10, 101, 201]
+
+    def test_capability_probe_never_creates_child_and_releases_candidate(self, native):
+        from jarvis.platform.deescalate import probe_unelevated_restart
+
+        fake = native()
+        result = probe_unelevated_restart(_platform="win32")
+        assert result.ok and result.pid is None
+        assert fake.created == []
+        assert sorted(fake.closed) == [10, 101, 201]
+
+    def test_capability_probe_reports_no_ordinary_token(self, native):
+        from jarvis.platform.deescalate import probe_unelevated_restart
+
+        fake = native(shell_elevated=True)
+        result = probe_unelevated_restart(_platform="win32")
+        assert not result.ok and result.pid is None
+        assert "restarting from this elevated desktop will not repair it" in result.detail
+        assert fake.created == []
+        assert sorted(fake.closed) == [10, 101, 102, 201]
+
+    def test_non_windows_capability_never_calls_native_api(self):
+        from jarvis.platform.deescalate import probe_unelevated_restart
+
+        def unexpected(*args, **kwargs):
+            raise AssertionError("Native API should not run")
+
+        assert not probe_unelevated_restart(_platform="linux", _probe=unexpected).ok
+
+    def test_capability_exception_becomes_honest_refusal(self):
+        from jarvis.platform.deescalate import probe_unelevated_restart
+
+        def unavailable(*args, **kwargs):
+            raise OSError("token API unavailable")
+
+        assert not probe_unelevated_restart(_platform="win32", _probe=unavailable).ok

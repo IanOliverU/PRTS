@@ -204,7 +204,7 @@
   "input_isolation": {
     "title": "Las herramientas de dictado y escritura no alcanzan esta ventana",
     "impact": "Esta aplicación se está ejecutando con permisos de administrador, por lo que Windows impide que otros programas escriban en ella. Las apps de dictado, los expansores de texto, los gestores de portapapeles y el autocompletado de los gestores de contraseñas parecerán no hacer nada aquí, aunque sigan funcionando en el resto de aplicaciones.",
-    "manual_hint": "La aplicación no puede renunciar por sí misma a los permisos de administrador en esta cuenta de Windows. Ciérrala y vuelve a abrirla con normalidad, sin «Ejecutar como administrador».",
+    "manual_hint": "No hay un token de usuario normal verificado disponible para reiniciar esta aplicación. Iníciala desde una sesión de escritorio de Windows sin permisos de administrador. Si esa sesión también se ejecuta como administrador, cerrar y volver a abrir la aplicación no eliminará sus permisos de administrador.",
     "restart_now": "Reiniciar sin permisos de administrador",
     "restarting": "Reiniciando…",
     "restart_failed": "No se pudo reiniciar la aplicación sin permisos de administrador.",
