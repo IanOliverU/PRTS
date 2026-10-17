@@ -186,14 +186,14 @@ _PHRASES: dict[str, dict[str, str]] = {
     # forwards the engine's own English sentence (en only; the other languages
     # name the permission from the table below); the others are fixed, localized.
     "cu_blocked_permission": {
-        "de": "Ich musste anhalten: Dodaios braucht "  # i18n-allow
+        "de": "Ich musste anhalten: PRTS braucht "  # i18n-allow
               "die Berechtigung {permission}. "  # i18n-allow
               "Erlaube sie unter {pane}. Versuche es danach noch einmal.",  # i18n-allow
         "en": "I had to stop. {sentence}",
-        "es": "Tuve que parar: Dodaios necesita el permiso de {permission}. "
+        "es": "Tuve que parar: PRTS necesita el permiso de {permission}. "
               "Actívalo en {pane}. Después, vuelve a intentarlo.",
         "pt": (
-            "Tive de parar: o Dodaios precisa da permissão de {permission}. Ativa-a em "
+            "Tive de parar: o PRTS precisa da permissão de {permission}. Ativa-a em "
             "{pane}. Depois, tenta outra vez."
         ),
     },
@@ -203,28 +203,28 @@ _PHRASES: dict[str, dict[str, str]] = {
     # only needs these as the fixed fallback.
     "cu_blocked_restart_hint": {
         "de": "Ich musste anhalten: Die Berechtigung {permission} wirkt "  # i18n-allow
-              "womöglich erst, nachdem Dodaios beendet "  # i18n-allow
+              "womöglich erst, nachdem PRTS beendet "  # i18n-allow
               "und neu geöffnet wurde. "  # i18n-allow
               "Starte die App neu und versuche es dann noch einmal.",  # i18n-allow
         "en": "I had to stop: the {permission} permission may only take effect after "
-              "Dodaios is quit and reopened. Reopen the app, then try again.",
+              "PRTS is quit and reopened. Reopen the app, then try again.",
         "es": "Tuve que parar: el permiso de {permission} puede que solo surta efecto "
-              "cuando Dodaios se cierre y se vuelva a abrir. "
+              "cuando PRTS se cierre y se vuelva a abrir. "
               "Reinicia la app y vuelve a intentarlo.",
         "pt": (
-            "Tive de parar: a permissão de {permission} pode só ter efeito depois de o Dodaios "
+            "Tive de parar: a permissão de {permission} pode só ter efeito depois de o PRTS "
             "ser fechado e reaberto. Reinicia a app e tenta outra vez."
         ),
     },
     "cu_blocked_unavailable": {
-        "de": "Ich musste anhalten: Dodaios kann in dieser Sitzung "  # i18n-allow
+        "de": "Ich musste anhalten: PRTS kann in dieser Sitzung "  # i18n-allow
               "nicht nach der Berechtigung {permission} fragen.",  # i18n-allow
-        "en": "I had to stop: Dodaios cannot ask for the {permission} permission "
+        "en": "I had to stop: PRTS cannot ask for the {permission} permission "
               "in this session.",
-        "es": "Tuve que parar: Dodaios no puede pedir el permiso de {permission} "
+        "es": "Tuve que parar: PRTS no puede pedir el permiso de {permission} "
               "en esta sesión.",
         "pt": (
-            "Tive de parar: o Dodaios não pode pedir a permissão de {permission} nesta "
+            "Tive de parar: o PRTS não pode pedir a permissão de {permission} nesta "
             "sessão."
         ),
     },
@@ -268,15 +268,15 @@ _PHRASES: dict[str, dict[str, str]] = {
         ),
     },
     "cu_blocked_generic": {
-        "de": "Ich musste anhalten, weil macOS eine Berechtigung für Dodaios "  # i18n-allow
+        "de": "Ich musste anhalten, weil macOS eine Berechtigung für PRTS "  # i18n-allow
               "braucht. Erlaube sie in den Systemeinstellungen unter Datenschutz & "  # i18n-allow
               "Sicherheit und versuche es dann noch einmal.",  # i18n-allow
-        "en": "I had to stop because macOS needs a permission for Dodaios. "
+        "en": "I had to stop because macOS needs a permission for PRTS. "
               "Allow it in System Settings under Privacy & Security, then try again.",
-        "es": "Tuve que parar porque macOS necesita un permiso para Dodaios. "
+        "es": "Tuve que parar porque macOS necesita un permiso para PRTS. "
               "Actívalo en Ajustes del Sistema, en Privacidad y seguridad, y vuelve a intentarlo.",
         "pt": (
-            "Tive de parar porque o macOS precisa de uma permissão para o Dodaios. "
+            "Tive de parar porque o macOS precisa de uma permissão para o PRTS. "
             "Ativa-a nas Definições do Sistema, em Privacidade e segurança, e tenta outra vez."
         ),
     },
@@ -1211,15 +1211,15 @@ _REASON_FAMILIES: tuple[tuple[re.Pattern[str], dict[str, str]], ...] = (
 #: the on-screen card says it), which :func:`localize_failure_reason` then speaks in
 #: the turn's language. Pure regex and fixed tables (AP-11).
 _PERMISSION_NEEDED_TOKEN_RE = re.compile(r"\[permission_needed:(?P<token>[a-z_]+)\]")
-_PERMISSION_CAUSE_EN = "Dodaios does not have the {name} permission right now."
+_PERMISSION_CAUSE_EN = "PRTS does not have the {name} permission right now."
 _PERMISSION_CAUSE_RE = re.compile(
-    r"^Dodaios does not have the (?P<name>.+?) permission right now\.$"
+    r"^PRTS does not have the (?P<name>.+?) permission right now\.$"
 )
 _PERMISSION_CAUSE_TEMPLATES: dict[str, str] = {
-    "de": "Dodaios hat die Berechtigung {name} gerade nicht.",  # i18n-allow
+    "de": "PRTS hat die Berechtigung {name} gerade nicht.",  # i18n-allow
     "en": _PERMISSION_CAUSE_EN,
-    "es": "Dodaios no tiene ahora el permiso de {name}.",
-    "pt": "O Dodaios não tem neste momento a permissão de {name}.",
+    "es": "PRTS no tiene ahora el permiso de {name}.",
+    "pt": "O PRTS não tem neste momento a permissão de {name}.",
 }
 #: How each language names a permission (the macOS UI labels; unverified on a real Mac).
 _PERMISSION_CAUSE_NAMES: dict[str, dict[str, str]] = {
@@ -1261,11 +1261,11 @@ _PERMISSION_TOKEN_BY_EN_NAME: dict[str, str] = {
 #: Causes without a permission name: a macOS system dialog that is open, and a token
 #: this build does not know. English sentence -> its localized wording.
 _PERMISSION_FIXED_CAUSES: dict[str, dict[str, str]] = {
-    "Dodaios paused because a macOS system dialog is open.": {
-        "de": "Dodaios hat angehalten, weil ein Systemdialog offen ist.",  # i18n-allow
-        "en": "Dodaios paused because a macOS system dialog is open.",
-        "es": "Dodaios se detuvo porque hay un cuadro de diálogo del sistema abierto.",
-        "pt": "O Dodaios parou porque há uma caixa de diálogo do sistema aberta.",
+    "PRTS paused because a macOS system dialog is open.": {
+        "de": "PRTS hat angehalten, weil ein Systemdialog offen ist.",  # i18n-allow
+        "en": "PRTS paused because a macOS system dialog is open.",
+        "es": "PRTS se detuvo porque hay un cuadro de diálogo del sistema abierto.",
+        "pt": "O PRTS parou porque há uma caixa de diálogo do sistema aberta.",
     },
     "A macOS permission is missing right now.": {
         "de": "Eine macOS-Berechtigung fehlt gerade.",  # i18n-allow
@@ -1288,7 +1288,7 @@ def _permission_cause(text: str | None) -> str | None:
         return None
     permission = match.group("token")
     if permission == "system_dialog":
-        return "Dodaios paused because a macOS system dialog is open."
+        return "PRTS paused because a macOS system dialog is open."
     names = _PERMISSION_CAUSE_NAMES.get(permission)
     if names is None:
         return "A macOS permission is missing right now."

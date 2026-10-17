@@ -206,7 +206,7 @@ async def _request(
     try:
         return response.json()
     except ValueError as exc:
-        raise CloudError(f"{spec.name} sent an answer Dodaios cannot read.") from exc
+        raise CloudError(f"{spec.name} sent an answer PRTS cannot read.") from exc
 
 
 # -- parsers (pure; covered by unit tests) ------------------------------------

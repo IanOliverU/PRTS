@@ -73,7 +73,7 @@ import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from jarvis.core.branding import OFFICIAL_REPO_SLUG, OFFICIAL_REPO_URL
+from jarvis.core.branding import PROJECT_REPO_SLUG, PROJECT_REPO_URL
 from jarvis.core.config import get_secret
 
 log = logging.getLogger(__name__)
@@ -100,7 +100,7 @@ _ENV_KEY = "DISCORD_FEEDBACK_WEBHOOK_URL"
 # the honest answer when the operator-only Discord webhook is absent (the
 # default: that credential belongs to the project maintainer, not to the end
 # user running this install).
-_GITHUB_ISSUES_URL = f"{OFFICIAL_REPO_URL}/issues"
+_GITHUB_ISSUES_URL = f"{PROJECT_REPO_URL}/issues"
 
 #: Report type → issue-form filename under ``.github/ISSUE_TEMPLATE/``.
 #: Handed to the frontend so a prefilled issue opens the RIGHT form, which is
@@ -119,7 +119,7 @@ _LABEL_BUG = "bug"
 
 # --- Board (public issue read) ----------------------------------------------
 
-_GITHUB_API_ISSUES = f"https://api.github.com/repos/{OFFICIAL_REPO_SLUG}/issues"
+_GITHUB_API_ISSUES = f"https://api.github.com/repos/{PROJECT_REPO_SLUG}/issues"
 
 #: Unauthenticated GitHub API allows 60 requests per hour per IP. One board
 #: refresh costs two (one per label), so a 15-minute cache keeps a whole day of
@@ -514,7 +514,7 @@ async def submit_feedback(body: FeedbackPayload) -> FeedbackResult:
             {"name": "Python", "value": ctx.python, "inline": True},
             {"name": "Reported at", "value": reported_at, "inline": True},
         ],
-        "footer": {"text": "Dodaios · in-app feedback"},
+        "footer": {"text": "PRTS · in-app feedback"},
     }
     if screenshot_bytes is not None:
         embed["image"] = {"url": "attachment://screenshot.png"}

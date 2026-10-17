@@ -1,4 +1,4 @@
-"""Plugin Marketplace — connect Dodaios to third-party services."""
+"""Plugin Marketplace — connect PRTS to third-party services."""
 
 from jarvis.marketplace.auth.base import (
     AuthHandler,

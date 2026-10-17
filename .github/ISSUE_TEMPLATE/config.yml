@@ -1,11 +1,11 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Questions & community (Discord)
+  - name: Upstream Dodaios community (Discord)
     url: https://discord.gg/x7USduHxbc
-    about: Usage questions, setup help, and general chat.
+    about: Upstream Dodaios discussion. Please file PRTS-specific questions in this repository.
   - name: Ideas & design discussion
-    url: https://github.com/Dodaios/Dodaios/discussions
+    url: https://github.com/IanOliverU/PRTS/issues
     about: Propose a feature, ask how something is meant to work, or float an approach before you build it.
   - name: Security vulnerability
-    url: https://github.com/Dodaios/Dodaios/security/advisories/new
+    url: https://github.com/IanOliverU/PRTS/security/advisories/new
     about: Report privately through GitHub. Please do NOT open a public issue.

@@ -170,3 +170,13 @@ def test_jaro_winkler_bounds():
     assert jaro_winkler("", "code") == 0.0
     assert 0.9 < jaro_winkler("coder", "code") < 1.0
     assert ASK_SCORE < ACT_SCORE
+
+
+def test_shared_prts_prefix_does_not_identify_one_agent():
+    roster = (
+        NameCandidate("code", "PRTS Code", ("PRTS Code",)),
+        NameCandidate("scout", "PRTS Scout", ("PRTS Scout",)),
+    )
+    assert resolve_name("PRTS", roster).decision != "act"
+    result = resolve_name("PRTS Scout", roster)
+    assert result.decision == "act" and result.key == "scout"

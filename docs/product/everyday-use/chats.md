@@ -89,7 +89,7 @@ Any App](dictation).
 
 ## Send the Next Message While Agents Work
 
-In the Dodaios chat on the front page you can give a second order while the
+In the PRTS chat on the front page you can give a second order while the
 first is still being worked on:
 
 - When the assistant has handed your request to a coding agent or one of your

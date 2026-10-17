@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 
 # The main window's title doubles as its focus handle
 # (``_bring_window_to_front_by_title``) and follows the *instance*: the dev app
-# is "Dodaios Dev", so neither instance ever raises the other's window.
+# is "PRTS Dev", so neither instance ever raises the other's window.
 WINDOW_TITLE = current_instance().display_name
 
 # True while the WebView shows the app's own document — booted or still
@@ -122,7 +122,7 @@ DETACHABLE_VIEWS: dict[str, str] = {
     # opens from a capture's thumbnail card or the library, always on one
     # item (``&item=<id>``), and ONE editor window is reused — opening another
     # capture navigates it instead of stacking windows (open_jarvisx_editor).
-    "jarvisx-editor": "Dodaios X Editor",
+    "jarvisx-editor": "PRTS X Editor",
 }
 META_FILE_PATH = DATA_DIR / ".jarvis-running"
 #: Timeout for the initial lock acquire, in seconds. 0 = non-blocking,
@@ -446,7 +446,7 @@ def _write_meta(port: int, pid: int, *, meta_path: Path | None = None) -> None:
         try:
             from loguru import logger
 
-            logger.warning("Could not write Dodaios meta sidecar: {}", exc)
+            logger.warning("Could not write PRTS meta sidecar: {}", exc)
         except Exception:  # noqa: S110
             # The logger itself failed (very early boot); the outer handler
             # above already carries the real report.
@@ -1639,24 +1639,24 @@ def acquire_single_instance_lock(
                     port = int(probe_port)
             elif probe(int(probe_port)):
                 raise SingleInstanceError(
-                    f"Dodaios is already running (port={int(probe_port)} answering, pid unknown)."
+                    f"PRTS is already running (port={int(probe_port)} answering, pid unknown)."
                 )
     if pid is not None and _pid_alive(pid):
         # Closing removes the window and port before the process releases its
         # lock. Let the launcher await that deliberate handover, not evict a
         # process still flushing its state because its health endpoint closed.
         if _quitting_grace_remaining(meta, pid) > 0:
-            raise SingleInstanceError(f"Dodaios is already running (pid={pid}).")
+            raise SingleInstanceError(f"PRTS is already running (pid={pid}).")
         # Holder is alive. Is it actually FUNCTIONAL (serving its port)? A
         # healthy instance, the own pid, or a holder with no recorded port is
         # respected; only a live-but-non-serving lock-zombie is evicted.
         if pid == os.getpid() or port is None or probe(port):
-            raise SingleInstanceError(f"Dodaios is already running (pid={pid}).")
+            raise SingleInstanceError(f"PRTS is already running (pid={pid}).")
         with suppress(Exception):
             from loguru import logger
 
             logger.warning(
-                "Dodaios lock held by a LIVE but non-responding instance "
+                "PRTS lock held by a LIVE but non-responding instance "
                 "(pid={}, port={} not responding) — terminating the lock "
                 "zombie so this start can proceed.",
                 pid,
@@ -1664,7 +1664,7 @@ def acquire_single_instance_lock(
             )
         if not killer(pid):
             raise SingleInstanceError(
-                f"Dodaios lock held by a non-responding instance (pid={pid}); "
+                f"PRTS lock held by a non-responding instance (pid={pid}); "
                 "could not terminate it."
             )
         # fall through to the stale-reclaim path below (sidecar + retry acquire)
@@ -1687,7 +1687,7 @@ def acquire_single_instance_lock(
             last_exc = exc
             if time.monotonic() >= deadline:
                 raise SingleInstanceError(
-                    "Dodaios lock is held but the holder is not responding."
+                    "PRTS lock is held but the holder is not responding."
                 ) from last_exc
             time.sleep(0.3)
 
@@ -3723,17 +3723,17 @@ class DesktopApp:
             if jcur is not None:
                 set_jarvis_system_cursor(jcur)
                 self._jarvis_cursor = jcur
-                logger.info("Dodaios system cursor armed (swap on Computer-Use mission).")
+                logger.info("PRTS system cursor armed (swap on Computer-Use mission).")
         except ModuleNotFoundError as exc:
             if exc.name == "overlay":
                 logger.debug(
-                    "Dodaios system cursor skipped: optional overlay package not installed"
+                    "PRTS system cursor skipped: optional overlay package not installed"
                 )
             else:
-                logger.opt(exception=exc).warning("Dodaios system cursor not startable")
+                logger.opt(exception=exc).warning("PRTS system cursor not startable")
             self._jarvis_cursor = None
         except Exception as exc:  # noqa: BLE001
-            logger.opt(exception=exc).warning("Dodaios system cursor not startable")
+            logger.opt(exception=exc).warning("PRTS system cursor not startable")
             self._jarvis_cursor = None
 
         # 2. Tk halo / click-pulse overlay — opt-in (BUG-030 default off).
@@ -6530,7 +6530,7 @@ class DesktopApp:
         )
         message = (
             "\n"
-            "Dodaios could not open a native desktop window.\n"
+            "PRTS could not open a native desktop window.\n"
             f"Reason: {exc}\n"
             "\n"
             "The backend is running and already serving the full UI. To use it:\n"
@@ -7187,7 +7187,7 @@ class DesktopApp:
                 from loguru import logger as _logger
 
                 _logger.opt(exception=exc).warning(
-                    "Dodaios system-cursor shutdown raised; cursor may stay swapped."
+                    "PRTS system-cursor shutdown raised; cursor may stay swapped."
                 )
             try:
                 from jarvis.overlay.system_cursor import set_jarvis_system_cursor

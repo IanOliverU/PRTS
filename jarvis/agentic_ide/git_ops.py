@@ -586,7 +586,7 @@ def init_repository(folder: str | Path) -> Prepared:
         # root commit with a neutral local identity rather than failing the init.
         fallback = [
             "-c",
-            "user.name=Dodaios",
+            "user.name=PRTS",
             "-c",
             "user.email=jarvis@localhost",
             *message,

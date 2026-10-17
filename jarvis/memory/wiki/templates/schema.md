@@ -4,7 +4,7 @@ purpose: wiki-maintenance-contract
 audience: llm-editor
 ---
 
-# Wiki Schema — Dodaios Knowledge Vault
+# Wiki Schema — PRTS Knowledge Vault
 
 This file is the contract that every LLM editing this vault MUST follow.
 It is read at the top of every wiki write operation. If a rule here
@@ -14,7 +14,7 @@ Inspired by Andrej Karpathy's *LLM Wiki* pattern (gist 442a6bf). The
 core idea: knowledge is **compiled once and maintained continuously**,
 not retrieved-and-rederived on every query. The LLM is the editor; the
 markdown files are the codebase; Obsidian (or the Wiki section of the
-Dodaios desktop app) is the IDE.
+PRTS desktop app) is the IDE.
 
 ## Three-Tier Memory
 

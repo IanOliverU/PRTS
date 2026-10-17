@@ -104,7 +104,7 @@ def test_prepare_workspace_files_carry_managed_marker(tmp_path: Path) -> None:
     workspace = prepare_workspace(tmp_path, mission_id="m-001")
     for name in EXPECTED_WORKSPACE_FILES:
         text = (workspace / name).read_text(encoding="utf-8")
-        assert "managed by Dodaios" in text, f"{name} missing managed marker"
+        assert "managed by PRTS" in text, f"{name} missing managed marker"
 
 
 def test_prepare_workspace_creates_parents(tmp_path: Path) -> None:

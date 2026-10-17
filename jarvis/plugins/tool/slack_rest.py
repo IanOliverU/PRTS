@@ -575,7 +575,7 @@ class SlackRestTool:
         if not found:
             raise _ToolError(
                 f"There is no direct message with {label} yet. Slack only lets "
-                "Dodaios use direct messages that already exist."
+                "PRTS use direct messages that already exist."
             )
         return found[0]
 

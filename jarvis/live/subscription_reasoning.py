@@ -255,7 +255,7 @@ class SubscriptionReasoning:
                 "Select a ChatGPT subscription thinking model before starting voice."
             )
         if any(tool.get("type") != "function" for tool in tools):
-            raise _invalid_request("Subscription reasoning accepts only Dodaios function tools.")
+            raise _invalid_request("Subscription reasoning accepts only PRTS function tools.")
         if reasoning_effort and not _SAFE_EFFORT.fullmatch(reasoning_effort):
             raise _invalid_request("The subscription thinking effort is invalid.")
         if reasoning_effort in {"none", "minimal"}:
@@ -529,7 +529,7 @@ class SubscriptionReasoningBrain:
                 )
             else:
                 raise SubscriptionReasoningError(
-                    "Subscription reasoning accepts only Dodaios function tools."
+                    "Subscription reasoning accepts only PRTS function tools."
                 )
         calls: list[dict[str, Any]] = []
         seen_calls: set[str] = set()

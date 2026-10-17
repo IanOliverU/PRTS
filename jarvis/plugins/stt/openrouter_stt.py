@@ -98,8 +98,8 @@ def _detect_or(language: str | None, configured: str | None) -> str | None:
 
 # The OpenRouter attribution headers (same values the brain adapter sends).
 _ATTRIBUTION_HEADERS = {
-    "HTTP-Referer": "https://github.com/Dodaios/Dodaios",
-    "X-Title": "Dodaios",
+    "HTTP-Referer": "https://github.com/IanOliverU/PRTS",
+    "X-Title": "PRTS",
 }
 
 

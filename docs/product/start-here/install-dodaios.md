@@ -1,7 +1,7 @@
 ---
-title: "Install Dodaios"
+title: "Install PRTS"
 slug: install-dodaios
-summary: "Install Dodaios on a desktop or headless Linux host, choose an update path, and protect your data during repair."
+summary: "Install PRTS on a desktop or headless Linux host, choose an update path, and protect your data during repair."
 section: "Start here"
 section_order: 1
 order: 2
@@ -15,9 +15,11 @@ tags: [installation, setup, updates, windows, macos, linux, headless, pipx]
 related: [first-run-setup, local-ai-providers, platform-support, troubleshooting]
 ---
 
+> [!important] This is inherited installation reference material. PRTS is currently a personal source-development project with no supported packaged release or one-line installer. Commands and downloads targeting the upstream repository or PyPI install upstream software, not this fork. Use the [PRTS development setup](https://github.com/IanOliverU/PRTS/blob/main/CONTRIBUTING.md) for this repository.
+
 The recommended one-line installer creates a **managed installation** in its
 own Python environment, adds a desktop launcher where supported, and opens the
-app. Managed desktop installs can receive published releases inside Dodaios.
+app. Managed desktop installs can receive published releases inside PRTS.
 
 No artificial intelligence provider is required for installation. Connect an
 online provider or a compatible local model after the app opens.
@@ -35,7 +37,7 @@ The installer can offer to add Python or Git through a supported system package
 manager. The macOS desktop launcher also needs the Xcode Command Line Tools.
 When automatic setup is unavailable, the installer shows the manual next step.
 
-Node.js 18 or newer enables some Dodaios-Agent worker tools and integrations but
+Node.js 18 or newer enables some PRTS-Agent worker tools and integrations but
 is optional. A graphics processor is also optional.
 
 > [!warning] Enter provider credentials only in **API Keys & Providers** inside
@@ -134,12 +136,12 @@ providers](local-ai-providers) to run a compatible model on your computer.
 ## Update or Repair an Installation
 
 Managed desktop installs show **Update available** for a newer **published
-GitHub Release**. The button stages that exact release and restarts Dodaios to
+GitHub Release**. The button stages that exact release and restarts PRTS to
 refresh dependencies and desktop files. It never offers unpublished `main`
 changes. A failed post-restart installation rolls back and reports the result.
 
 Finish important work first. Restarting interrupts live terminal panes, which
-reattach or resume where supported. Dodaios asks before interrupting missions.
+reattach or resume where supported. PRTS asks before interrupting missions.
 
 Rerun the original one-line command to repair the managed checkout, Python
 environment, models, or launcher. It keeps completed onboarding. The command
@@ -170,7 +172,7 @@ For other installation types:
    local components; headless keeps the smaller server. Incompatible native
    parts are skipped while the rest remains available.
 3. **Setup connects features.** Language and activation feed voice; providers
-   supply chat, speech, and connected capabilities. Dodaios uses another
+   supply chat, speech, and connected capabilities. PRTS uses another
    compatible configured path or states what is missing.
 4. **The install type controls maintenance.** Managed desktop copies receive
    published releases in-app. PyPI and manual copies use their own workflow.

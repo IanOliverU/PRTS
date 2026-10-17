@@ -4750,7 +4750,7 @@ class OrbOverlay:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Dodaios-Orb Overlay")
+    parser = argparse.ArgumentParser(description="PRTS-Orb Overlay")
     parser.add_argument(
         "--sticky",
         action="store_true",

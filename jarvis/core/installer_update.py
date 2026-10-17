@@ -827,7 +827,7 @@ def _handover_windows(
     except OSError as exc:
         raise InstallerUpdateError(f"could not start {installer.name}: {exc}") from exc
     log.info("[update] handed over to %s (log: %s)", installer.name, log_file)
-    return "the Windows installer is running; Dodaios restarts by itself"
+    return "the Windows installer is running; PRTS restarts by itself"
 
 
 # Absolute, so the relaunch never depends on the PATH a Finder-started app
@@ -1196,20 +1196,20 @@ def update_blocker(
         if app is None:
             return UpdateBlocker(
                 "no_app_bundle",
-                "Dodaios could not find its own app bundle, so it cannot replace it.",
+                "PRTS could not find its own app bundle, so it cannot replace it.",
             )
         if "/AppTranslocation/" in app.as_posix():
             # Gatekeeper runs a quarantined app that was never moved from a
             # read-only, randomised copy; nothing there can be replaced.
             return UpdateBlocker(
                 "app_translocated",
-                "macOS is running Dodaios from a temporary copy. Move it to "
+                "macOS is running PRTS from a temporary copy. Move it to "
                 "the Applications folder, open it from there, then update.",
             )
         if not _can_write(app.parent):
             return UpdateBlocker(
                 "app_read_only",
-                f"Dodaios cannot write to {app.parent} (a disk image or a "
+                f"PRTS cannot write to {app.parent} (a disk image or a "
                 "protected folder). Move it to the Applications folder, then update.",
             )
         return None
@@ -1218,13 +1218,13 @@ def update_blocker(
         if appimage is None:
             return UpdateBlocker(
                 "no_appimage",
-                "This copy of Dodaios was not started from its AppImage file, "
+                "This copy of PRTS was not started from its AppImage file, "
                 "so there is no file to update. Download the new AppImage instead.",
             )
         if not _can_write(appimage.parent):
             return UpdateBlocker(
                 "appimage_read_only",
-                f"Dodaios cannot write to {appimage.parent}. Move the AppImage "
+                f"PRTS cannot write to {appimage.parent}. Move the AppImage "
                 "to a folder you own (for example ~/Applications), then update.",
             )
         return None

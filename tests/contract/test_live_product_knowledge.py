@@ -48,7 +48,7 @@ async def test_spoken_question_finds_the_matching_guide():
 async def test_slug_reads_one_whole_guide():
     result = await ProductHelpTool().execute({"slug": "welcome-to-dodaios"}, None)
     assert result.success
-    assert result.output["guide"]["title"] == "Welcome to Dodaios"
+    assert result.output["guide"]["title"] == "Welcome to PRTS"
 
 
 async def test_unknown_topic_returns_the_table_of_contents():

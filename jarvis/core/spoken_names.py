@@ -77,10 +77,10 @@ _FILLER: Final[frozenset[str]] = frozenset(
     }
 )  # fmt: skip
 
-#: Words that name the product, not an agent: "Dodaios Code" and "Dodaios
+#: Words that name the product, not an agent: "PRTS Code" and "PRTS
 #: Scout" share the product name, so it must not be what decides between them.
 #: The earlier product name stays listed: agents named with it still exist.
-_WEAK: Final[frozenset[str]] = frozenset({"dodaios", "jarvis", "personal"})
+_WEAK: Final[frozenset[str]] = frozenset({"prts", "dodaios", "jarvis", "personal"})
 
 #: Product names a user says on purpose. Speech recognition does not garble
 #: an agent name INTO one of them, so a spoken product name only ever matches

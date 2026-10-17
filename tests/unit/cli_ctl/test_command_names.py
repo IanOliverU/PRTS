@@ -38,7 +38,7 @@ def test_the_version_line_repeats_the_invoked_name(
 
     root.main(args=["version"], prog_name=name, standalone_mode=False)
 
-    assert capsys.readouterr().out.strip() == f"{name} (Dodaios {__version__})"
+    assert capsys.readouterr().out.strip() == f"{name} (PRTS {__version__})"
 
 
 @pytest.mark.parametrize("name", _NAMES)
@@ -66,4 +66,4 @@ def test_a_control_command_through_the_launcher_keeps_the_typed_name(
 
     assert entry._run_control(["version"]) == 0
 
-    assert capsys.readouterr().out.strip() == f"{expected} (Dodaios {__version__})"
+    assert capsys.readouterr().out.strip() == f"{expected} (PRTS {__version__})"

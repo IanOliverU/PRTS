@@ -397,7 +397,7 @@ export function ThreadTree() {
     <div className="flex h-8 items-center justify-between gap-2 pl-2 pr-1 text-[15px] font-semibold text-foreground">
       <span>{t("ide_threads.layout_threads")}</span>
       <div className="flex items-center gap-1">
-        <button type="button" aria-label="Dodaios Live" title="Dodaios Live" onClick={toggleVoice}
+        <button type="button" aria-label="PRTS Live" title="PRTS Live" onClick={toggleVoice}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Mic className="h-3.5 w-3.5" /></button>
         <button type="button" aria-label={t("ide_projects.connect_title")} title={t("ide_projects.connect_folder_title")} onClick={connectProject}
           className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><Plus className="h-3.5 w-3.5" /></button>

@@ -163,8 +163,8 @@ class OpenRouterTTS:
                 "Authorization": f"Bearer {ep.credential}",
                 "Content-Type": "application/json",
                 # OpenRouter attribution headers (same as the brain plugin).
-                "HTTP-Referer": "https://github.com/Dodaios/Dodaios",
-                "X-Title": "Dodaios",
+                "HTTP-Referer": "https://github.com/IanOliverU/PRTS",
+                "X-Title": "PRTS",
             },
         )
         self._resolved_credential = ep.credential

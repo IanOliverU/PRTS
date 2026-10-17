@@ -39,7 +39,7 @@ export function SourceBadge({
   return (
     <span
       className={cn("inline-flex items-center gap-0.5", className)}
-      aria-label={[hasTelegram && "Telegram", hasJarvis && "Dodaios"]
+      aria-label={[hasTelegram && "Telegram", hasJarvis && "PRTS"]
         .filter(Boolean)
         .join(" + ")}
     >

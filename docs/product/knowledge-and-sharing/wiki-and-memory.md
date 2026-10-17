@@ -1,7 +1,7 @@
 ---
 title: "Wiki and Memory"
 slug: wiki-and-memory
-summary: "Understand what Dodaios can remember, how the Wiki connects ideas, and how memory supports chats, contacts, and agents."
+summary: "Understand what PRTS can remember, how the Wiki connects ideas, and how memory supports chats, contacts, and agents."
 section: "Knowledge and sharing"
 section_order: 4
 order: 1
@@ -15,7 +15,7 @@ tags: [wiki, memory, context, profile, contacts, privacy]
 related: [profile-and-contacts, connect-obsidian, jarvis-agents, privacy-and-local-data]
 ---
 
-Dodaios uses several kinds of memory for different jobs. The **Wiki** is the
+PRTS uses several kinds of memory for different jobs. The **Wiki** is the
 long-term layer: a local collection of readable Markdown notes about durable
 information such as people, preferences, projects, decisions, and recurring
 ideas. Links between notes show how those subjects relate.
@@ -28,7 +28,7 @@ remain separate so each can keep the right level of detail and control.
 
 | Memory area | What it is for | What it does not mean |
 |---|---|---|
-| **Current conversation context** | The recent messages Dodaios uses to follow the conversation you are having now | A message is not automatically a permanent Wiki fact |
+| **Current conversation context** | The recent messages PRTS uses to follow the conversation you are having now | A message is not automatically a permanent Wiki fact |
 | **Chat and voice history** | Stored turns and sessions that let you review or search past conversations | A transcript is not the same as a cleaned-up knowledge note |
 | **Activity episodes** | Short summaries of periods of computer activity when awareness features are enabled | They are not a complete screen recording, a verified personal fact, or a default source of Wiki session pages |
 | **Profile** | Explicit facts and preferences about you that directly shape how your assistant responds | The Profile view and the Wiki's user page are separate; editing one does not guarantee that the other changes |
@@ -65,7 +65,7 @@ history, and links to other subjects.
    A broken link points to a page that does not currently exist.
 
 The in-app Wiki is a reader. To edit the underlying notes yourself, connect an
-optional Markdown editor through [Connect Obsidian](connect-obsidian). Dodaios
+optional Markdown editor through [Connect Obsidian](connect-obsidian). PRTS
 works without Obsidian because the files remain ordinary Markdown on your
 computer.
 
@@ -77,7 +77,7 @@ known, unsupported, or unsafe to store. If a detail must be saved, make the
 request explicit and name the Wiki, for example: `Save to my wiki that I prefer
 written summaries.`
 
-Dodaios acknowledges that the write has started, then reports whether it was
+PRTS acknowledges that the write has started, then reports whether it was
 saved or failed. Wait for that completion result before relying on the note.
 Open **Wiki** and inspect the page named in the result when the detail matters.
 The Wiki view has no note editor or save form; the explicit chat or voice
@@ -97,7 +97,7 @@ request is the in-app manual write path.
   consolidation. Work that remains pending can be retried after a restart or
   by the age-based background check. A separate periodic curator run is off by
   default.
-- **An explicit Wiki request is manual and result-based.** Dodaios sends the
+- **An explicit Wiki request is manual and result-based.** PRTS sends the
   text through the guarded curator and announces success only after at least
   one page was written. Unsupported, duplicate, sensitive, malformed, or
   conflicting content can still result in no write.
@@ -113,7 +113,7 @@ request is the in-app manual write path.
 The background memory path uses two checks so that an early guess cannot write
 straight into a page:
 
-| Step | What Dodaios does | Possible result |
+| Step | What PRTS does | Possible result |
 |---|---|---|
 | 1. Review the turn | Looks for a durable user-stated fact; assistant text may help resolve context but is not accepted as evidence | No candidate, or a short candidate tied to the user's turn |
 | 2. Compare knowledge | Reads the most relevant complete Wiki pages and checks the candidate against them | Add, update, no change, or invalidate outdated information |
@@ -144,14 +144,14 @@ Markdown vault when needed.
 
 ## How It Fits Together
 
-1. **A chat or voice turn supplies possible knowledge.** Dodaios can keep the
+1. **A chat or voice turn supplies possible knowledge.** PRTS can keep the
    current exchange in conversation context and review the user-stated part in
    the background. The reply does not wait for this review.
 
 2. **A connected provider performs the language review.** By default, the
    **Wiki (long-term memory)** setting follows the active Brain and chooses a
    lower-cost model. You can select a different Wiki provider under **API Keys
-   > Advanced**. If the preferred provider is unavailable, Dodaios tries other
+   > Advanced**. If the preferred provider is unavailable, PRTS tries other
    registered providers that have a usable credential or login. If none works,
    the conversation can still finish while the Wiki reports that nothing was
    written.
@@ -171,7 +171,7 @@ Markdown vault when needed.
    email, and street address. These companion pages appear in the Wiki tree,
    but you should edit the authoritative record in **Contacts**.
 
-5. **Dodaios-Agents use a short-lived supervisor grant.** A mission can receive
+5. **PRTS-Agents use a short-lived supervisor grant.** A mission can receive
    Wiki tools to list, search, and read pages, plus the guarded Wiki ingest
    command. Read access is not limited to a predefined set of pages, so a
    granted agent may search and read any visible page needed for its task.
@@ -181,11 +181,11 @@ Markdown vault when needed.
 
 6. **Obsidian is an optional second view of the same files.** Manual Markdown
    edits stay on your computer and can appear in the app after the Wiki refreshes.
-   Obsidian does not own the data and is not required for Dodaios to run.
+   Obsidian does not own the data and is not required for PRTS to run.
 
 The storage is local, but processing is not necessarily local. When you use a
 remote Wiki provider, relevant user excerpts and related Wiki page content may
-be sent to that provider for extraction and review. A Dodaios-Agent using a
+be sent to that provider for extraction and review. A PRTS-Agent using a
 remote model may also process any Wiki content it reads through its grant. Read
 [Privacy and Local Data](privacy-and-local-data) before storing sensitive
 personal information.
@@ -194,14 +194,14 @@ personal information.
 
 1. In a chat or voice conversation, say: `Save to my wiki that I prefer written
    summaries.`
-2. Wait for Dodaios to report a successful save. A message that it is still
+2. Wait for PRTS to report a successful save. A message that it is still
    writing is not the final result.
 3. Open **Wiki** and confirm that the health strip reports a successful last
    write rather than a pending or failed one.
 4. Open the page named in the completion result and confirm that the statement
    appears in the right context.
 
-The memory path works when Dodaios confirms the completed write, the Wiki health
+The memory path works when PRTS confirms the completed write, the Wiki health
 stays clear, and the page contains the expected statement. Delete or correct
 the test sentence in the Markdown vault if it does not describe a real
 preference.
@@ -225,7 +225,7 @@ preference.
   place for personal preferences and contact details.
 - Follow [Connect Obsidian](connect-obsidian) to view and edit the same Markdown
   vault with a dedicated knowledge editor.
-- Read [Dodaios-Agents](jarvis-agents) to understand short-lived Wiki access,
+- Read [PRTS-Agents](jarvis-agents) to understand short-lived Wiki access,
   guarded writes, and the supervisor boundary for missions.
 - Review [Privacy and Local Data](privacy-and-local-data) before saving personal
   information or using a remote provider for memory processing.

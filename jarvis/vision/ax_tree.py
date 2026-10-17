@@ -75,9 +75,9 @@ _MAX_RAW_NODES = 6000
 # per the Output Language Policy + AD-13. An AX read never asks: Jarvis asks the
 # first time it must type or click for the user.
 _AX_PERMISSION_MSG = (
-    "macOS Accessibility access is not granted to Dodaios: the UI tree "
+    "macOS Accessibility access is not granted to PRTS: the UI tree "
     "is not read and named UI lookup stays off. It is requested the first time "
-    "Dodaios has to click or type for you."
+    "PRTS has to click or type for you."
 )
 
 

@@ -65,11 +65,11 @@ NOTICE_LABELS: dict[str, dict[str, str]] = {
         "pt": "O agente",  # i18n-allow
     },
     "no_answer": {
-        "en": "Dodaios could not answer",
-        "de": "Dodaios konnte nicht antworten",  # i18n-allow
-        "es": "Dodaios no pudo responder",  # i18n-allow
-        "zh": "Dodaios 无法回答",  # i18n-allow
-        "pt": "O Dodaios não conseguiu responder",  # i18n-allow
+        "en": "PRTS could not answer",
+        "de": "PRTS konnte nicht antworten",  # i18n-allow
+        "es": "PRTS no pudo responder",  # i18n-allow
+        "zh": "PRTS 无法回答",  # i18n-allow
+        "pt": "O PRTS não conseguiu responder",  # i18n-allow
     },
 }
 

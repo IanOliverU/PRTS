@@ -1,7 +1,7 @@
 ---
 title: "Computer Use"
 slug: computer-use
-summary: "Understand how Dodaios sees and operates desktop apps, when it asks for confirmation, and how to stop or recover a run."
+summary: "Understand how PRTS sees and operates desktop apps, when it asks for confirmation, and how to stop or recover a run."
 section: "Extend and automate"
 section_order: 5
 order: 6
@@ -15,12 +15,12 @@ tags: [computer-use, desktop, vision, permissions, safety, providers]
 related: [permissions, safety-and-approvals, jarvis-agents, platform-support]
 ---
 
-Computer Use lets Dodaios inspect and operate the graphical desktop on the
-computer where Dodaios is running. It can open or switch apps, click controls,
+Computer Use lets PRTS inspect and operate the graphical desktop on the
+computer where PRTS is running. It can open or switch apps, click controls,
 type into fields, press keys, scroll, and drag when an app does not offer a
 direct connection.
 
-Dodaios works in a loop: it captures the target window or monitor, chooses an
+PRTS works in a loop: it captures the target window or monitor, chooses an
 action, performs it, and checks the visible result. This makes a run more
 careful than a blind sequence of clicks, but it does not make the result
 infallible. Watch the screen and start with a small, reversible task.
@@ -39,7 +39,7 @@ infallible. Watch the screen and start with a small, reversible task.
   test. The Tool Model is separate from the model that writes chat replies.
 - On macOS, Computer Use needs **Screen Recording** and **Accessibility**.
   macOS asks the first time Computer Use needs each one. If you said no, use
-  **Open System Settings** on the short message Dodaios shows (or start over, see
+  **Open System Settings** on the short message PRTS shows (or start over, see
   [Permissions](permissions)); use **Quit and reopen** only when that message
   offers it.
 - On Linux X11, keep `xdotool` installed when you need to type accented text,
@@ -50,8 +50,8 @@ infallible. Watch the screen and start with a small, reversible task.
 
 > [!note] Fresh installations enable Computer Use. An existing installation
 > can retain an older disabled setting, and the desktop app still has no
-> on/off control. If Dodaios says the feature is off, run `jarvis config set
-> computer_use.enabled true`, restart Dodaios, and repeat a harmless check.
+> on/off control. If PRTS says the feature is off, run `jarvis config set
+> computer_use.enabled true`, restart PRTS, and repeat a harmless check.
 
 > [!warning] A captured window can contain private information. Computer Use
 > stores captured frames in the local flight recorder and sends the working
@@ -64,14 +64,14 @@ infallible. Watch the screen and start with a small, reversible task.
 
 | Part | Current behavior | Boundary |
 |---|---|---|
-| **View** | Captures the foreground target window by default and reads available accessibility labels; falls back to the selected monitor when it cannot isolate the window | Hidden windows and off-screen content are not visible until Dodaios brings them forward or scrolls |
-| **Pointer** | Clicks, double-clicks, scrolls, and drags | A display or foreground-window change makes Dodaios discard stale coordinates and look again |
-| **Keyboard** | Types text and sends keys or shortcuts to the focused control | Text can land in the wrong place if focus changes; Dodaios checks editable fields when the operating system exposes them |
+| **View** | Captures the foreground target window by default and reads available accessibility labels; falls back to the selected monitor when it cannot isolate the window | Hidden windows and off-screen content are not visible until PRTS brings them forward or scrolls |
+| **Pointer** | Clicks, double-clicks, scrolls, and drags | A display or foreground-window change makes PRTS discard stale coordinates and look again |
+| **Keyboard** | Types text and sends keys or shortcuts to the focused control | Text can land in the wrong place if focus changes; PRTS checks editable fields when the operating system exposes them |
 | **Apps** | Opens an installed app or switches to an existing window | It cannot operate an app that is absent, blocked, or running with incompatible system privileges |
 | **Verification** | Looks again after actions and stops after repeated misses, no progress, timeout, or the step limit | A visible change is evidence, not proof that an external transaction was correct |
-| **Sensitive screens** | Stops when it detects a password field, two-factor prompt, or human-verification challenge | Complete that step yourself, then give Dodaios a new request |
+| **Sensitive screens** | Stops when it detects a password field, two-factor prompt, or human-verification challenge | Complete that step yourself, then give PRTS a new request |
 
-For a read-only request, say what you want Dodaios to inspect and explicitly
+For a read-only request, say what you want PRTS to inspect and explicitly
 say not to click or type. The loop can finish from visible evidence without
 sending input, but the screenshot still goes to the Tool Model.
 
@@ -84,8 +84,8 @@ by default.
 
 A browser is treated like any other desktop app. Computer Use reads its pixels
 and available accessibility labels; it does not provide a separate headless
-browser or Document Object Model automation mode. If you open Dodaios from
-another device, Computer Use still controls the desktop on the Dodaios host,
+browser or Document Object Model automation mode. If you open PRTS from
+another device, Computer Use still controls the desktop on the PRTS host,
 not the device running the browser.
 
 ## Run a Bounded Desktop Task
@@ -100,30 +100,30 @@ not the device running the browser.
    information that should not appear in a screenshot, transcript, or provider
    request.
 
-3. **Wait for the acknowledgement.** Dodaios confirms that it will handle the
+3. **Wait for the acknowledgement.** PRTS confirms that it will handle the
    task on screen, then continues in the background. Only one run controls the
    physical mouse and keyboard at a time. A second run waits for the desktop or
    reaches its own timeout; it does not race the active run.
 
 4. **Watch the screen indicator.** On a supported desktop build, a pulsing gold
-   border appears while Dodaios can send input, with an **Esc to cancel** hint
+   border appears while PRTS can send input, with an **Esc to cancel** hint
    when the global shortcut is available. The capture path tries to keep the
    border out of Computer Use's own screenshots. If the overlay component or
    shortcut backend is unavailable, the run can continue without the border or
    hint.
 
-5. **Avoid changing the target.** Dodaios may open an app, capture a fresh view,
+5. **Avoid changing the target.** PRTS may open an app, capture a fresh view,
    perform one or a few related actions, and capture again. Avoid switching
    windows, moving the target between displays, or typing into the same app
    while a step is in progress. A changed foreground window or display layout
-   makes Dodaios discard stale coordinates and capture again.
+   makes PRTS discard stale coordinates and capture again.
 
-6. **Handle any human-only screen.** When Dodaios recognizes a password,
+6. **Handle any human-only screen.** When PRTS recognizes a password,
    two-factor, or human-verification prompt, it stops. Complete that step
    manually, make the intended app active again, and send a smaller follow-up
    request.
 
-7. **Check the completion message and the screen.** Dodaios reports success
+7. **Check the completion message and the screen.** PRTS reports success
    only after a final visual check. Confirm the actual app state yourself,
    especially when the result affects another person, an account, or money.
 
@@ -146,16 +146,16 @@ queued or active Computer Use run.
 
 ### Understand Confirmations
 
-Every desktop action passes through Dodaios's safety layer, where a blocked
+Every desktop action passes through PRTS's safety layer, where a blocked
 policy stops it. The current Computer Use mouse and keyboard actions are
 classified as **safe** or **monitor**. Because the default approval policy asks
 only for **ask** actions, a normal chat or voice run does not show a
 confirmation before each click or typed value. The CLI's `--yes` confirms that
 you want to start desktop control; it is not a preview of every later step.
 
-If the surrounding request reaches a separate **ask** action, Dodaios waits for
+If the surrounding request reaches a separate **ask** action, PRTS waits for
 approval and does not run that action after a denial or approval timeout.
-Dodaios cannot reliably infer the real-world consequence of every on-screen
+PRTS cannot reliably infer the real-world consequence of every on-screen
 button from its label. Treat Computer Use as supervised control, not as a safe
 way to approve purchases, delete data, send messages, or publish content.
 
@@ -165,13 +165,13 @@ way to approve purchases, delete data, send messages, or publish content.
   cancels every active Computer Use run through the global shortcut. If no
   hint is shown, do not assume that Escape is registered.
 - During a voice session, say **hang up** or select the visible close control
-  on the Dodaios Bar. This cancels every queued or active Computer Use run
-  without cancelling a separate Dodaios-Agent mission.
+  on the PRTS Bar. This cancels every queued or active Computer Use run
+  without cancelling a separate PRTS-Agent mission.
 - From a terminal, run `jarvis computer-use list`, then cancel one mission by
   identifier or use `jarvis computer-use cancel-all --yes`. The desktop app
   does not currently have a dedicated Computer Use run list or cancel button.
 - If none of these controls is available and input continues, exit
-  Dodaios. Reopen it only after checking what already changed.
+  PRTS. Reopen it only after checking what already changed.
 - Moving the pointer into a screen corner is not a supported stop control in
   the current engine.
 - Cancellation prevents later steps after the stop is observed; it cannot undo
@@ -185,23 +185,23 @@ way to approve purchases, delete data, send messages, or publish content.
    a fast local action; a visual or ambiguous target goes to Computer Use.
 2. Computer Use captures the target window, or the selected monitor when a
    window capture is unavailable, and asks the active, image-capable Tool Model
-   for the next action. If that provider is unavailable, Dodaios can try another
+   for the next action. If that provider is unavailable, PRTS can try another
    configured provider family that can see images. Learn how those choices are
    separated in [Providers and API Keys](providers-and-api-keys).
-3. [App Permissions](permissions) decide whether Dodaios can capture the screen
+3. [App Permissions](permissions) decide whether PRTS can capture the screen
    and send input. [Safety and Approvals](safety-and-approvals) evaluates each
    proposed action before the operating system receives it.
-4. Dodaios performs the action, captures a fresh view, and verifies the visible
+4. PRTS performs the action, captures a fresh view, and verifies the visible
    effect. Desktop runs are serialized so two goals do not drive the same
    pointer at once. A recorded turn can show a **Computer-Use** badge and action
    evidence in [Sessions and Run Inspector](sessions-and-run-inspector).
-5. A [Dodaios-Agent](jarvis-agents) handles longer work in an isolated project
+5. A [PRTS-Agent](jarvis-agents) handles longer work in an isolated project
    workspace; it does not replace Computer Use for the live desktop. Prefer an
    [MCP connection](mcp-connections) or [CLI connection](cli-connections) when
    a service offers a structured action that avoids visual clicking.
 6. A file saved through a desktop app remains an ordinary file in the place
    that app chose. It does not become an [Outputs](outputs-and-files) card
-   unless a Dodaios-Agent mission created and archived it.
+   unless a PRTS-Agent mission created and archived it.
 
 ## Check That It Works
 
@@ -210,8 +210,8 @@ way to approve purchases, delete data, send messages, or publish content.
    100 is visible.
 3. Watch for the calculator to open and show **100** without taking control of
    the keyboard or pointer during the run. On a supported desktop build, the
-   gold border is visible only while Dodaios can control input.
-4. Confirm that Dodaios sends a completion message after the visible result.
+   gold border is visible only while PRTS can control input.
+4. Confirm that PRTS sends a completion message after the visible result.
    If you started by voice and session recording is active, open **Run
    Inspector** and look for the **Computer-Use** badge on that turn.
 
@@ -222,11 +222,11 @@ completion message arrives after that state appears, not before it.
 
 | What you see | What it usually means | What to do |
 |---|---|---|
-| Dodaios says Computer Use is not active, or reports Wayland or no display | An older installation kept the feature off, desktop components are missing, or the session cannot provide global capture and input | Enable it with `jarvis config set computer_use.enabled true`; otherwise use the full desktop install in a Windows, macOS, or Linux X11 session, then restart Dodaios and repeat the harmless check |
-| Dodaios says no model can see the screen | The Tool Model is missing, text-only, out of credit, rate limited, or unavailable across all compatible fallbacks | Open **API Keys & Providers > Tool Model**, test a connected image-capable model, and activate a healthy option |
-| Dodaios cannot see or control the screen on macOS | Screen Recording or Accessibility is off, denied, or belongs to an older app identity, or a change needs a restart | Use **Open System Settings** on the message Dodaios shows for each item that is off, use **Quit and reopen** when it is offered, or start over with `jarvis permissions reset`, then try again |
+| PRTS says Computer Use is not active, or reports Wayland or no display | An older installation kept the feature off, desktop components are missing, or the session cannot provide global capture and input | Enable it with `jarvis config set computer_use.enabled true`; otherwise use the full desktop install in a Windows, macOS, or Linux X11 session, then restart PRTS and repeat the harmless check |
+| PRTS says no model can see the screen | The Tool Model is missing, text-only, out of credit, rate limited, or unavailable across all compatible fallbacks | Open **API Keys & Providers > Tool Model**, test a connected image-capable model, and activate a healthy option |
+| PRTS cannot see or control the screen on macOS | Screen Recording or Accessibility is off, denied, or belongs to an older app identity, or a change needs a restart | Use **Open System Settings** on the message PRTS shows for each item that is off, use **Quit and reopen** when it is offered, or start over with `jarvis permissions reset`, then try again |
 | The pointer, drag, or typed text is wrong | Focus or display layout changed, an elevated Windows window blocked input, or Linux lacks `xdotool` for non-ASCII typing | Bring a normal non-administrator app window forward, keep the layout stable, install `xdotool` on X11 when needed, and retry one named control |
-| Dodaios stops at a sensitive screen, reports no progress, or rejects completion | It needs a human-only login step, the interface changed, or the visible result could not be verified | Complete sensitive input yourself; otherwise check the screen and retry a shorter goal with one visible result |
+| PRTS stops at a sensitive screen, reports no progress, or rejects completion | It needs a human-only login step, the interface changed, or the visible result could not be verified | Complete sensitive input yourself; otherwise check the screen and retry a shorter goal with one visible result |
 
 For a failure that affects other app areas as well, use the main
 [Troubleshooting](troubleshooting) guide instead of repeatedly retrying the
@@ -240,5 +240,5 @@ same desktop action.
   paths and the desktop checks that still depend on the current host.
 - Read [Safety and Approvals](safety-and-approvals) to understand monitored,
   confirmed, and blocked actions before relying on automation.
-- Learn when to use [Dodaios-Agents](jarvis-agents) for longer work that should
+- Learn when to use [PRTS-Agents](jarvis-agents) for longer work that should
   run outside the live desktop.

@@ -141,11 +141,11 @@ _Generated from the curated command tree by `scripts/ci/gen_cli_reference.py` �
 - `dodaios local-models options suggest <name> --provider` — An advisory profile for this machine, with one reason per knob.
 - `dodaios local-models roles list --provider` — Every role with its pick, what qualifies, and the recommendation.
 - `dodaios local-models roles set <role> <model> --provider --dry-run` — Assign a model to a role (written through the config writers).
-- `dodaios local-models server autostart <state> --provider --dry-run` — Show or flip "start the server with Dodaios" (fires only while local models are in use).
+- `dodaios local-models server autostart <state> --provider --dry-run` — Show or flip "start the server with PRTS" (fires only while local models are in use).
 - `dodaios local-models server env-guide --os --provider` — Copyable per-OS commands for the server's environment variables.
-- `dodaios local-models server log --lines --provider` — The last lines of the server log Dodaios writes when it starts the server.
+- `dodaios local-models server log --lines --provider` — The last lines of the server log PRTS writes when it starts the server.
 - `dodaios local-models server status --provider` — Runtime picture plus what is loaded and how much disk the downloads take.
-- `dodaios local-models server stop --provider --yes --dry-run` — Stop the server Dodaios itself started (never one started elsewhere).
+- `dodaios local-models server stop --provider --yes --dry-run` — Stop the server PRTS itself started (never one started elsewhere).
 - `dodaios local-models server test <base_url> --provider` — Probe a host before saving it: version and latency, or why it failed.
 - `dodaios local-models server verify --provider` — Prove the setup works: the server, one real chat answer, one real embedding.
 
@@ -195,7 +195,7 @@ _Generated from the curated command tree by `scripts/ci/gen_cli_reference.py` �
 
 - `dodaios permissions open-settings <permission_id> --yes --dry-run` — Open the matching macOS privacy pane through LaunchServices.
 - `dodaios permissions request <permission_id> --yes --dry-run` — Ask macOS for one permission through the same service the app uses.
-- `dodaios permissions reset <permission_id> --bundle-id --yes --dry-run` — Forget what macOS recorded for Dodaios, so it asks again on next use (macOS only).
+- `dodaios permissions reset <permission_id> --bundle-id --yes --dry-run` — Forget what macOS recorded for PRTS, so it asks again on next use (macOS only).
 - `dodaios permissions status --include-automation` — Show each macOS privacy permission and what is waiting on one. Never prompts.
 
 ## refresh
@@ -204,7 +204,7 @@ _Generated from the curated command tree by `scripts/ci/gen_cli_reference.py` �
 
 ## sessions
 
-- `dodaios sessions command <session_id> <command> --arguments --request-id --yes --dry-run` — Run an explicit command in a Dodaios or agent chat.
+- `dodaios sessions command <session_id> <command> --arguments --request-id --yes --dry-run` — Run an explicit command in a PRTS or agent chat.
 - `dodaios sessions control <session_id>` — Read a chat's current work mode and persistent goal.
 - `dodaios sessions delete <session_id> --yes --dry-run` — Delete a text conversation thread.
 - `dodaios sessions latest-turn --session-id` — Show the latest persisted user transcript and its complete turn.

@@ -1,7 +1,7 @@
 """Convert an Agent Plugins v1.0.0 manifest set into a catalog `PluginSpec`.
 
 The community registry distributes plugins as Agent Plugins v1.0.0 packages
-(docs/marketplace/agent-plugins-standard.md): a `plugin.json` whose Dodaios
+(docs/marketplace/agent-plugins-standard.md): a `plugin.json` whose PRTS
 specifics live under ``extensions["io.github.dodaios"]`` (or, in every package
 published before the rename, under the namespace's earlier name; see
 :func:`extension_of`), plus an optional `mcp.json`. This module is the "loader
@@ -460,7 +460,7 @@ def _convert_stdio_server(name: str, server: Mapping[str, Any]) -> dict[str, Any
 
 
 def extension_of(plugin_json: Mapping[str, Any]) -> Mapping[str, Any] | None:
-    """The plugin's Dodaios block, under whichever namespace the manifest uses.
+    """The plugin's PRTS block, under whichever namespace the manifest uses.
 
     The namespace is only the KEY the block sits under. It is no part of what
     the plugin is: a plugin's identity is its ``name`` (which becomes
@@ -597,7 +597,7 @@ def convert_manifest(
     if extension is None:
         raise AgentPluginError(
             f'plugin.json needs extensions["{EXTENSION_NAMESPACE}"] with the '
-            "Dodaios auth block — see docs/marketplace/agent-plugins-standard.md"
+            "PRTS auth block — see docs/marketplace/agent-plugins-standard.md"
         )
     if extension.get("native_tool"):
         # Native tools are Python code inside the app package. A manifest

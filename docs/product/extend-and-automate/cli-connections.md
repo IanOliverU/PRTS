@@ -1,7 +1,7 @@
 ---
 title: "CLI Connections"
 slug: cli-connections
-summary: "Let Dodaios discover command-line tools, check their readiness, and use only the capabilities available on the current computer."
+summary: "Let PRTS discover command-line tools, check their readiness, and use only the capabilities available on the current computer."
 section: "Extend and automate"
 section_order: 5
 order: 5
@@ -15,14 +15,14 @@ tags: [cli, connections, terminal, tools, automation, safety]
 related: [skills, workflows-and-commands, cli-reference, safety-and-approvals]
 ---
 
-A command-line interface (CLI) connection lets Dodaios use a trusted terminal
-program that is installed on the same computer. Dodaios finds the program,
+A command-line interface (CLI) connection lets PRTS use a trusted terminal
+program that is installed on the same computer. PRTS finds the program,
 checks whether its account is ready, and exposes it as a tool for matching chat,
 voice, and test requests.
 
-This is different from using the **Dodaios CLI** yourself. A CLI connection lets
-the assistant invoke a cataloged command-line program as a tool. The Dodaios CLI
-controls Dodaios itself; its commands are listed in the
+This is different from using the **PRTS CLI** yourself. A CLI connection lets
+the assistant invoke a cataloged command-line program as a tool. The PRTS CLI
+controls PRTS itself; its commands are listed in the
 [CLI Reference](cli-reference).
 
 The packaged catalog currently contains these tools:
@@ -36,10 +36,10 @@ The packaged catalog currently contains these tools:
 | Payments | Stripe CLI, Twilio CLI |
 | Containers | Docker CLI, Kubernetes CLI (`kubectl`) |
 | Workspace | Google Workspace CLI (GAM) |
-| Dodaios | Dodaios Control CLI |
+| PRTS | PRTS Control CLI |
 
 Codex, Claude, Antigravity, and the Gemini CLI are not entries in this
-catalog. Their supported subscription sign-ins power background Dodaios-Agent
+catalog. Their supported subscription sign-ins power background PRTS-Agent
 work instead of becoming general command tools. Open **Settings > API Keys**,
 then open the Agents tab named after your wake word to connect or test them.
 Codex uses a ChatGPT sign-in, Claude uses a Claude subscription sign-in, and
@@ -53,7 +53,7 @@ and current billing choices.
 - Use a program and account that you trust. The connected program runs with
   your operating-system account and can reach whatever its own sign-in permits.
 - Install any package manager required by the selected installation method.
-  Dodaios shows the command, but it does not verify that the package manager is
+  PRTS shows the command, but it does not verify that the package manager is
   present before opening the terminal.
 - Configure a Brain provider that supports tool use before testing a natural-
   language instruction. You can still browse and recheck the catalog without
@@ -66,9 +66,9 @@ and current billing choices.
 > screenshot. Full commands appear in local usage history.
 
 The current **Install in terminal** and **Browser Login** actions open Windows
-Terminal or PowerShell on the computer running Dodaios. On macOS, Linux, or a
+Terminal or PowerShell on the computer running PRTS. On macOS, Linux, or a
 headless server, install and sign in with the program's official terminal
-instructions, then let Dodaios recheck it. Discovery and non-interactive use can
+instructions, then let PRTS recheck it. Discovery and non-interactive use can
 work on those systems when the executable is on the process path.
 
 ## Connect a Command-Line Tool
@@ -81,11 +81,11 @@ The shortest path is:
 | Install | Choose a supported method when needed | The program finishes in an external terminal |
 | Sign in | Complete browser login or use the protected key form | The program has access to the selected account |
 | Recheck | Use **Recheck status** | The row changes to **Connected** when both checks pass |
-| Use | Run a read-only request | Dodaios shows the chosen command and its result |
+| Use | Run a read-only request | PRTS shows the chosen command and its result |
 
 ### Find and Inspect a Tool
 
-1. Open **CLIs** from the sidebar, then choose the **CLIs** tab. Dodaios lists
+1. Open **CLIs** from the sidebar, then choose the **CLIs** tab. PRTS lists
    the packaged catalog plus any custom entries saved on this computer.
 2. Use **All**, **Connected**, **Installed**, **Custom**, or a category filter
    to narrow the list. The counts describe the current catalog, not programs
@@ -98,10 +98,10 @@ The status labels describe two separate checks:
 
 | Status | Meaning |
 |---|---|
-| **Checking** | Dodaios has not finished its local check |
+| **Checking** | PRTS has not finished its local check |
 | **Not installed** | The expected executable was not found on the process path |
 | **Disconnected** | The executable was found, but its sign-in check did not pass |
-| **Connected** | The program is installed and considered ready for Dodaios to use |
+| **Connected** | The program is installed and considered ready for PRTS to use |
 | **Error** | The check could not complete normally; open the row for the reported cause |
 
 The header's reload button fetches the latest cached list. To inspect the
@@ -115,7 +115,7 @@ computer again after an install or sign-in change, select the tool and use
 2. Review the selected package manager and the exact command. The current
    dialog preselects the first available method, so choose another one when
    that better matches your computer.
-3. Choose **Install in terminal**. For a manual method, Dodaios opens the
+3. Choose **Install in terminal**. For a manual method, PRTS opens the
    publisher's installation page instead.
 4. Finish the installation in the external terminal, then return to **CLIs**
    and choose **Recheck status**. A successful check shows a version when the
@@ -131,36 +131,36 @@ The detail panel offers only the sign-in action declared for that program.
 
 | Sign-in type | What happens |
 |---|---|
-| **Browser Login** | Dodaios opens the program's login command in an external Windows terminal. Complete the browser or device flow and leave Dodaios running while it checks in the background for up to about five minutes. |
-| **API key** | **Set API Key** opens password fields. **Save and validate** tests the values, then stores them through Dodaios's protected credential storage when the check succeeds. |
-| **Existing configuration** | The program reads its own configuration file. No Dodaios sign-in button appears, and installation alone may show **Connected**, so verify access with a read-only request. |
+| **Browser Login** | PRTS opens the program's login command in an external Windows terminal. Complete the browser or device flow and leave PRTS running while it checks in the background for up to about five minutes. |
+| **API key** | **Set API Key** opens password fields. **Save and validate** tests the values, then stores them through PRTS's protected credential storage when the check succeeds. |
+| **Existing configuration** | The program reads its own configuration file. No PRTS sign-in button appears, and installation alone may show **Connected**, so verify access with a read-only request. |
 | **No sign-in** | Finding the installed executable is enough for the row to become **Connected**. |
 
 OAuth-style browser login and existing configuration remain owned by the
-third-party program. Dodaios stores an API key entered through the protected
+third-party program. PRTS stores an API key entered through the protected
 form and passes it to that program as an environment value when it runs.
-**Disconnect** removes the local Dodaios credential or runs the program's logout
+**Disconnect** removes the local PRTS credential or runs the program's logout
 command when one is defined; revoke access in the service's account settings as
 well when you need complete removal.
 
 ### Test and Use the Connection
 
 1. Choose **Recheck status** and confirm that the row says **Connected**.
-   Dodaios adds a ready tool to the live assistant without an app restart.
+   PRTS adds a ready tool to the live assistant without an app restart.
 2. Open **CLI Test Hub**. Type one small, read-only instruction. You can let
-   Dodaios choose a connected tool or select a CLI hint to narrow the choice.
+   PRTS choose a connected tool or select a CLI hint to narrow the choice.
 3. Choose **Run**, or press Control+Enter on Windows and Linux or
    Command+Enter on macOS. Review the selected tool, exact command, safety
-   tier, exit code, program output, error output, duration, and Dodaios summary.
+   tier, exit code, program output, error output, duration, and PRTS summary.
 4. Ask for the same kind of result in chat or by voice. Naming the service and
-   the read-only outcome you want helps Dodaios choose the intended tool.
+   the read-only outcome you want helps PRTS choose the intended tool.
 5. Select **History** on the CLI row to review calls, success rate, duration,
    caller, and short error previews. **Clear** deletes that tool's local usage
    history after confirmation.
 
 An exit code of `0` means the program reported success. Other values mean the
 program rejected or could not complete the command; read its error output
-before retrying. Dodaios does not keep full command output in usage history,
+before retrying. PRTS does not keep full command output in usage history,
 but it does retain the full command, output lengths, and an error preview with
 recognized secret patterns redacted. Test Hub output is also bounded: normal
 commands return up to 4,000 characters of standard output, help commands return
@@ -170,7 +170,7 @@ credentials as command arguments.
 CLI execution is non-interactive. A command that waits for a password,
 confirmation prompt, or other terminal input fails or times out. Complete
 interactive setup in a real terminal first, then use non-interactive commands
-through Dodaios.
+through PRTS.
 
 ### Add a Trusted Custom CLI
 
@@ -181,17 +181,17 @@ you understand its commands and authorization model.
    description, category, and official homepage.
 2. In step 2, enter a harmless check such as the program's version command and
    a version-matching pattern. The executable name must match the first word of
-   every command Dodaios will run.
+   every command PRTS will run.
 3. In step 3, choose the real sign-in type and provide only command names and
    credential-slot names. Enter credential values later in the protected
    connection dialog.
 4. In step 4, choose the default safety tier. Add block patterns for commands
-   Dodaios must never run. Add allow patterns only for narrow, well-understood
+   PRTS must never run. Add allow patterns only for narrow, well-understood
    read-only commands because a matching allow pattern can make a call safe.
 5. Save the entry, select it in the **Custom** filter, and use **Recheck
    status**. If you later remove a connected custom entry, use **Disconnect**
    first when that action is available, remove the entry with its **Remove
-   custom CLI** button, and restart Dodaios so the running assistant drops any
+   custom CLI** button, and restart PRTS so the running assistant drops any
    tool it already loaded.
 
 A block pattern takes priority over an allow pattern; an allow pattern takes
@@ -204,28 +204,28 @@ program's own files, or clear its usage history.
 
 A normal request follows this path:
 
-1. Dodaios probes the current computer and exposes only CLIs considered usable.
+1. PRTS probes the current computer and exposes only CLIs considered usable.
 2. Your chat, voice, or Test Hub instruction is matched to a connected tool.
-3. Dodaios chooses a command, then evaluates its catalog rules and the global
+3. PRTS chooses a command, then evaluates its catalog rules and the global
    safety policy.
 4. The approved command runs as a local, non-interactive subprocess. Its
-   credential stays in Dodaios or the third-party program rather than entering
+   credential stays in PRTS or the third-party program rather than entering
    the conversation.
-5. Dodaios summarizes the real result and records a local usage entry.
+5. PRTS summarizes the real result and records a local usage entry.
 
 | Related feature | Relationship to a CLI connection |
 |---|---|
-| [Skills](skills) | A skill can teach Dodaios a repeatable way to use a connected CLI; it does not install or authorize the program. |
-| [Workflows and Commands](workflows-and-commands) | A Dodaios command is one stable app operation. A CLI connection exposes an external program whose subcommand is chosen for the request. |
-| [Plugins](plugins) | A plugin is a packaged service connection that may not need a local executable. When both cover the same live-data domain, Dodaios generally prefers the connected local CLI. If that CLI command fails, Dodaios reports the failure instead of silently changing services. |
+| [Skills](skills) | A skill can teach PRTS a repeatable way to use a connected CLI; it does not install or authorize the program. |
+| [Workflows and Commands](workflows-and-commands) | A PRTS command is one stable app operation. A CLI connection exposes an external program whose subcommand is chosen for the request. |
+| [Plugins](plugins) | A plugin is a packaged service connection that may not need a local executable. When both cover the same live-data domain, PRTS generally prefers the connected local CLI. If that CLI command fails, PRTS reports the failure instead of silently changing services. |
 | [MCP Connections](mcp-connections) | A Model Context Protocol server advertises a collection of tools over a standard connection. A CLI connection discovers one installed program and runs its commands locally. |
-| [Dodaios-Agents](jarvis-agents) | Connected catalog tools work in the live assistant. Background missions receive a separate, restricted tool grant and do not receive general `cli_*` tools. Codex, Claude, and Google subscription CLIs are supported worker providers only when connected from the Agents tab. |
-| [Credentials and Secrets](credentials-and-secrets) | Dodaios stores protected API-key values; browser-login and configuration files remain under the external program's own storage rules. |
-| [Safety and Approvals](safety-and-approvals) | Service permissions decide what the account can do. Dodaios separately decides whether a proposed command runs, is logged, asks for approval, or stays blocked. |
+| [PRTS-Agents](jarvis-agents) | Connected catalog tools work in the live assistant. Background missions receive a separate, restricted tool grant and do not receive general `cli_*` tools. Codex, Claude, and Google subscription CLIs are supported worker providers only when connected from the Agents tab. |
+| [Credentials and Secrets](credentials-and-secrets) | PRTS stores protected API-key values; browser-login and configuration files remain under the external program's own storage rules. |
+| [Safety and Approvals](safety-and-approvals) | Service permissions decide what the account can do. PRTS separately decides whether a proposed command runs, is logged, asks for approval, or stays blocked. |
 
 Disconnecting one CLI removes that tool from new assistant requests without
 stopping other connected tools. If no connected CLI covers a request, a
-relevant plugin or MCP tool may still be available. Dodaios does not invent
+relevant plugin or MCP tool may still be available. PRTS does not invent
 external data when every suitable connection is unavailable.
 
 ## Check That It Works
@@ -242,8 +242,8 @@ external data when every suitable connection is unavailable.
 
 | What you see | What it usually means | What to do |
 |---|---|---|
-| **Not installed** remains after installation | The cached status was reloaded, or the executable is not on the path visible to Dodaios | Finish the installer, restart Dodaios only if the installer changed the process path, then use **Recheck status** |
-| **Browser Login** does not open a terminal | The host is not Windows, is headless, or has no supported Windows terminal | Use the program's official install and login commands in a terminal on that host, then recheck it in Dodaios |
+| **Not installed** remains after installation | The cached status was reloaded, or the executable is not on the path visible to PRTS | Finish the installer, restart PRTS only if the installer changed the process path, then use **Recheck status** |
+| **Browser Login** does not open a terminal | The host is not Windows, is headless, or has no supported Windows terminal | Use the program's official install and login commands in a terminal on that host, then recheck it in PRTS |
 | The browser login finishes but the row stays **Disconnected** | The program's account check did not pass, or its five-minute background wait ended | Confirm the login in the external terminal, keep the intended account active, and choose **Recheck status** |
 | A row says **Connected**, but the command fails | Existing-configuration tools can look ready before real access is proved, the account lacks permission, or the command expects input | Run one official read-only status command in a real terminal, fix the program's own sign-in or permissions, then retry a non-interactive request |
 | Test Hub reports no CLI tool, a Brain error, or a blocked command | No connected tool matched, the active Brain cannot call tools, or safety refused the command | Recheck the CLI, select it as the hint, verify the Brain provider, and review the command's risk rules before changing them |
@@ -253,11 +253,11 @@ For repeated backend, credential, or process failures, continue with the main
 
 ## Next Steps
 
-- Read [Skills](skills) to give Dodaios a repeatable method for an already
+- Read [Skills](skills) to give PRTS a repeatable method for an already
   connected command-line tool.
 - Read [Workflows and Commands](workflows-and-commands) when you need a stable
-  Dodaios operation rather than an external program's command set.
+  PRTS operation rather than an external program's command set.
 - Use the [CLI Reference](cli-reference) to manage connections from a terminal
-  or a headless host and to understand common Dodaios CLI flags.
+  or a headless host and to understand common PRTS CLI flags.
 - Review [Safety and Approvals](safety-and-approvals) before allowing commands
   that create, publish, update, or delete external resources.

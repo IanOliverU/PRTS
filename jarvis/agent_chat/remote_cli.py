@@ -299,13 +299,13 @@ def placement_note(computer: Any, remote_cwd: str, *, tools_connected: bool = Fa
         f"person's main computer — not on the main computer itself. Your working "
         f"folder there is {remote_cwd}. "
         + (
-            "Dodaios tools are connected over SSH under your own chat identity. "
+            "PRTS tools are connected over SSH under your own chat identity. "
             "Use society_routines and society_propose_change for persistent routines; "
-            "use society_browser for the visible Dodaios browser on the main computer. "
+            "use society_browser for the visible PRTS browser on the main computer. "
             "Native file tools run here. Use society_shell for remote commands. "
-            "Dodaios file tools, memory and app services remain on the main computer.\n"
+            "PRTS file tools, memory and app services remain on the main computer.\n"
             if tools_connected else
-            "Dodaios tools are not connected for this turn; "
+            "PRTS tools are not connected for this turn; "
             "work with the files and programs here.\n"
         )
     )
@@ -389,7 +389,7 @@ async def spawn(
     try:
         if session_id and tools_enabled and runner not in SUPPORTED_RUNNERS:
             raise RemoteCliUnavailable(
-                "This coding CLI cannot connect to Dodaios tools remotely. "
+                "This coding CLI cannot connect to PRTS tools remotely. "
                 "Choose a CLI with MCP support in the agent's model settings."
             )
         opened = await stack.enter_async_context(get_service().session(computer_id))

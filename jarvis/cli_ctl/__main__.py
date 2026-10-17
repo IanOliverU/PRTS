@@ -85,7 +85,7 @@ app = typer.Typer(
     cls=_CompatibleRootGroup,
     no_args_is_help=True,
     add_completion=True,
-    help="Control a running Dodaios instance from the terminal.",
+    help="Control a running PRTS instance from the terminal.",
 )
 
 # Shared state set by the root callback and read by commands.
@@ -98,7 +98,7 @@ def _root(
         False, "--json", help="Emit raw JSON instead of human tables."
     ),
     url: str | None = typer.Option(
-        None, "--url", help="Override the Dodaios base URL (e.g. http://host:port)."
+        None, "--url", help="Override the PRTS base URL (e.g. http://host:port)."
     ),
     key: str | None = typer.Option(
         None,
@@ -107,7 +107,7 @@ def _root(
         help="Override the control API key (Bearer token) for this call only.",
     ),
 ) -> None:
-    """Thin HTTP control client for a running Dodaios server."""
+    """Thin HTTP control client for a running PRTS server."""
     STATE["json"] = json_output
     STATE["url"] = url
     STATE["key"] = key
@@ -135,7 +135,7 @@ def version(ctx: typer.Context) -> None:
     # The name the command was started under: dodaios, dodaiosctl, or an
     # earlier name of either.
     command = ctx.find_root().info_name or CONTROL_CLI_COMMAND_NAME
-    typer.echo(f"{command} (Dodaios {__version__})")
+    typer.echo(f"{command} (PRTS {__version__})")
 
 
 @app.command()

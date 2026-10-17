@@ -75,7 +75,7 @@ class WikiRecallTool:
     }
     input_examples: list[dict[str, Any]] = [
         {"query": "Harald birthday"},
-        {"query": "Dodaios architecture"},
+        {"query": "PRTS architecture"},
     ]
 
     def __init__(self, search: VaultSearch) -> None:

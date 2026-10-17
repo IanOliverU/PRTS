@@ -1,12 +1,6 @@
-# Brand Guidelines
+# PRTS brand guidelines
 
-The visual language of Personal Jarvis: a neutral, cool-black interface with one
-restrained accent, and a distressed wordmark. The goal is *confident and engineered*,
-never noisy or playful.
-
-<p align="center">
-  <img src="../assets/brand/banner.png" alt="Personal Jarvis wordmark" width="720" />
-</p>
+PRTS is the product name; Priestess is its lead assistant identity. Light mode is the default, with dark mode supported. The existing workspace layout remains in place. Use the approved PRTS emblem and Priestess assets, and preserve all source attribution.
 
 ## Color
 
@@ -90,31 +84,11 @@ avatars and status dots. No pill-shaped buttons or chips.
 Both families ship inside the app bundle (`@fontsource` packages, SIL OFL 1.1); nothing is
 fetched from a remote host.
 
-## The wordmark
+## The application mark
 
-The hero is the word **PERSONAL JARVIS** as an embossed, beveled **metallic-gold** wordmark
-on matte black — chunky geometric capitals with 3D bevels, specular highlights, a warm
-golden bloom, and faint embers. It should read like forged gold, not flat text.
+Use the approved emblem in `jarvis/ui/web/frontend/public/prts-mark.png` for application identity. Keep its proportions and clear space; do not stretch or redraw it. Native exports and the DEV badge are produced by the existing icon scripts. The Priestess portrait and animated guide are separate from the application mark.
 
-- **Live banner:** [`../assets/brand/banner.png`](../assets/brand/banner.png) — a
-  high-resolution generated raster (2172×724, 3:1). This is the file the README embeds.
-- **CSS fallback:** [`../assets/brand/banner.html`](../assets/brand/banner.html) is a
-  fully reproducible pure-CSS/SVG treatment of the same wordmark;
-  `pwsh assets/brand/render.ps1` rasterizes it to `banner-css.png`. Use it only where a
-  generated raster isn't available.
-
-### Do
-
-- Keep clear space around the wordmark of at least the cap-height on every side.
-- Keep it on a dark, low-detail background so the glow reads.
-- Keep the distress subtle — legibility first.
-
-### Don't
-
-- Don't recolor it (no blue, no white-only, no rainbow).
-- Don't crank the glitch until letters are hard to read — it's seasoning, not the dish.
-- Don't place it on a busy photo without a dark scrim behind it.
-- Don't stretch, condense, or rotate it.
+The startup presentation uses its bundled fonts, monochrome lockup and proportional artwork with a full-window background. Respect reduced motion, skip and mute controls. The historical upstream banner assets remain in the repository for provenance; they are not the current PRTS wordmark.
 
 ## Voice & tone
 
@@ -131,8 +105,8 @@ Write like a senior engineer who respects the reader's time.
 
 | Asset | Path |
 |---|---|
-| Hero banner (live) | `assets/brand/banner.png` |
-| Hero banner (CSS fallback source) | `assets/brand/banner.html` → `banner-css.png` |
+| Historical upstream banner | `assets/brand/banner.png` |
+| Historical upstream banner source | `assets/brand/banner.html` → `banner-css.png` |
 | Banner render script | `assets/brand/render.ps1` |
 | Product Orb | `jarvis/ui/web/frontend/public/hero-orb.png` |
 | Application emblem (source) | `jarvis/ui/web/frontend/public/prts-mark.png` |

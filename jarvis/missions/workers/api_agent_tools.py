@@ -609,7 +609,7 @@ def _resolve_program(program: str, env: Mapping[str, str]) -> tuple[str, tuple[s
                 continue
             return interpreter, ()
         raise CommandPolicyError(
-            "Python is unavailable in this packaged Dodaios build. Install a real "
+            "Python is unavailable in this packaged PRTS build. Install a real "
             "Python interpreter on PATH or use another supported build tool; "
             "Jarvis.exe will never be launched as Python."
         )

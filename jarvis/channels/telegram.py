@@ -318,7 +318,7 @@ class TelegramChannel:
                 await self._send_text(
                     chat_id,
                     "Telegram is connected. Send a message here and I will "
-                    "forward it directly to Dodaios.",
+                    "forward it directly to PRTS.",
                     language="de",
                 )
                 return

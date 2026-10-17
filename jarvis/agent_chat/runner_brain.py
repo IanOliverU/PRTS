@@ -226,7 +226,7 @@ async def kit_payload(session: AgentChatSession, brain: Any) -> tuple[dict[str, 
                 tools = folder_tools(Path(session.cwd), stance=session.permission_mode or "ask")
                 tools[coding_tool.name] = coding_tool
         except Exception:
-            log.warning("Dodaios chat: coding-session capability unavailable", exc_info=True)
+            log.warning("PRTS chat: coding-session capability unavailable", exc_info=True)
     if kit.session_tools is not None:
         try:
             tools = kit.session_tools(cfg, brain, session)
@@ -445,7 +445,7 @@ async def run_brain_turn(
     brain = brain_manager()
     if brain is None or not callable(getattr(brain, "generate", None)):
         await finish(
-            "error", {}, "Dodaios' brain is still starting up. Give it a moment and send again."
+            "error", {}, "PRTS' brain is still starting up. Give it a moment and send again."
         )
         return
 

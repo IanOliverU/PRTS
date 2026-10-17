@@ -2286,7 +2286,7 @@
       "status_blocked": "无法打开 X。图片已在剪贴板中，请打开 x.com 后粘贴。",
       "status_blocked_without_image": "无法打开 X，也无法复制图片。请保存 PNG，再打开 x.com 手动添加。",
       "card": {
-        "brand": "DODAIOS",
+        "brand": "PRTS",
         "hero_label": "说出的词数",
         "jarvis_suffix": "由 {name} 说出",
         "talk_line": "活跃 {0} 小时 · {1} 次对话",

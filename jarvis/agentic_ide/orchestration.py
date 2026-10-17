@@ -1411,7 +1411,7 @@ class WorkspaceOrchestrator:
             return {
                 "status": "restart_required", "success": False, "executed": False,
                 "reason": "Workspace control and its receipt store are from different app "
-                          "versions. Restart Dodaios before retrying. This request "
+                          "versions. Restart PRTS before retrying. This request "
                           "created no workspace or agent and sent no prompt. Do not retry, "
                           "reassign, or use another delivery tool before restarting.",
             }

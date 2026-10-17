@@ -467,7 +467,7 @@ class CloseTerminalsRequest(BaseModel):
 
 class ModeRequest(BaseModel):
     enabled: bool = Field(
-        description="True narrows Dodaios to this workspace; False returns to normal."
+        description="True narrows PRTS to this workspace; False returns to normal."
     )
 
 
@@ -824,7 +824,7 @@ class AgentStatus(BaseModel):
     accepts_prompts: bool = Field(
         default=True,
         description=(
-            "Can Dodaios type a message into a pane of this entry at all? False "
+            "Can PRTS type a message into a pane of this entry at all? False "
             "for an entry whose own interface is somewhere else (DeepSeek "
             "Harness boots a server and puts its chat in the browser), which a "
             "surface that opens a CHAT has to know before it offers the entry."
@@ -2031,7 +2031,7 @@ async def native_picker_support(request: Request) -> NativePickerSupport:
         return NativePickerSupport(
             available=False,
             reason=(
-                "The folder window would open on the computer running Dodaios, not on "
+                "The folder window would open on the computer running PRTS, not on "
                 "this one. Browse or paste a path instead."
             ),
         )
@@ -2061,7 +2061,7 @@ async def open_native_picker(request: Request, req: NativePickRequest) -> Native
         raise HTTPException(
             status_code=403,
             detail=(
-                "The folder window can only be opened from the computer running Dodaios. "
+                "The folder window can only be opened from the computer running PRTS. "
                 "Browse to the folder or paste its path instead."
             ),
         )
@@ -2616,7 +2616,7 @@ async def _launch_terminal_target(
     if not is_loopback_request(request.scope):
         raise HTTPException(
             status_code=403,
-            detail="Terminal paths can only be opened on the computer running Dodaios.",
+            detail="Terminal paths can only be opened on the computer running PRTS.",
         )
     if not getattr(request.app.state, "native_file_actions", False):
         raise HTTPException(status_code=404, detail="native file actions unavailable")
@@ -4161,7 +4161,7 @@ async def refresh_terminal_recap(name: str, workspace_id: str | None = None) -> 
 def get_last_prompt(name: str, workspace_id: str | None = None) -> LastPrompt:
     """What terminal ``name`` was last told to do, word for word.
 
-    This is the proof half of a delivery. Dodaios composes a brief, types it
+    This is the proof half of a delivery. PRTS composes a brief, types it
     into a pane and says it did — and until this existed, the only evidence was
     the pane's own screen, which is exactly what is missing in every case worth
     checking: a pane that had parked its output, an emulator that never
@@ -5077,7 +5077,7 @@ async def terminal_prompt(
     running — speech artefacts removed, the task stated as an imperative, and
     the relevant files of this workspace attached as ``@path`` references. Both
     the spoken path and the UI's typed prompt bar send with it on (maintainer
-    decision 2026-08-12): typed or said, Dodaios writes the brief either way.
+    decision 2026-08-12): typed or said, PRTS writes the brief either way.
 
     ``dry_run=true`` returns the composed prompt without sending it, so a caller
     can show it for approval first.

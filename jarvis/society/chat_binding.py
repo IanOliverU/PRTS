@@ -380,7 +380,7 @@ def make_deliver_hook(
         if target.agent_id == LEAD_AGENT_ID:
             sessions = svc.store.list_sessions(limit=1, surface="jarvis")
             if not sessions:
-                raise DeliveryBusy("Dodaios chat is not open yet")
+                raise DeliveryBusy("PRTS chat is not open yet")
             session = sessions[0]
         else:
             # Everyone reaches a created agent in its one chat; the incoming

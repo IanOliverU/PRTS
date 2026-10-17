@@ -97,7 +97,7 @@ def _play(pcm_bytes: bytes, sample_rate: int = 24_000) -> None:
 async def main() -> None:
     _setup()
     print("=" * 64)
-    print(f"  Dodaios Voice-Comparison — {len(JARVIS_CANDIDATES)} candidates")
+    print(f"  PRTS Voice-Comparison — {len(JARVIS_CANDIDATES)} candidates")
     print("=" * 64)
     print(f"Phrase: \"{TEST_PHRASE}\"\n")
 

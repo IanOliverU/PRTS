@@ -33,9 +33,9 @@ ARCHIVE_REF_PREFIX = "refs/dodaios/archived-worktrees/"
 _SUBJECT_MARK = "archived-worktree "
 # The snapshot is made by the app, also on a machine with no git identity set.
 _SNAPSHOT_IDENTITY = {
-    "GIT_AUTHOR_NAME": "Dodaios",
+    "GIT_AUTHOR_NAME": "PRTS",
     "GIT_AUTHOR_EMAIL": "worktree-archive@dodaios.invalid",
-    "GIT_COMMITTER_NAME": "Dodaios",
+    "GIT_COMMITTER_NAME": "PRTS",
     "GIT_COMMITTER_EMAIL": "worktree-archive@dodaios.invalid",
 }
 

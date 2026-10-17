@@ -1,15 +1,15 @@
-# Dodaios — LLM Context Drop
+# PRTS — LLM Context Drop
 
 > **What this file is.** A dense, self-contained engineering snapshot of the whole
 > project. Paste it into a fresh chat (Gemini, Claude, ChatGPT, Cursor) and the model
-> gets enough context to reason about Dodaios without paging through 30+ files.
+> gets enough context to reason about PRTS without paging through 30+ files.
 > It is intentionally exhaustive — anti-pattern tables, bug classes, phase status with
 > `file:line` references, enum-drift defenses, testing buckets, the full script inventory.
 >
 > **Looking for the human-facing overview?** See [`../README.md`](../README.md).
 > **Binding source-of-truth:** [`../AGENTS.md`](../AGENTS.md) + the docs linked at the bottom.
 
-**Dodaios** is a voice-driven **Supervisor-Agent meta-orchestrator** — not a classical voice assistant. The core pattern is a fast **Router-Brain** that dispatches work to interchangeable executors: router-tier tools, a computer-use harness, and — for heavy work — isolated mission workers (`ClaudeDirectWorker`, `CodexDirectWorker`, `GoogleCliWorker`, in-process `ApiAgentWorker`). NB: only two `jarvis.harness` entry points are registered, `python-script` and `screenshot` (`pyproject.toml`); `open_interpreter.py` is a stub that returns `exit_code=1` and `mcp_remote.py` is unregistered — `tests/contract/test_harness_protocol.py` asserts both are unavailable. MCP reaches the brain as *tools* via the `mcp-tools` loader, not as a harness. The voice layer is just the I/O surface; the soul is the dispatcher discipline that keeps the Router-Brain lean and delegates heavy reasoning to specialized Dodaios-Agents under critic-loop + worktree-isolation guard rails. The project is **provider-agnostic by mandate** — assume the downloader has exactly one credential, from any vendor, and never assume it is an Anthropic API key (subscription OAuth is used only inside workers) — and **self-modifying** via an atomic config-writer with a 10-step validate-backup-tempfile-replace-rollback-audit pipeline.
+**PRTS** is a voice-driven **Supervisor-Agent meta-orchestrator** — not a classical voice assistant. The core pattern is a fast **Router-Brain** that dispatches work to interchangeable executors: router-tier tools, a computer-use harness, and — for heavy work — isolated mission workers (`ClaudeDirectWorker`, `CodexDirectWorker`, `GoogleCliWorker`, in-process `ApiAgentWorker`). NB: only two `jarvis.harness` entry points are registered, `python-script` and `screenshot` (`pyproject.toml`); `open_interpreter.py` is a stub that returns `exit_code=1` and `mcp_remote.py` is unregistered — `tests/contract/test_harness_protocol.py` asserts both are unavailable. MCP reaches the brain as *tools* via the `mcp-tools` loader, not as a harness. The voice layer is just the I/O surface; the soul is the dispatcher discipline that keeps the Router-Brain lean and delegates heavy reasoning to specialized PRTS-Agents under critic-loop + worktree-isolation guard rails. The project is **provider-agnostic by mandate** — assume the downloader has exactly one credential, from any vendor, and never assume it is an Anthropic API key (subscription OAuth is used only inside workers) — and **self-modifying** via an atomic config-writer with a 10-step validate-backup-tempfile-replace-rollback-audit pipeline.
 
 > ### Cloud-First — Read This Before The Install Section
 > **Target runtime is any €5 / month VPS or low-spec laptop** with a modern browser. **The maintainer's RTX 5070 Ti / Windows 11 Pro workstation is not a requirement** — it represents fewer than 0.1 % of the install base this project is being designed for. All Brain / STT / TTS / Vision / Wake providers default to cloud APIs; no GPU, no local models, no Windows APIs, no microphone are required in the base install. Windows-desktop features (tray app, Orb overlay, global hotkey wake, local Whisper, Silero-VAD-in-process, Computer-Use harness, PowerShell drift-guard daemon) are **opt-in `[desktop]` extras**, not requirements. **Binding doctrine: [`AGENTS.md`](AGENTS.md)**. On conflict between this README and `PHILOSOPHY.md`, the doctrine wins.
@@ -24,7 +24,7 @@
 
 ## Hardware — what you actually need
 
-Dodaios ships in two very different shapes with **very different hardware needs**. The cloud-first base install is tiny; only the full desktop power-user profile with local voice models needs real hardware. Find your row below.
+PRTS ships in two very different shapes with **very different hardware needs**. The cloud-first base install is tiny; only the full desktop power-user profile with local voice models needs real hardware. Find your row below.
 
 **Measured footprint** — maintainer's Windows 11 workstation, full voice + UI mode, cloud Brain/STT/TTS, local openWakeWord, measured 2026-05-29:
 
@@ -291,7 +291,7 @@ Six brain plugins (`pyproject.toml:130-137`): `claude-api`, `openrouter`, `opena
 
 **Ack-Brain** (`jarvis/brain/ack_brain/generator.py`) emits a sub-second butler-style preamble before the deep brain replies. Provider plugins: Gemini, Grok, OpenAI, Ollama. Suppress-if-fast gate at `[ack_brain].suppress_if_brain_faster_than_ms = 2000` (ADR-0014 Flash-Brain). `AckGenerator.run()` is failure-safe across F1–F10 modes and never raises.
 
-User context: **No Anthropic API account** (AP-6). Workers use Claude Sonnet via **Claude Max OAuth** through the `claude-cli` backend (`@anthropic-ai/claude-code`, npm-installed by the wizard). Dodaios Brain stays on Gemini by default.
+User context: **No Anthropic API account** (AP-6). Workers use Claude Sonnet via **Claude Max OAuth** through the `claude-cli` backend (`@anthropic-ai/claude-code`, npm-installed by the wizard). PRTS Brain stays on Gemini by default.
 
 ---
 
@@ -306,7 +306,7 @@ Force-spawn heuristic in `BrainManager._should_force_spawn`:
 - Action verb (`lies/baue/installiere/öffne/mach/zeig` + repair words) → spawn. <!-- i18n-allow -->
 - External-system marker (PR/Repo/GitHub/Issue) → spawn.
 
-**The Dodaios-Agent tier was deleted in Wave 4** — only `"router"` remains. Resurrecting `SUB_TOOLS` or adding any supervisor-spawn action to a worker set breaks the D9 recursion guard (AP-14).
+**The PRTS-Agent tier was deleted in Wave 4** — only `"router"` remains. Resurrecting `SUB_TOOLS` or adding any supervisor-spawn action to a worker set breaks the D9 recursion guard (AP-14).
 
 ---
 
@@ -318,7 +318,7 @@ Force-spawn heuristic in `BrainManager._should_force_spawn`:
 
 Wired into TTS at two sites:
 - `pipeline.py:1330` — `_handle_utterance` → `_speak()` → `tts.synthesize`
-- `pipeline.py:647` — `_on_announcement` (skill/Dodaios-Agent announcements, Dodaios-Agents `summary_de` readback)
+- `pipeline.py:647` — `_on_announcement` (skill/PRTS-Agent announcements, PRTS-Agents `summary_de` readback)
 
 40-case test suite at `tests/unit/brain/test_output_filter.py`. ADR-0010 (Output-Filter Pattern-Based).
 
@@ -390,9 +390,9 @@ Verified against the actual file tree (not just AGENTS.md claims):
 | Wiki B0/B1/B2/B3/B5/B7/B8/B9 | live | `jarvis/memory/wiki/` (curator, atomic_writer, page, integration, scheduler, session_rollup, voice_bridge, telemetry, vault_index, watcher, search). 3 router tools |
 | Wiki B4 (legacy Curator) | soft-disabled | `factory.py:736-757` gates on `cfg.memory.legacy_curator.enabled` (default `false` since 2026-05-17). `data/workspace/` snapshot stays on disk for 35 reader sites |
 | Wiki B6 | not started | — |
-| Dodaios-Agents bridge Welle 1+4 | done | `jarvis/missions/worker_runtime/{provider_map,workspace}.py` (harness plugin removed in Welle-4, ~92% hang; see docs/BUGS.md) |
-| Dodaios-Agents bridge Welle 2 (live default) | open | Mock-Mode in plugin file; live subprocess factory pending |
-| Dodaios-Agents bridge Welle 3 (full live mode) | open | — |
+| PRTS-Agents bridge Welle 1+4 | done | `jarvis/missions/worker_runtime/{provider_map,workspace}.py` (harness plugin removed in Welle-4, ~92% hang; see docs/BUGS.md) |
+| PRTS-Agents bridge Welle 2 (live default) | open | Mock-Mode in plugin file; live subprocess factory pending |
+| PRTS-Agents bridge Welle 3 (full live mode) | open | — |
 | Ack-Brain (pre-thinking) | live | `jarvis/brain/ack_brain/` + factory hook (`factory.py:1034`) |
 | CLI catalog + terminal view | live | `jarvis/clis/` (catalog, installer, loader, prober, registry, risk_integration, usage_log) + `jarvis/terminal/` (ConPTY via `pywinpty`). Tools `cli-tools` + `spawn-cli-worker` |
 
@@ -440,10 +440,10 @@ The single most important table for an LLM joining cold:
 | AP-11 | Add an LLM call inside `scrub_for_voice` | TTS latency tank |
 | AP-12 | Encode API keys in `jarvis.toml` or commit `.env` | Credential leak; bypasses `keyring` audit trail |
 | AP-13 | Block on watchdog reload for atomic-write verification | Race: file half-applied, no sync rollback |
-| AP-14 | Re-add a Dodaios-Agent tier or `SUB_TOOLS` set | Welle 4 deleted it; resurrection breaks the Dodaios-Agents bridge contract |
+| AP-14 | Re-add a PRTS-Agent tier or `SUB_TOOLS` set | Welle 4 deleted it; resurrection breaks the PRTS-Agents bridge contract |
 | AP-15 | Auto-activate generated skills (`state` ≠ `draft`) | Lateral-movement vector; skills run without review |
 | AP-16 | Add `[phase6.*]`/`[memory.wiki.*]` keys without `ConfigDict(extra="allow")` | Pre-validate rejects → boot fails after self-mod |
-| AP-17 | Run Dodaios as a Windows Service | SYSTEM has no mic/headset access |
+| AP-17 | Run PRTS as a Windows Service | SYSTEM has no mic/headset access |
 | AP-18 | Propagate a subscriber exception from `EventBus._safe_dispatch` | One handler kills the pipeline |
 
 ---
@@ -452,7 +452,7 @@ The single most important table for an LLM joining cold:
 
 Detail in [`docs/BUGS.md`](docs/BUGS.md) (26-entry register). Five classes recur — recognize the signal, apply the defense.
 
-**1. Four-layer restore trap** (BUG-006 → -014 → -015). Signal: fix "works in tests" but Dodaios behavior unchanged after restart. Four layers: stale worktree + outdated frontend `dist/` build + RAM-resident pywebview + **editable-install pin to a deleted clone**. Defense: `pwsh scripts/preflight.ps1` + `python -c "import jarvis; print(jarvis.__file__)"` + frontend rebuild + `taskkill /F /IM pythonw.exe`.
+**1. Four-layer restore trap** (BUG-006 → -014 → -015). Signal: fix "works in tests" but PRTS behavior unchanged after restart. Four layers: stale worktree + outdated frontend `dist/` build + RAM-resident pywebview + **editable-install pin to a deleted clone**. Defense: `pwsh scripts/preflight.ps1` + `python -c "import jarvis; print(jarvis.__file__)"` + frontend rebuild + `taskkill /F /IM pythonw.exe`.
 
 **2. Multi-layer enum drift** (BUG-008, four episodes). Signal: empty UI list while DB has rows, HTTP 500, `literal_error` in Pydantic. Defense: the five-layer pattern from §13 — symbolic constants, import-time assertion, parity test, DB-compat test, self-defending endpoint.
 
@@ -526,7 +526,7 @@ Line length 100. Target `py311`.
 ## 19. Scripts inventory (`scripts/`)
 
 **Cron daemons (production):**
-- `auto-push-eod.ps1` — nightly tag+push crash-backup only; the coding-agent harness owns ordinary Git (`AGENTS.md` §4). Skips worktrees with active Dodaios-Agent session (`<30 min` modify time).
+- `auto-push-eod.ps1` — nightly tag+push crash-backup only; the coding-agent harness owns ordinary Git (`AGENTS.md` §4). Skips worktrees with active PRTS-Agent session (`<30 min` modify time).
 - `install-auto-push-task.ps1 -Time "22:00"` — register Task Scheduler job.
 - `drift-guard-daemon.ps1` — 5-min config drift defense. Singleton-locked, hidden, started via `shell:startup` shortcut.
 - `install-config-drift-guard-task.ps1` — install variant.
@@ -614,7 +614,7 @@ Self-mod writeup: [`docs/self_mod.md`](docs/self_mod.md) — 8 mutable settings 
 
 - **`run.bat` pre-boot:** `scripts/check-working-tree.ps1` auto-invoked. Always exits 0; surfaces any restored file via banner + rotating log.
 - **Drift-guard daemon:** every 5 min via `shell:startup` shortcut, Userland (no UAC). Singleton-locked.
-- **Auto-push-EOD:** Task Scheduler 22:00 default. Tags `safety/eod-*` per branch, skips active Dodaios-Agent worktrees (modified within last 30 min).
+- **Auto-push-EOD:** Task Scheduler 22:00 default. Tags `safety/eod-*` per branch, skips active PRTS-Agent worktrees (modified within last 30 min).
 - **Wiki triggers** (ADR-0014 contract — all classified silent vs loud):
   - `WikiContextInjector` (silent) — runs before every brain turn
   - `VoiceFactBridge` ack path (loud) — `ResponseGenerated` with ack keyword, async via `asyncio.create_task`; the automatic per-turn review and the end-of-call sweep were removed 2026-09-30
@@ -683,7 +683,7 @@ Neither blocks anything — but a fresh chat parroting AGENTS.md verbatim will b
 
 - [`AGENTS.md`](AGENTS.md) — project guidance (highest priority for any agent working in this repo)
 - [`docs/BUGS.md`](docs/BUGS.md) — 26-entry bug register with regression-test pointers
-- [`docs/jarvis-agents-bridge.md`](docs/jarvis-agents-bridge.md) — AD-1..AD-21 Dodaios-Agents harness contract
+- [`docs/jarvis-agents-bridge.md`](docs/jarvis-agents-bridge.md) — AD-1..AD-21 PRTS-Agents harness contract
 - [`docs/anti-drift-three-layer.md`](docs/anti-drift-three-layer.md) — five-layer enum pattern (mandatory for any new wire-format string)
 - [`docs/self_mod.md`](docs/self_mod.md) — Phase 7 self-mod user guide
 - [`docs/obsidian-setup.md`](docs/obsidian-setup.md) — Wiki vault registration walkthrough
@@ -710,7 +710,7 @@ Neither blocks anything — but a fresh chat parroting AGENTS.md verbatim will b
 
 **Trademarks.** "Claude", "Anthropic", "OpenAI", "Gemini", "Grok", "Picovoice", "Porcupine", "Obsidian", "GitHub", "Windows", and any other product or company names referenced in this repository are trademarks of their respective owners and are used here for identification purposes only. Their use does not imply endorsement of this project by, or affiliation with, the trademark holder.
 
-**Audio, voice, and screen-capture privacy disclosure.** When the `[desktop]` extras are installed, Dodaios can capture microphone audio (STT), play synthesized speech (TTS), take screenshots and read UI element trees (Vision / Computer-Use), and read text from the active window. All of these capabilities are opt-in at install time and run only in the user's session. STT, TTS, and Brain calls are routed through the providers the user configures (Gemini, Grok, OpenAI, Deepgram, ElevenLabs, Google Cloud, etc.) — please review each provider's privacy policy before sending production data through them. The headless VPS base install captures no local audio and no screen content.
+**Audio, voice, and screen-capture privacy disclosure.** When the `[desktop]` extras are installed, PRTS can capture microphone audio (STT), play synthesized speech (TTS), take screenshots and read UI element trees (Vision / Computer-Use), and read text from the active window. All of these capabilities are opt-in at install time and run only in the user's session. STT, TTS, and Brain calls are routed through the providers the user configures (Gemini, Grok, OpenAI, Deepgram, ElevenLabs, Google Cloud, etc.) — please review each provider's privacy policy before sending production data through them. The headless VPS base install captures no local audio and no screen content.
 
 **No warranty for self-modifying behaviour.** The Phase-7 self-mod tools (`set_config_value`, `spawn-skill-author`) and the Phase-6 Worker-Critic loop can write to `jarvis.toml`, generate skills (created with `state="draft"`, never auto-activated — AP-15), and create isolated `git worktree` branches under `<repo_parent>/sub-agents-outputs/`. The 10-step atomic-write pipeline (allowlist → pre-validate → backup → tempfile → synchronous reload → rollback → audit) is designed to be safe and reversible, but the Apache 2.0 "as is" disclaimer (§7) and limitation of liability (§8) apply in full: the maintainers are not liable for any state the system writes on your behalf, on your filesystem or against the third-party APIs you have configured.
 

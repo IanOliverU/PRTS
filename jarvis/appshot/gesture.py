@@ -131,8 +131,8 @@ def _macos_input_monitoring_missing() -> str:
         log.debug("appshot: Input Monitoring probe failed", exc_info=True)
         return ""
     return (
-        "Allow Input Monitoring for Dodaios in System Settings > Privacy & "
-        "Security > Input Monitoring, then restart Dodaios."
+        "Allow Input Monitoring for PRTS in System Settings > Privacy & "
+        "Security > Input Monitoring, then restart PRTS."
     )
 
 

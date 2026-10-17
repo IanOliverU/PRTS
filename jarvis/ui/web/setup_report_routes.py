@@ -196,7 +196,7 @@ def _summary(report: dict[str, Any]) -> list[str]:
 
 
 def _render_text(report: dict[str, Any]) -> str:
-    header = "Dodaios setup report (share-safe: key presence only, never values)"
+    header = "PRTS setup report (share-safe: key presence only, never values)"
     body = "\n".join(report["summary"])
     return f"{header}\n{'=' * len(header)}\n{body}\n"
 

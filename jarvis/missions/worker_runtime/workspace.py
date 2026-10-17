@@ -5,14 +5,14 @@ Background (Wave-1-Spike B-9):
     system prompt from `~/.openclaw/workspace/` at the start of every
     `agent --local` run:
 
-        AGENTS.md   7774 chars  <- anti-pattern docs, not Dodaios AGENTS
+        AGENTS.md   7774 chars  <- anti-pattern docs, not PRTS AGENTS
         SOUL.md     1797 chars  <- default persona ("I am OpenClaw, ...")
         TOOLS.md     910 chars  <- `openclaw` tool docs (irrelevant for us)
         IDENTITY.md  693 chars  <- `openclaw` self-reference
         USER.md       (variable) <- `openclaw` user profile
 
     Risks without override:
-        1. Persona drift: SOUL.md/IDENTITY.md overwrites the Dodaios
+        1. Persona drift: SOUL.md/IDENTITY.md overwrites the PRTS
            persona mandate from jarvis/brain/persona.py.
         2. Voice readback leak: "I am OpenClaw" self-reference could slip
            through scrub_for_voice (filter coverage not guaranteed).
@@ -21,7 +21,7 @@ Background (Wave-1-Spike B-9):
 
 Mitigation (AD-23):
     - Bridge sets `MISSION_STATE_DIR=<mission_dir>/openclaw_state`.
-    - This helper writes a minimal Dodaios profile (5 stub files)
+    - This helper writes a minimal PRTS profile (5 stub files)
       under `<state_dir>/workspace/`.
     - Bridge audits `meta.systemPromptReport.injectedWorkspaceFiles[]` after
       the spawn and raises an alert if unexpected files appear.
@@ -71,13 +71,13 @@ WORKSPACE_SUBDIR: Final[str] = "workspace"
 
 # Stub contents for the 5 files. Deliberately short — the whole point is to
 # kill the external openclaw worker's 35.4k chars and replace them with
-# Dodaios mission context. Mission ID is included in every file so
+# PRTS mission context. Mission ID is included in every file so
 # audit reads can later tell which mission wrote the file.
-_STUB_HEADER = "<!-- managed by Dodaios Mission-Manager — do not edit -->"
+_STUB_HEADER = "<!-- managed by PRTS Mission-Manager — do not edit -->"
 
 
 def _agents_md(mission_id: str) -> str:
-    """AGENTS.md — Dodaios Mission-Manager execution contract.
+    """AGENTS.md — PRTS Mission-Manager execution contract.
 
     This file is injected by the external `openclaw` CLI into the worker's system prompt at
     spawn time (Welle-1-Spike B-9 verified). It is the only artefact under
@@ -101,10 +101,10 @@ def _agents_md(mission_id: str) -> str:
     """
     return (
         f"{_STUB_HEADER}\n"
-        f"# Dodaios Mission Workspace\n\n"
+        f"# PRTS Mission Workspace\n\n"
         f"Mission ID: `{mission_id}`\n\n"
         f"## EXECUTION CONTRACT (binding)\n\n"
-        f"You are a Jarvis-Agent worker running inside the Dodaios\n"
+        f"You are a Jarvis-Agent worker running inside the PRTS\n"
         f"Mission-Manager. Your task is in the agent message. Follow it\n"
         f"verbatim. The rules below are enforced by the mission runtime —\n"
         f"the mission will be marked FAILED if you violate them, and you\n"
@@ -200,7 +200,7 @@ def _empty_stub(name: str, mission_id: str) -> str:
     *no* identity, *no* user assumptions, and *no* foreign tool docs leaking in.
     Hence only a header plus the mission ID.
     """
-    return f"{_STUB_HEADER}\n# {name} (Dodaios stub)\n\nMission `{mission_id}` — intentionally blank.\n"
+    return f"{_STUB_HEADER}\n# {name} (PRTS stub)\n\nMission `{mission_id}` — intentionally blank.\n"
 
 
 def prepare_workspace(state_dir: Path, mission_id: str) -> Path:

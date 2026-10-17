@@ -1,5 +1,5 @@
 /**
- * The plan of the city round the Dodaios tower: a dense megacity on a street
+ * The plan of the city round the PRTS tower: a dense megacity on a street
  * grid far below the floor, its flying traffic, the light beams over its
  * tallest roofs and the singularity it is built round. Pure and tested; the
  * drawing lives in SingularityCity.tsx.

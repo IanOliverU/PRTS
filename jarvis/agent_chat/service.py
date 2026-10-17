@@ -93,7 +93,7 @@ def _stop_caller() -> str:
 
 #: What a turn cut off by a restart says (``_seal_orphaned_turns``).
 _ORPHANED_TURN_ERROR: Final = (
-    "Dodaios restarted while this turn was running. "
+    "PRTS restarted while this turn was running. "
     "Everything after the last step shown here was not captured."
 )
 
@@ -1294,7 +1294,7 @@ class AgentChatService:
             selected = []
             if tool_choices:
                 if session.surface != "jarvis":
-                    raise ValueError("Tool selections are supported by the Dodaios chat")
+                    raise ValueError("Tool selections are supported by the PRTS chat")
                 from jarvis.agent_chat.runner_brain import brain_manager
                 from jarvis.agent_chat.tool_catalog import live_catalog, resolve_choices
 

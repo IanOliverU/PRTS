@@ -1,4 +1,4 @@
-"""Doc layer for the Dodaios desktop app.
+"""Doc layer for the PRTS desktop app.
 
 Reads Markdown files from the documentation roots returned by
 ``jarvis.core.paths.default_doc_roots()`` (canonically ``docs/``). Parses YAML

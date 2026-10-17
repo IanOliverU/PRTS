@@ -10,13 +10,13 @@ import { toBlob } from "html-to-image";
 import { fill, translate } from "@/i18n";
 import { uiLocale } from "@/lib/boardInsights";
 import {
-  OFFICIAL_REPO_LABEL,
-  OFFICIAL_REPO_URL,
+  PROJECT_REPO_LABEL,
+  PROJECT_REPO_URL,
   PRODUCT_NAME,
 } from "@/lib/branding";
 
-export const REPO_URL = OFFICIAL_REPO_URL;
-export const REPO_LABEL = OFFICIAL_REPO_LABEL;
+export const REPO_URL = PROJECT_REPO_URL;
+export const REPO_LABEL = PROJECT_REPO_LABEL;
 
 export interface ShareStats {
   userWords: number;

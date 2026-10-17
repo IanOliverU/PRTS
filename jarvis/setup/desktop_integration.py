@@ -1,4 +1,4 @@
-"""Cross-platform desktop registration for managed Dodaios installs.
+"""Cross-platform desktop registration for managed PRTS installs.
 
 The public installer is source-based: it creates a virtual environment and runs
 the desktop through Python.  Without explicit shell registration that leaves a
@@ -15,7 +15,7 @@ an update cannot move the code while leaving its launcher behind.  Registration
 is restricted to installer-managed trees by default; a developer checkout must
 never acquire an uninstall entry which could delete the checkout.
 
-**A frozen build registers nothing.**  When Dodaios arrived through a
+**A frozen build registers nothing.**  When PRTS arrived through a
 native installer (Windows ``Setup.exe``, macOS ``.dmg``, Linux ``.AppImage`` or
 ``.deb``) that installer owns every shell artifact: it created the Start-menu
 entry, the ``Applications`` bundle, the ``.desktop`` file and the uninstall

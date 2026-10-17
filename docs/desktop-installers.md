@@ -1,6 +1,6 @@
 # Desktop installers
 
-How Dodaios becomes a one-click download, how each installer is built
+How PRTS becomes a one-click download, how each installer is built
 and signed, and how an installed copy keeps itself up to date.
 
 This is the maintainer's page. A user never reads it: they press one button on
@@ -114,7 +114,7 @@ The wizard itself is `packaging/windows/PersonalJarvis.iss`:
   in `[Code]` against `HKCU\Environment` and broadcast with `WM_SETTINGCHANGE`,
   so a newly opened terminal sees it without a sign-out. Adding is idempotent,
   and clearing the task on an upgrade removes the entry again.
-- `CloseApplications=yes` so Restart Manager closes a running Dodaios
+- `CloseApplications=yes` so Restart Manager closes a running PRTS
   instead of failing on locked files
 - LZMA2/max, `x64compatible` only, `MinVersion=10.0`
 
@@ -143,7 +143,7 @@ table carries the German and Spanish versions: `jarvis.spec` declares the langua
 (`packaging/macos/add_localizations.py`) BEFORE it signs it, because the files are
 part of the code seal. There
 is deliberately no camera string, no speech-recognition string and no camera
-entitlement: Dodaios has no caller for either. The entitlements embedded by the
+entitlement: PRTS has no caller for either. The entitlements embedded by the
 Developer ID path live in `packaging/macos/entitlements.plist` (no comments; the
 reasoning is in `packaging/macos/README.md`).
 
@@ -172,7 +172,7 @@ status each time: a microphone row that reads "unavailable" means the framework
 did not load inside the app (the check above only sees that the module is in the
 archive). The v2.5.0 image shipped with the first two defects (BUG-222).
 
-**Permission prompts.** Dodaios asks for a macOS permission at the moment
+**Permission prompts.** PRTS asks for a macOS permission at the moment
 a feature you start needs it (the first dictation asks for the microphone, the
 first screen capture for Screen Recording, and so on) and never at launch;
 nothing is requested up front and no banner or wizard nags. Apple's own dialog or

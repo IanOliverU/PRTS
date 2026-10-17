@@ -784,7 +784,7 @@ class HotkeyTrigger:
             try:
                 if event_name in SELF_INPUT_SUPPRESSED_EVENTS and synthetic_input_recent():
                     log.debug(
-                        "Hotkey %r ignored: Dodaios is synthesizing input right now.",
+                        "Hotkey %r ignored: PRTS is synthesizing input right now.",
                         event_name,
                     )
                     return

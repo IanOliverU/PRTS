@@ -72,7 +72,7 @@ HEADER_NAME: Final[str] = "X-Jarvis-Chat-Session"
 SYSTEM_PREAMBLE: Final[str] = (
     "You are the assistant of the person you are talking to (your name is the one "
     "stated at the top of this prompt), running as "
-    "the chat surface of the Dodaios desktop app that is open in front of "
+    "the chat surface of the PRTS desktop app that is open in front of "
     "them right now. This chat is the same assistant they otherwise talk to by "
     "voice; here they type and read your replies on screen.\n\n"
     + CONVERSATIONAL_TURN_REMINDER
@@ -80,12 +80,12 @@ SYSTEM_PREAMBLE: Final[str] = (
     "no marketing superlatives, no filler openers. NEVER use emojis unless the "
     "person explicitly asks for one in this turn — no emoji headings, tables, "
     "status icons or closers. Tables carry plain words, never emoji symbols.\n\n"
-    "You have Dodaios' own tools, offered to you over MCP. Claude Code names them "
+    "You have PRTS' own tools, offered to you over MCP. Claude Code names them "
     f"`mcp__{_SERVER_NAME}__<tool>`; Grok Build names them "
     f"`{_SERVER_NAME}__<tool>` and you call "
     "them through use_tool. They act on the RUNNING app and on the accounts the "
     "person has connected to it — their calendar, mail, contacts, media, wiki, "
-    "windows, screen, skills and Dodaios' own settings. Prefer them over a shell "
+    "windows, screen, skills and PRTS' own settings. Prefer them over a shell "
     "command, a CLI you would have to authenticate yourself, a skill, or the "
     "browser whenever the request is about the person's own apps, data or "
     "machine: those tools are already signed in and already permitted. Reach for "
@@ -99,8 +99,8 @@ SYSTEM_PREAMBLE: Final[str] = (
     "If society_browser is unavailable, report that explicitly.\n\n"
     "Two kinds of hands: your own file and shell tools are your hands in the "
     f"working folder this chat is open in; `mcp__{_SERVER_NAME}__run_shell` / "
-    f"`{_SERVER_NAME}__run_shell` and their siblings are Dodaios' hands on the whole "
-    "machine. Use the folder's hands for the folder, Dodaios' for everything else.\n\n"
+    f"`{_SERVER_NAME}__run_shell` and their siblings are PRTS' hands on the whole "
+    "machine. Use the folder's hands for the folder, PRTS' for everything else.\n\n"
     "Some of those tools ask the person for approval before they run. That is "
     "normal and it is not a failure — wait for an approval card that is actually "
     "on screen rather than routing around it. If a tool is cancelled, denied, "
@@ -164,7 +164,7 @@ def mcp_config_json(session_id: str | None = None) -> str | None:
             ensure_ascii=False,
         )
     except Exception:  # noqa: BLE001 — no Jarvis tools is a degraded chat, never a broken one
-        log.warning("agent chat: could not build the Dodaios MCP config", exc_info=True)
+        log.warning("agent chat: could not build the PRTS MCP config", exc_info=True)
         return None
 
 
@@ -242,7 +242,7 @@ def agy_mcp_server_entry(session_id: str | None = None) -> dict[str, Any] | None
             headers[HEADER_NAME] = session_id
         return {"serverUrl": url, "headers": headers}
     except Exception:  # noqa: BLE001 — see mcp_config_json
-        log.warning("agent chat: could not build the Dodaios agy MCP entry", exc_info=True)
+        log.warning("agent chat: could not build the PRTS agy MCP entry", exc_info=True)
         return None
 
 
@@ -269,7 +269,7 @@ def install_agy_jarvis_plugin(cwd: Path, session_id: str | None = None) -> Path 
         )
         return plugin_dir
     except Exception:  # noqa: BLE001 — see mcp_config_json
-        log.warning("agent chat: could not install the Dodaios agy plugin", exc_info=True)
+        log.warning("agent chat: could not install the PRTS agy plugin", exc_info=True)
         return None
 
 
@@ -302,7 +302,7 @@ def grok_mcp_server_entry(session_id: str | None = None) -> dict[str, Any] | Non
             entry["headers"] = {HEADER_NAME: session_id}
         return entry
     except Exception:  # noqa: BLE001 — see mcp_config_json
-        log.warning("agent chat: could not build the Dodaios grok MCP entry", exc_info=True)
+        log.warning("agent chat: could not build the PRTS grok MCP entry", exc_info=True)
         return None
 
 
@@ -313,7 +313,7 @@ def _toml_string(value: str) -> str:
 def _grok_jarvis_block(entry: dict[str, Any]) -> str:
     lines = [
         _GROK_BLOCK_BEGIN,
-        "# Written by Dodaios so Grok Build can reach Dodaios' tools.",
+        "# Written by PRTS so Grok Build can reach PRTS' tools.",
         f"[mcp_servers.{_SERVER_NAME}]",
         f"url = {_toml_string(str(entry['url']))}",
         f"bearer_token_env_var = {_toml_string(str(entry['bearer_token_env_var']))}",
@@ -364,7 +364,7 @@ def install_grok_jarvis_mcp(cwd: Path, session_id: str | None = None) -> Path | 
         )
         return config_path
     except Exception:  # noqa: BLE001 — see mcp_config_json
-        log.warning("agent chat: could not install the Dodaios grok MCP config", exc_info=True)
+        log.warning("agent chat: could not install the PRTS grok MCP config", exc_info=True)
         return None
 
 
@@ -452,7 +452,7 @@ async def identity_prompt(
             if turn_context.strip():
                 parts.append(turn_context.strip())
         except Exception:  # noqa: BLE001 — the addendum alone is still a working chat
-            log.warning("agent chat: Dodaios' prompt layers unavailable this turn", exc_info=True)
+            log.warning("agent chat: PRTS' prompt layers unavailable this turn", exc_info=True)
     if resume is None and history:
         transcript = render_transcript(history)
         if transcript:

@@ -559,14 +559,14 @@ class WindowsAutostart:
                 # a matching task as done, the .lnk fallback was not written
                 # either, so autostart was dead on BOTH paths.
                 detail = (
-                    "The logon scheduled task exists but is disabled, so Dodaios "
+                    "The logon scheduled task exists but is disabled, so PRTS "
                     "does not start at login — re-enable instant start in "
                     "Settings to switch it back on."
                 )
             elif leftover_shortcut:
                 detail = (
                     "Autostart enabled via scheduled task, but a leftover startup "
-                    "shortcut would start Dodaios a second time; it is removed on "
+                    "shortcut would start PRTS a second time; it is removed on "
                     "the next start."
                 )
             elif action_matches:
@@ -681,7 +681,7 @@ class WindowsAutostart:
                 entry_path=self._task_entry_path(),
                 detail=(
                     "Startup shortcut removed, but the scheduled task still starts "
-                    "Dodaios at login — turn instant start off in Settings and "
+                    "PRTS at login — turn instant start off in Settings and "
                     "confirm the admin prompt to remove it."
                 ),
             )

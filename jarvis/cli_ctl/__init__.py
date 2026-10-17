@@ -1,1 +1,1 @@
-"""jarvisctl — the control CLI for a running Dodaios instance."""
+"""jarvisctl — the control CLI for a running PRTS instance."""

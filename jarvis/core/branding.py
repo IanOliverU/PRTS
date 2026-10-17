@@ -28,6 +28,9 @@ from collections.abc import Mapping
 # The name a person reads. Never build a path, a registry key, a file name, a
 # process name, a bundle id or a credential-store name from it.
 PRODUCT_NAME = "PRTS"
+PROJECT_REPO_SLUG = "IanOliverU/PRTS"
+PROJECT_REPO_URL = f"https://github.com/{PROJECT_REPO_SLUG}"
+UPSTREAM_REPO_URL = "https://github.com/Dodaios/Dodaios"
 
 # --- Persistent identity anchors ---------------------------------------------
 # Compatibility contracts, not branding: these spell the names existing
@@ -230,6 +233,9 @@ __all__ = [
     "PLUGIN_GROUP_NAMESPACE",
     "PRODUCT_COMPACT_NAME",
     "PRODUCT_NAME",
+    "PROJECT_REPO_SLUG",
+    "PROJECT_REPO_URL",
+    "UPSTREAM_REPO_URL",
     "PRODUCT_SLUG",
     "SESSION_COOKIE_NAME",
     "SHELL_PROFILE_MARKER",

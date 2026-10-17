@@ -2286,7 +2286,7 @@
       "status_blocked": "No se pudo abrir X — la imagen está en tu portapapeles, abre x.com y pégala.",
       "status_blocked_without_image": "No se pudo abrir X ni copiar la imagen. Guarda el PNG, abre x.com y adjúntalo manualmente.",
       "card": {
-        "brand": "DODAIOS",
+        "brand": "PRTS",
         "hero_label": "Palabras dichas",
         "jarvis_suffix": "dichas por {name}",
         "talk_line": "{0} h activo · {1} chats",
