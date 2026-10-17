@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import math
+from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -18,7 +19,7 @@ LOGO_PNG = FRONTEND / "public" / "prts-mark.png"
 
 SQUIRCLE_N = 5.0  # superellipse exponent; 5 is the shape platforms settled on
 SUPERSAMPLE = 4
-PAPER = (23, 23, 23)
+PAPER = (245, 246, 247)
 DEV_AMBER = (241, 180, 103)  # the interface's "degraded" amber (#F1B467)
 DEV_INK = (20, 20, 20)
 #: The figure's box as a fraction of the tile — bigger where the tile is smaller.
@@ -70,7 +71,7 @@ def mark_span(size: int) -> float:
 
 
 def render_tile(size: int) -> Image.Image:
-    """Render the emblem on a dark rounded tile at the requested native size."""
+    """Render the emblem on a light rounded tile at the requested native size."""
     tile = Image.new("RGBA", (size, size), (*PAPER, 255))
     tile.alpha_composite(emblem(size, mark_span(size)))
     tile.putalpha(squircle_mask(size))
@@ -131,12 +132,22 @@ def main() -> None:
     source = LOGO_PNG.read_bytes()
     (ROOT / "assets/brand/dodaios-logo.png").write_bytes(source)
     encoded = base64.b64encode(source).decode("ascii")
+    with Image.open(LOGO_PNG) as master:
+        width, height = master.size
     (ROOT / "assets/brand/dodaios-logo.svg").write_text(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">'
-        f'<image href="data:image/png;base64,{encoded}" width="180" height="180"/>'
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">'
+        f'<image href="data:image/png;base64,{encoded}" width="{width}" height="{height}"/>'
         '</svg>\n', encoding="utf-8",
     )
     tile_256 = render_tile(256)
+    icon_buffer = BytesIO()
+    tile_256.save(icon_buffer, format="PNG")
+    tile_encoded = base64.b64encode(icon_buffer.getvalue()).decode("ascii")
+    (FRONTEND / "public/prts-icon.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">'
+        f'<image href="data:image/png;base64,{tile_encoded}" width="256" height="256"/>'
+        '</svg>\n', encoding="utf-8",
+    )
     members = [render_tile(s) for s in sorted(ICO_SIZES, reverse=True)]
     public = FRONTEND / "public"
 

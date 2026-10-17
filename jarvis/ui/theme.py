@@ -17,7 +17,7 @@ and with ``--background`` in ``index.css``.
 ``system`` is resolved per OS behind a capability probe. Every probe is allowed
 to fail: an unreadable registry, a missing ``defaults`` binary, a headless box
 with no desktop session at all — all of them degrade to the product default
-(dark) rather than raising, because a colour is never worth failing a boot over.
+(light) rather than raising, because a colour is never worth failing a boot over.
 """
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ HOLDING_PAGE_MUTED: dict[str, str] = {
     "light": "#545454",
 }
 
-_DEFAULT_THEME: Theme = "dark"
+_DEFAULT_THEME: Theme = "light"
 
 # Native popup tokens, matching index.css and docs/BRAND.md.
 POPOVER_COLORS = {
@@ -196,4 +196,4 @@ def configured_theme(cfg: object | None) -> str:
     Tolerates an older config model and a ``None`` config, both of which happen
     on the degraded boot paths that call this.
     """
-    return str(getattr(getattr(cfg, "ui", None), "theme", "dark") or "dark")
+    return str(getattr(getattr(cfg, "ui", None), "theme", "light") or "light")

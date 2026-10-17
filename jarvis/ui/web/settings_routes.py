@@ -633,11 +633,11 @@ def _current_ui_theme(request: Request) -> str:
     try:
         from jarvis.core.config import load_config
 
-        return str(getattr(load_config().ui, "theme", "dark"))
+        return str(getattr(load_config().ui, "theme", "light"))
     except Exception as exc:  # noqa: BLE001 — never 500 a settings read
         log.debug("appearance fresh read failed, using boot config: %s", exc)
     cfg = getattr(request.app.state, "config", None)
-    return str(getattr(getattr(cfg, "ui", None), "theme", "dark"))
+    return str(getattr(getattr(cfg, "ui", None), "theme", "light"))
 
 
 @router.get("/appearance")

@@ -33,7 +33,7 @@ const Ctx = createContext<ThemeCtx | undefined>(undefined);
  */
 const STORAGE_KEY = "jarvis.theme";
 const ENDPOINT = "/api/settings/appearance";
-const DEFAULT_PREFERENCE: ThemePreference = "dark";
+const DEFAULT_PREFERENCE: ThemePreference = "light";
 
 function isPreference(v: unknown): v is ThemePreference {
   return v === "dark" || v === "light" || v === "system";
