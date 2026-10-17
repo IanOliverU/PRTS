@@ -1,7 +1,6 @@
 import { type FormEvent, type ReactNode, useEffect, useRef, useState } from "react";
 import { LockKeyhole } from "lucide-react";
 import { useT } from "@/i18n";
-import { readCachedAssistantName } from "@/lib/assistantNameCache";
 import { BootSplash } from "./BootSplash";
 
 declare global {
@@ -62,24 +61,20 @@ function waitForInjectedToken(): Promise<string> {
 export function AuthGate({ children, quiet = false }: AuthGateProps) {
   const t = useT();
   const started = useRef(false);
-  // The HTML splash starts the reveal before React loads. Continue that same
-  // animation phase when the checking gate replaces its DOM.
-  const bootShift = useRef(
-    `-${Math.max(0, (performance.now() - (window.__JARVIS_BOOT_STARTED_AT ?? performance.now())) / 1000)}s`,
-  );
   const [state, setState] = useState<GateState>("checking");
   const [backendWarming, setBackendWarming] = useState(false);
   const [controlKey, setControlKey] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [splash, setSplash] = useState<SplashPhase>("shown");
+  const [introComplete, setIntroComplete] = useState(false);
 
   // Once the gate has an answer, the splash stays on top while the app mounts
   // underneath, then leaves with its exit animation — the app is revealed,
   // never swapped in. Two frames after the minimum time, so the first paint of
   // the app has happened before the splash starts to go.
   useEffect(() => {
-    if (state === "checking" || splash !== "shown") return;
+    if (state === "checking" || splash !== "shown" || (!quiet && !introComplete)) return;
     const openedAt = window.__JARVIS_BOOT_STARTED_AT ?? 0;
     const wait = Math.max(
       SPLASH_COMPLETE_MS,
@@ -95,7 +90,7 @@ export function AuthGate({ children, quiet = false }: AuthGateProps) {
       window.clearTimeout(timer);
       cancelAnimationFrame(frame);
     };
-  }, [state, splash]);
+  }, [state, splash, quiet, introComplete]);
 
   useEffect(() => {
     if (splash !== "exiting") return;
@@ -215,11 +210,6 @@ export function AuthGate({ children, quiet = false }: AuthGateProps) {
   };
 
   const statusLabel = t(backendWarming ? "auth_gate.starting" : "auth_gate.checking");
-  // The progress line follows real milestones. The bundle running is 55 %;
-  // a warming backend approaches 90 % slowly (it can take a while and must
-  // never look stalled or finished); an answer from the gate completes it.
-  const [progress, settle] =
-    state !== "checking" ? [1, 0.35] : backendWarming ? [0.9, 25] : [0.55, 0.9];
   // The wrapper is not decoration: the blank-window watchdog in index.html
   // treats a bare splash in #root as "bundle still loading" and reloads it
   // after its grace period. A held cold boot can legitimately outlast that,
@@ -230,11 +220,10 @@ export function AuthGate({ children, quiet = false }: AuthGateProps) {
     quiet || splash === "gone" ? null : (
       <main id="jarvis-auth-splash">
         <BootSplash
-          name={readCachedAssistantName("")}
+          ready={state === "authorized"}
+          locked={state === "locked"}
+          onIntroComplete={() => setIntroComplete(true)}
           status={statusLabel}
-          shift={bootShift.current}
-          progress={progress}
-          settle={settle}
           exiting={splash === "exiting"}
           onExited={() => setSplash("gone")}
         />

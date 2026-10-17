@@ -13,7 +13,7 @@ describe("BootSplash exit", () => {
 
   it("waits for its exit fade when a decorative animation finishes", () => {
     const onExited = vi.fn();
-    const { container } = render(<BootSplash name="Priestess" status="Starting up" shift="0s" progress={1} settle={0} exiting onExited={onExited} />);
+    const { container } = render(<BootSplash status="Starting up" exiting onExited={onExited} />);
     const splash = container.querySelector("#jarvis-boot-splash")!;
     finishAnimation(splash, "jbs-grid-in");
     expect(onExited).not.toHaveBeenCalled();
@@ -23,8 +23,8 @@ describe("BootSplash exit", () => {
 
   it("ignores animation events from its children", () => {
     const onExited = vi.fn();
-    const { container } = render(<BootSplash name="Priestess" status="Starting up" shift="0s" progress={1} settle={0} exiting onExited={onExited} />);
-    finishAnimation(container.querySelector(".jbs-mark")!, "jbs-fade-out");
+    const { container } = render(<BootSplash status="Starting up" exiting onExited={onExited} />);
+    finishAnimation(container.querySelector(".prts-stage")!, "jbs-fade-out");
     expect(onExited).not.toHaveBeenCalled();
   });
 });
