@@ -20,6 +20,34 @@ describe("AuthGate", () => {
     window.__JARVIS_TOKEN = undefined;
   });
 
+  it("preserves the preparation clock, audio and mute choice when access resolves", async () => {
+    vi.useFakeTimers();
+    let authorize!: (value: Response) => void;
+    const held = new Promise<Response>(resolve => { authorize = resolve; });
+    vi.stubGlobal("fetch", vi.fn((url: unknown) => url === "/api/config" ? held :
+      Promise.resolve({ ok: true, json: async () => ({ warming: true }) })));
+    const { container } = render(<AuthGate><div>Application</div></AuthGate>);
+    fireEvent.click(screen.getByRole("button", { name: /^Mute$/ }));
+    await act(async () => { vi.advanceTimersByTime(10_500); });
+    const splash = container.querySelector("#jarvis-boot-splash");
+    const audio = container.querySelector("audio");
+    const loading = screen.getByTestId("loading-block");
+    expect(loading.style.opacity).toBe("1");
+    await act(async () => { authorize(response(200)); });
+    expect(screen.getByText("Application")).toBeTruthy();
+    expect(container.querySelector("#jarvis-boot-splash")).toBe(splash);
+    expect(container.querySelector("audio")).toBe(audio);
+    expect(screen.getByTestId("loading-block").style.opacity).toBe("1");
+    expect(screen.getByRole("button", { name: /^Sound on$/ })).toBeTruthy();
+    await act(async () => { vi.advanceTimersByTime(700); });
+    expect(screen.getByTestId("loading-progress").textContent).not.toContain("0%");
+    await act(async () => { vi.advanceTimersByTime(5_000); });
+    await act(async () => { vi.advanceTimersByTime(1_500); });
+    expect(splash?.classList.contains("jbs-exit")).toBe(true);
+    await act(async () => { vi.advanceTimersByTime(1_000); });
+    expect(container.querySelector("#jarvis-boot-splash")).toBeNull();
+    expect(screen.getByText("Application")).toBeTruthy();
+  });
   it("shows an honest starting state while the backend is still warming", async () => {
     vi.useFakeTimers();
     // The serve-first bootstrap HOLDS /api/config during warm-up — model that
