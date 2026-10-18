@@ -4246,8 +4246,8 @@ class DesktopApp:
         """Spawn the detached relauncher, then quit — optionally dropping
         elevation on the way out.
 
-        ``drop_elevation`` launches the relauncher through the elevated token's
-        filtered companion token, so the whole restart chain (relauncher → fresh
+        ``drop_elevation`` launches the relauncher through a verified ordinary-user
+        shell or linked token, so the whole restart chain (relauncher → fresh
         launcher → window) lands at ordinary integrity. Any failure returns
         ``(False, detail)`` WITHOUT scheduling the quit.
         """

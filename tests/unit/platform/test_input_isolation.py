@@ -18,6 +18,7 @@ import os
 
 import pytest
 
+from jarvis.platform.deescalate import DeescalationResult
 from jarvis.platform.input_isolation import (
     InputIsolationReason,
     describe_input_isolation,
@@ -30,6 +31,7 @@ def _report(platform: str, elevated: bool | None):
         _platform=lambda: platform,
         _elevated=lambda: elevated,
         _euid=lambda: 1000,
+        _restart_probe=lambda: DeescalationResult(True, None, "Verified shell token"),
     )
 
 
@@ -138,3 +140,33 @@ class TestRealHostProbe:
 
         reference = bool(ctypes.windll.shell32.IsUserAnAdmin())
         assert windows_process_is_elevated() == reference
+
+
+class TestRestartCapability:
+    def test_elevated_session_without_token_keeps_warning_and_hides_repair(self):
+        report = describe_input_isolation(
+            _platform=lambda: "win32",
+            _elevated=lambda: True,
+            _restart_probe=lambda: DeescalationResult(
+                False, None, "No ordinary token; use a normal-user Windows session."
+            ),
+        )
+        assert report.blocked
+        assert report.reason is InputIsolationReason.ELEVATED
+        assert not report.can_restart_unelevated
+        assert "normal-user Windows session" in report.remedy
+
+    @pytest.mark.parametrize(
+        "platform,elevated", [("linux", True), ("win32", False), ("win32", None)]
+    )
+    def test_unneeded_capability_is_not_queried(self, platform, elevated):
+        def unexpected():
+            raise AssertionError("Capability probe should not run")
+
+        report = describe_input_isolation(
+            _platform=lambda: platform,
+            _elevated=lambda: elevated,
+            _euid=lambda: 1000,
+            _restart_probe=unexpected,
+        )
+        assert not report.can_restart_unelevated

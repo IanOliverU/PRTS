@@ -12,9 +12,9 @@ user", then launch through ``CreateProcessWithTokenW`` (which needs
 ``SeImpersonatePrivilege`` — an elevated process holds it). Two sources are
 tried in order:
 
-1. **The desktop shell's token.** Explorer always runs as the plain interactive
-   user, and an elevated process may open it because access flows downward. This
-   is the primary path and the only one that also works with UAC switched off.
+1. **The desktop shell's token.** Explorer usually runs as the plain interactive
+   user. Its token must still be measured: some Windows sessions run the shell
+   elevated and cannot provide an ordinary user token.
 2. **Our own token's filtered companion** (``TokenLinkedToken``). Kept as a
    fallback, but it is *not* reliable: unless the caller holds
    ``SeTcbPrivilege``, Windows hands that token out at *identification* level,
@@ -48,6 +48,10 @@ _TOKEN_ASSIGN_PRIMARY = 0x0001
 _TOKEN_ALL_ACCESS = 0xF01FF
 _PROCESS_QUERY_INFORMATION = 0x0400
 _TokenLinkedToken = 19
+_TokenElevation = 20
+_TokenIntegrityLevel = 25
+_MEDIUM_INTEGRITY = 0x2000
+_HIGH_INTEGRITY = 0x3000
 _SecurityImpersonation = 2
 _TokenPrimary = 1
 
@@ -91,15 +95,21 @@ def token_creationflags(creationflags: int) -> int:
     then carried that demotion into the whole app tree (BUG-204 amplifier).
     """
     return (
-        (creationflags & ~_DETACHED_PROCESS)
-        | _CREATE_UNICODE_ENVIRONMENT
-        | _NORMAL_PRIORITY_CLASS
+        (creationflags & ~_DETACHED_PROCESS) | _CREATE_UNICODE_ENVIRONMENT | _NORMAL_PRIORITY_CLASS
     )
 
 
 def _spawn_unelevated_windows(
-    argv: list[str], *, cwd: str, env: dict[str, str], creationflags: int
+    argv: list[str],
+    *,
+    cwd: str,
+    env: dict[str, str],
+    creationflags: int,
+    _probe_only: bool = False,
 ) -> DeescalationResult:
+    if os.name != "nt":
+        return DeescalationResult(False, None, "Unelevated Windows token unavailable.")
+
     import ctypes  # noqa: PLC0415 — lazy so this module imports on every OS
     import subprocess  # noqa: PLC0415
     from ctypes import wintypes  # noqa: PLC0415
@@ -181,6 +191,45 @@ def _spawn_unelevated_windows(
         ctypes.POINTER(wintypes.HANDLE),
     ]
     advapi32.DuplicateTokenEx.restype = wintypes.BOOL
+    advapi32.GetSidSubAuthorityCount.argtypes = [wintypes.LPVOID]
+    advapi32.GetSidSubAuthorityCount.restype = ctypes.POINTER(ctypes.c_ubyte)
+    advapi32.GetSidSubAuthority.argtypes = [wintypes.LPVOID, wintypes.DWORD]
+    advapi32.GetSidSubAuthority.restype = ctypes.POINTER(wintypes.DWORD)
+
+    def _validate_token(token) -> str:
+        elevated = wintypes.DWORD()
+        returned = wintypes.DWORD()
+        if not advapi32.GetTokenInformation(
+            token,
+            _TokenElevation,
+            ctypes.byref(elevated),
+            ctypes.sizeof(elevated),
+            ctypes.byref(returned),
+        ):
+            return f"token elevation could not be verified ({ctypes.get_last_error()})"
+        if elevated.value:
+            return "token still has administrator rights"
+        # An unelevated flag alone does not establish an ordinary desktop token:
+        # a low-integrity sandbox also cannot run the user's normal workspace.
+        label = ctypes.create_string_buffer(256)
+        if not advapi32.GetTokenInformation(
+            token,
+            _TokenIntegrityLevel,
+            label,
+            ctypes.sizeof(label),
+            ctypes.byref(returned),
+        ):
+            return f"token integrity could not be verified ({ctypes.get_last_error()})"
+        sid = ctypes.c_void_p.from_buffer(label).value
+        if not sid:
+            return "token integrity label is missing"
+        count = advapi32.GetSidSubAuthorityCount(sid)
+        if not count or not count[0]:
+            return "token integrity label could not be read"
+        authority = advapi32.GetSidSubAuthority(sid, count[0] - 1)
+        if not authority or not _MEDIUM_INTEGRITY <= authority[0] < _HIGH_INTEGRITY:
+            return "token is not an ordinary desktop token"
+        return ""
 
     user32 = ctypes.WinDLL("user32", use_last_error=True)
     user32.GetShellWindow.argtypes = []
@@ -196,10 +245,8 @@ def _spawn_unelevated_windows(
     def _shell_token() -> tuple[wintypes.HANDLE | None, str]:
         """A primary token borrowed from the desktop shell (Explorer).
 
-        Explorer always runs as the ordinary interactive user, and an elevated
-        process may open it (access flows downward), so its token is the most
-        reliable source of "what a normally-started app looks like". Also the
-        only one that works with UAC turned off, where no linked token exists.
+        The shell is usually unelevated, but Windows sessions can run it with
+        administrator rights. The candidate is verified before it can be used.
         """
         hwnd = user32.GetShellWindow()
         if not hwnd:
@@ -284,8 +331,16 @@ def _spawn_unelevated_windows(
     for candidate in (_shell_token, _linked_token):
         handle, detail = candidate()
         if handle:
-            primary, source = handle, detail
-            break
+            try:
+                refusal = _validate_token(handle)
+            except BaseException:
+                kernel32.CloseHandle(handle)
+                raise
+            if not refusal:
+                primary, source = handle, detail
+                break
+            kernel32.CloseHandle(handle)
+            detail = f"{detail}: {refusal}"
         failures.append(detail)
 
     if primary is None:
@@ -294,10 +349,13 @@ def _spawn_unelevated_windows(
             None,
             "Could not obtain an unelevated token on this Windows account "
             f"({'; '.join(failures)}), so the app cannot drop its administrator "
-            "rights by itself.",
+            "rights by itself. Use a Windows session running without administrator "
+            "rights; restarting from this elevated desktop will not repair it.",
         )
 
     try:
+        if _probe_only:
+            return DeescalationResult(True, None, f"Verified {source} available.")
         startup = STARTUPINFOW()
         startup.cb = ctypes.sizeof(STARTUPINFOW)
         info = PROCESS_INFORMATION()
@@ -363,6 +421,27 @@ def spawn_unelevated(
     except Exception as exc:  # noqa: BLE001 — a failed repair must not crash the app
         log.warning("Unelevated relaunch failed", exc_info=True)
         return DeescalationResult(False, None, f"{type(exc).__name__}: {exc}")
+
+
+def probe_unelevated_restart(
+    *,
+    _platform: str | None = None,
+    _probe=None,
+) -> DeescalationResult:
+    """Measure token availability without starting a process or retaining handles.
+
+    This is a capability check, not a reservation. A restart rechecks the token
+    and reports failure if the desktop session changes before the user acts.
+    """
+    platform = sys.platform if _platform is None else _platform
+    if platform != "win32":
+        return DeescalationResult(False, None, "Unelevated restart requires Windows.")
+    try:
+        probe = _spawn_unelevated_windows if _probe is None else _probe
+        return probe([], cwd="", env={}, creationflags=0, _probe_only=True)
+    except Exception:  # noqa: BLE001 — an unreadable capability must not promise repair
+        log.debug("Could not verify an unelevated restart token", exc_info=True)
+        return DeescalationResult(False, None, "An unelevated restart token could not be verified.")
 
 
 def current_process_is_elevated() -> bool | None:
@@ -437,6 +516,7 @@ __all__ = [
     "current_process_is_elevated",
     "environment_block",
     "maybe_relaunch_unelevated",
+    "probe_unelevated_restart",
     "spawn_unelevated",
     "token_creationflags",
 ]

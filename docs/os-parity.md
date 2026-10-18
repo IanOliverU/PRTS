@@ -1,5 +1,21 @@
 # OS Feature Parity — macOS / Linux Gap Register
 
+## Unelevated Windows restart
+
+Windows restart uses a verified non-elevated shell or linked token. Elevated or
+unreadable candidates are rejected before process creation, and token handles
+are released during both capability checks and launch attempts. The input-isolation
+warning offers automatic restart only when a suitable token can be obtained;
+otherwise it explains that a normal-user desktop session is required. Reopening
+the app from an elevated desktop session cannot remove its administrator rights.
+
+macOS and Linux do not use Windows token APIs. Their existing normal-user/root
+diagnostics remain unchanged and never offer automatic privilege removal.
+Unit tests exercise token selection, rejection, fallback and cleanup using fakes.
+Live Windows verification covers refusal on an elevated desktop with no suitable
+token. A successful ordinary-user relaunch and native editor typing still require
+a normal-user Windows session and have not been verified on this host.
+
 ## TypeScript project diagnostics
 
 The explicit project check uses the same locally installed Node.js and

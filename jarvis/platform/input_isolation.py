@@ -74,9 +74,7 @@ _ROOT_SUMMARY = (
     "assistive input tools running in your normal user session cannot type into "
     "its window."
 )
-_ROOT_REMEDY = (
-    "Start the app as your normal user account instead of with sudo/root."
-)
+_ROOT_REMEDY = "Start the app as your normal user account instead of with sudo/root."
 
 
 @dataclass(frozen=True)
@@ -239,9 +237,7 @@ def windows_foreground_window_is_elevated() -> bool | None:
         if not pid.value:
             return None
 
-        process = kernel32.OpenProcess(
-            PROCESS_QUERY_LIMITED_INFORMATION, False, pid.value
-        )
+        process = kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, pid.value)
         if not process:
             # Access denied reading a higher-integrity process is itself a
             # strong hint that it IS elevated — but it is not proof (the
@@ -250,9 +246,7 @@ def windows_foreground_window_is_elevated() -> bool | None:
             return None
         try:
             token = wintypes.HANDLE()
-            if not advapi32.OpenProcessToken(
-                process, TOKEN_QUERY, ctypes.byref(token)
-            ):
+            if not advapi32.OpenProcessToken(process, TOKEN_QUERY, ctypes.byref(token)):
                 return None
             try:
                 elevated = wintypes.DWORD()
@@ -322,6 +316,7 @@ def describe_input_isolation(
     _platform=detect_platform,
     _elevated=windows_process_is_elevated,
     _euid=_euid,
+    _restart_probe=None,
 ) -> InputIsolationReport:
     """Report whether outside input software can reach this app's window.
 
@@ -344,13 +339,17 @@ def describe_input_isolation(
                 can_restart_unelevated=False,
             )
         if elevated:
+            from .deescalate import probe_unelevated_restart  # noqa: PLC0415
+
+            probe = probe_unelevated_restart if _restart_probe is None else _restart_probe
+            capability = probe()
             return InputIsolationReport(
                 blocked=True,
                 reason=InputIsolationReason.ELEVATED,
                 platform=platform,
                 summary=_ELEVATED_SUMMARY,
-                remedy=_ELEVATED_REMEDY,
-                can_restart_unelevated=True,
+                remedy=_ELEVATED_REMEDY if capability.ok else capability.detail,
+                can_restart_unelevated=capability.ok,
             )
         return InputIsolationReport(
             blocked=False,

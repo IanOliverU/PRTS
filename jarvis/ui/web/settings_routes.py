@@ -2883,9 +2883,9 @@ async def restart_unelevated(request: Request, force: bool = False) -> dict[str,
 
     The repair for the condition ``GET /input-isolation`` reports: elevation
     survives every ordinary in-app restart, so a plain restart cannot escape it.
-    This relaunches through the elevated token's filtered companion token, which
-    lands the fresh window at the same privilege level as any normally-started
-    app — and back within reach of the user's dictation software.
+    This relaunches through a verified ordinary-user shell or linked token.
+    An elevated shell and an absent or unreadable filtered companion cannot
+    repair this condition; the capability report refuses that restart.
 
     Refuses with 409 when the app is not elevated (nothing to repair) or when
     privileges cannot be dropped on this account, and in that case the app stays
