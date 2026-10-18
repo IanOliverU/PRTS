@@ -230,19 +230,11 @@ export function AuthGate({ children, quiet = false }: AuthGateProps) {
       </main>
     );
 
-  if (state === "checking") return splashLayer;
-
-  if (state === "authorized") {
-    return (
-      <>
-        {children}
-        {splashLayer}
-      </>
-    );
-  }
-
+  // Keep the splash in the same sibling slot while access changes. Remounting
+  // here resets its presentation clock, audio playback and user controls.
   return (
     <>
+      {state === "authorized" ? children : state === "locked" ? (
       <main className="flex min-h-screen items-center justify-center bg-background px-4 text-foreground">
         <form
           className="w-full max-w-sm rounded-xl border border-border bg-card p-6"
@@ -298,6 +290,7 @@ export function AuthGate({ children, quiet = false }: AuthGateProps) {
           </div>
         </form>
       </main>
+      ) : null}
       {splashLayer}
     </>
   );
